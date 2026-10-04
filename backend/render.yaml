@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: waspada-dbd-api
+    runtime: node
+    plan: free
+    buildCommand: npm ci && npx prisma generate && npm run build && npx prisma migrate deploy
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: DATABASE_URL
+        sync: false # isi manual dengan pooler URL Supabase (:6543)
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ADMIN_CODE
+        sync: false # isi manual, samakan dengan saat daftar admin
+      - key: FRONTEND_URL
+        sync: false # isi manual: https://<vercel-app>.vercel.app

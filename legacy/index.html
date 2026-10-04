@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Poliklinik ITERA - Waspada DBD</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Nunito+Sans:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css?v=2" />
+  </head>
+  <body>
+    <header>
+      <a class="brand" href="#/"
+        ><svg width="24" height="24" viewBox="0 0 24 24" fill="#1366d6">
+          <rect x="9" y="3" width="6" height="18" rx="1.5" />
+          <rect x="3" y="9" width="18" height="6" rx="1.5" /></svg
+        >Poliklinik ITERA</a
+      >
+      <button
+        id="burger"
+        aria-label="Buka menu"
+        aria-expanded="false"
+        aria-controls="mainnav"
+      >
+        <span></span><span></span><span></span>
+      </button>
+      <nav id="mainnav">
+        <a href="#/" data-route="beranda">Beranda</a
+        ><a href="#/artikel" data-route="artikel">Artikel</a
+        ><a href="#/cek-gejala" data-route="cek-gejala">Cek Gejala</a
+        ><a href="#/cegah" data-route="cegah">Cegah</a
+        ><a href="#/fakta-mitos" data-route="fakta-mitos">Fakta/Mitos</a
+        ><a href="#/catatan" data-route="catatan">Catatan Saya</a
+        ><a href="#/poliklinik" data-route="poliklinik">Info Poliklinik</a>
+      </nav>
+      <div class="acct">
+        <span id="guest"
+          ><button class="btn ghost sm" id="b-in">Masuk</button>
+          <button class="btn sm" id="b-up">Daftar</button></span
+        >
+        <span id="me" hidden
+          ><span id="mename"></span
+          ><button class="btn ghost sm" id="b-out">Keluar</button></span
+        >
+      </div>
+    </header>
+    <main id="top">
+      <section class="hero" data-page="beranda">
+        <img
+          class="fly"
+          src="img/mosquito.svg"
+          alt=""
+          style="left: 46%; top: 14%"
+        /><img
+          class="fly"
+          src="img/mosquito.svg"
+          alt=""
+          style="left: 70%; top: 58%; animation-delay: -4s"
+        /><img
+          class="fly"
+          src="img/mosquito.svg"
+          alt=""
+          style="left: 8%; top: 70%; animation-delay: -8s"
+        /><img
+          class="fly"
+          src="img/mosquito.svg"
+          alt=""
+          style="left: 88%; top: 12%; animation-delay: -2s"
+        />
+        <div class="htxt">
+          <p class="eyebrow">Poliklinik ITERA &middot; Edukasi Kesehatan</p>
+          <h1>Kenali DBD sebelum terlambat.</h1>
+          <p class="lead">
+            Panduan singkat tentang gejala, pencegahan, dan kapan harus ke
+            dokter, dibuat mudah dipahami.
+          </p>
+          <div class="cta">
+            <a class="btn" href="#/cek-gejala">Cek gejala saya</a
+            ><a class="btn ghost" href="#/artikel">Baca artikel</a>
+          </div>
+          <p class="muted">
+            Klik nyamuk yang beterbangan! Nyamuk ditepuk: <b id="hits">0</b>
+          </p>
+          <p id="stat" class="muted"></p>
+        </div>
+        <aside class="warn">
+          <h2>Segera ke IGD jika ada:</h2>
+          <ul>
+            <li>Nyeri perut hebat</li>
+            <li>Muntah terus-menerus</li>
+            <li>Mimisan / gusi berdarah / bintik merah</li>
+            <li>Sangat lemas, tangan-kaki dingin</li>
+          </ul>
+          <p>Darurat: <b>112</b> &middot; Ambulans: <b>119</b></p>
+        </aside>
+      </section>
+
+      <section class="rv" data-page="beranda">
+        <div class="head">
+          <h2>Seputar Informasi</h2>
+          <button class="btn sm ab" data-add="facts">+ Tambah informasi</button>
+        </div>
+        <div id="facts" class="facts"></div>
+      </section>
+
+      <section id="artikel" class="rv" data-page="artikel">
+        <div class="head">
+          <h2>Artikel</h2>
+          <span class="hr"
+            ><input id="search" type="search" placeholder="Cari artikel..." />
+            <button class="btn sm ab" data-add="articles">
+              + Tambah artikel
+            </button></span
+          >
+        </div>
+        <div id="list" class="grid">Memuat...</div>
+      </section>
+
+      <section id="cek" class="rv" data-page="cek-gejala">
+        <div class="head">
+          <h2>Cek Gejala</h2>
+          <button class="btn sm ab" data-add="symptoms">+ Tambah gejala</button>
+        </div>
+        <p class="muted">
+          Centang gejala yang sedang Anda alami. Hasil hanya skrining awal,
+          bukan diagnosis.
+        </p>
+        <div id="sym" class="grid2"></div>
+        <button class="btn" id="go">Lihat hasil</button>
+        <div id="res" class="res"></div>
+      </section>
+
+      <section id="cegah" class="rv" data-page="cegah">
+        <div class="head">
+          <h2>Checklist 3M Plus</h2>
+          <button class="btn sm ab" data-add="tasks">+ Tambah langkah</button>
+        </div>
+        <p class="muted">
+          Tandai yang sudah Anda lakukan minggu ini. Progres tersimpan di
+          browser.
+        </p>
+        <div class="bar"><i id="bar"></i></div>
+        <p id="pct" class="muted"></p>
+        <div id="tasks" class="grid2"></div>
+      </section>
+
+      <section id="kuis" class="rv" data-page="fakta-mitos">
+        <div class="head">
+          <h2>Fakta atau Mitos?</h2>
+          <button class="btn sm ab" data-add="quiz">+ Tambah pernyataan</button>
+        </div>
+        <div id="quiz" class="quiz">Memuat...</div>
+      </section>
+      <section id="jurnal" class="rv" data-page="catatan">
+        <h2>Catatan Demam Saya</h2>
+        <div id="jguest">
+          <p class="muted">
+            Fitur khusus pengguna terdaftar: catat suhu tubuh harian, lihat
+            grafiknya, dan dapatkan peringatan otomatis bila demam berlanjut.
+          </p>
+          <button class="btn" id="j-in">Masuk / Daftar</button>
+        </div>
+        <div id="juser" hidden>
+          <p class="muted">
+            Catat sekali sehari agar peringatan akurat. Data ini hanya terlihat
+            oleh akun Anda. Batang merah = suhu 38&deg;C atau lebih.
+          </p>
+          <form id="jf" class="jform">
+            <input type="date" name="date" required /><input
+              type="number"
+              name="temp"
+              step="0.1"
+              min="34"
+              max="43"
+              placeholder="Suhu (&deg;C)"
+              required
+            /><input
+              name="note"
+              maxlength="200"
+              placeholder="Catatan (opsional)"
+            /><button class="btn">Simpan</button>
+          </form>
+          <div id="jin" class="res"></div>
+          <div id="jchart"></div>
+          <div id="jlist"></div>
+        </div>
+      </section>
+
+      <section id="poli" class="rv" data-page="poliklinik">
+        <div class="head"><h2>Info Poliklinik</h2></div>
+        <div class="fgrid light">
+          <div>
+            <h4>Poliklinik ITERA</h4>
+            <p>
+              Layanan kesehatan dasar untuk mahasiswa, dosen, dan tenaga
+              kependidikan Institut Teknologi Sumatera.
+            </p>
+          </div>
+          <div>
+            <h4>Jam Operasional</h4>
+            <p>Senin - Jumat<br /><b>08.00 - 16.00 WIB</b></p>
+            <p>Jadwal dapat berubah, cek pengumuman di akun resmi.</p>
+          </div>
+          <div>
+            <h4>Lokasi</h4>
+            <p>
+              Area kampus ITERA, dekat Galeri ITERA.<br />Jl. Terusan Ryacudu,
+              Way Huwi, Jati Agung, Lampung Selatan 35365
+            </p>
+          </div>
+          <div>
+            <h4>Layanan</h4>
+            <p>
+              Pemeriksaan umum, pengobatan ringan, konsultasi medis, dan rujukan
+              ke fasilitas kesehatan lain. Gratis bagi sivitas akademika.
+            </p>
+          </div>
+          <div>
+            <h4>Kontak Resmi</h4>
+            <div id="kontak"></div>
+            <p>
+              <button class="btn sm ab" data-edit="contact">
+                Edit lokasi peta
+              </button>
+            </p>
+          </div>
+        </div>
+        <div class="mapbox light">
+          <iframe
+            id="map"
+            title="Peta lokasi Poliklinik ITERA"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+          ></iframe
+          ><a id="maplink" target="_blank" rel="noopener"
+            >Buka di Google Maps</a
+          >
+        </div>
+      </section>
+    </main>
+
+    <dialog id="dlg">
+      <div id="dbody"></div>
+      <form method="dialog"><button class="btn">Tutup</button></form>
+    </dialog>
+    <dialog id="pop">
+      <div id="conf"></div>
+      <div class="popin">
+        <div id="pemoji"></div>
+        <h3 id="ptitle"></h3>
+        <p id="ptext"></p>
+        <form method="dialog"><button class="btn">Tutup</button></form>
+      </div>
+    </dialog>
+    <dialog id="auth">
+      <div class="tabs">
+        <button type="button" id="tab-in">Masuk</button
+        ><button type="button" id="tab-up">Daftar</button>
+      </div>
+      <form id="f-in">
+        <input name="email" type="email" placeholder="Email" required /><input
+          name="password"
+          type="password"
+          placeholder="Password"
+          required
+        /><button class="btn">Masuk</button>
+        <p class="sub"><a href="#" id="lupa">Lupa password?</a></p>
+      </form>
+      <form id="f-up" hidden>
+        <input name="name" placeholder="Nama lengkap" required /><input
+          name="email"
+          type="email"
+          placeholder="Email"
+          required
+        /><input
+          name="password"
+          type="password"
+          minlength="6"
+          placeholder="Buat password (min. 6 karakter)"
+          required
+        />
+        <p class="sub"><a href="#" id="admt">Daftar sebagai admin?</a></p>
+        <input
+          name="admin_code"
+          id="admc"
+          type="password"
+          placeholder="Kode admin dari pengelola website"
+          autocomplete="off"
+          hidden
+        /><button class="btn">Daftar</button>
+      </form>
+      <form id="f-rs" hidden>
+        <p class="muted">Masukkan email akun Anda, lalu klik Kirim kode.</p>
+        <input name="email" type="email" placeholder="Email" required />
+        <div id="rs2" hidden>
+          <input
+            name="code"
+            placeholder="Kode 6 digit"
+            inputmode="numeric"
+          /><input
+            name="password"
+            type="password"
+            minlength="6"
+            placeholder="Password baru (min. 6 karakter)"
+          />
+        </div>
+        <button class="btn" id="rsbtn">Kirim kode</button>
+        <p class="sub"><a href="#" id="back">Kembali ke Masuk</a></p>
+      </form>
+      <p id="aerr" class="muted"></p>
+      <form method="dialog"><button class="link">Tutup</button></form>
+    </dialog>
+    <dialog id="cf">
+      <p id="cfmsg"></p>
+      <div class="row2 c">
+        <button class="btn" id="cf-ok">OK</button
+        ><button class="btn ghost" id="cf-no">Cancel</button>
+      </div>
+    </dialog>
+    <dialog id="gate">
+      <div class="popin">
+        <div id="pemoji">🔒</div>
+        <h3>Masuk untuk melihat hasil</h3>
+        <p>
+          Hasil cek gejala hanya dapat dilihat pengguna yang sudah masuk.
+          Silakan masuk atau daftar terlebih dahulu.
+        </p>
+        <p class="muted">
+          Jika ada tanda bahaya (nyeri perut hebat, perdarahan, sangat lemas),
+          jangan menunda: segera ke IGD.
+        </p>
+        <div class="row2 c">
+          <button class="btn" id="g-in">Masuk</button
+          ><button class="btn" id="g-up">Daftar</button
+          ><button class="btn ghost" id="g-x">Nanti saja</button>
+        </div>
+      </div>
+    </dialog>
+    <dialog id="ed">
+      <form id="edf">
+        <h3 id="edt"></h3>
+        <div id="edfields"></div>
+        <div class="row2">
+          <button class="btn">Simpan</button
+          ><button type="button" class="btn ghost" id="edx">Batal</button>
+        </div>
+        <p id="edmsg" class="muted"></p>
+      </form>
+    </dialog>
+
+    <footer>
+      <p class="copy">
+        Informasi ini bukan pengganti nasihat dokter. Proyek Akhir PTKOM 2026
+        &middot; HMIF ITERA
+      </p>
+    </footer>
+    <script src="app.js?v=3"></script>
+  </body>
+</html>

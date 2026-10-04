@@ -1,0 +1,57 @@
+export interface Article {
+  id: number | string;
+  title: string;
+  tag: string;
+  body: string[];
+  mins: number;
+  date?: string;
+}
+
+export interface Symptom {
+  id: string;
+  label: string;
+  w: number;
+  danger: boolean;
+}
+
+export interface Task3M {
+  id: number | string;
+  text: string;
+}
+
+export interface QuizItem {
+  s: string;
+  a: boolean;
+  e: string;
+}
+
+export interface Fact {
+  id: number | string;
+  big: string;
+  text: string;
+}
+
+export interface ContentBundle {
+  articles: Article[];
+  symptoms: Symptom[];
+  tasks: Task3M[];
+  quiz: QuizItem[];
+  facts: Fact[];
+  contact: { maps: string };
+}
+
+export interface User {
+  name: string;
+  email: string;
+  role: "user" | "admin";
+}
+
+export const LEGACY_REDIRECT: Record<string, string> = {
+  top: "/",
+  artikel: "/artikel",
+  cek: "/cek-gejala",
+  cegah: "/cegah",
+  kuis: "/fakta-mitos",
+  jurnal: "/catatan",
+  poli: "/poliklinik",
+};

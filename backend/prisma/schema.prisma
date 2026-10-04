@@ -1,0 +1,103 @@
+// Lokal: SQLite tanpa Docker. Deploy gratis (Supabase):
+// ganti provider menjadi "postgresql" + DATABASE_URL pooler Supabase.
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         String   @default("user")
+  createdAt    DateTime @default(now())
+  feverEntries FeverEntry[]
+  checks       SymptomCheck[]
+  progress     ChecklistProgress[]
+}
+
+model PasswordReset {
+  id        Int      @id @default(autoincrement())
+  email     String
+  codeHash  String
+  expiresAt DateTime
+  attempts  Int      @default(0)
+  createdAt DateTime @default(now())
+  @@index([email])
+}
+
+model Article {
+  id       Int      @id @default(autoincrement())
+  title    String
+  tag      String
+  body     String
+  mins     Int      @default(1)
+  date     String   @default("")
+  authorId Int?
+}
+
+model Symptom {
+  id       String  @id
+  label    String
+  weight   Int     @default(1)
+  isDanger Boolean @default(false)
+}
+
+model Task {
+  id        Int    @id @default(autoincrement())
+  text      String
+  sortOrder Int    @default(0)
+}
+
+model QuizItem {
+  id          Int     @id @default(autoincrement())
+  statement   String
+  isFact      Boolean @default(true)
+  explanation String  @default("")
+}
+
+model Fact {
+  id   Int    @id @default(autoincrement())
+  big  String
+  text String
+}
+
+model SiteSetting {
+  key   String @id
+  value String
+}
+
+model FeverEntry {
+  id     Int    @id @default(autoincrement())
+  userId Int
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date   String
+  temp   Float
+  note   String @default("")
+  @@unique([userId, date])
+  @@index([userId, date])
+}
+
+model SymptomCheck {
+  id         Int      @id @default(autoincrement())
+  userId     Int?
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  level      String
+  score      Int      @default(0)
+  symptomIds String   @default("[]")
+  createdAt  DateTime @default(now())
+  @@index([level])
+}
+
+model ChecklistProgress {
+  userId Int
+  taskId Int
+  doneAt DateTime @default(now())
+  user   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@id([userId, taskId])
+}
