@@ -91,23 +91,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       persist(j.user);
       return;
     }
-    // Fallback lokal (sama seperti app.js lama)
+    // Fallback lokal untuk penggunaan tanpa backend.
     const users = JSON.parse(localStorage.getItem("users") || "[]");
     const u = users.find((x: { email: string }) => x.email === em);
     if (!u || u.hash !== (await sha(password))) throw new Error("Email atau password salah");
     persist({ name: u.name, email: u.email, role: (u.role === "admin" ? "admin" : "user") as "user" | "admin" });
   }, []);
 
-  const signup = useCallback(async (name: string, email: string, password: string) => {
+  const signup = useCallback(async (name: string, email: string, password: string, adminCode = "") => {
     const em = email.trim().toLowerCase();
     if (!name.trim() || !em.includes("@") || password.length < 6)
       throw new Error("Lengkapi data dengan benar (password minimal 6 karakter)");
     if (API_BASE) {
-      const r = await fetch(`${API_BASE}/api/auth/login`.replace("login", "signup"), {
+      const r = await fetch(`${API_BASE}/api/auth/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ name: name.trim(), email: em, password }),
+        body: JSON.stringify({ name: name.trim(), email: em, password, admin_code: adminCode }),
       });
       const j = await r.json();
       if (!r.ok) throw new Error(j.error || "Daftar gagal");

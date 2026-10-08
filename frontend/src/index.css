@@ -12,7 +12,7 @@
 body {
   min-width: 320px;
   margin: 0;
-  font-family: "Nunito Sans", system-ui, sans-serif;
+  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
   font-size: 16px;
   line-height: 1.65;
 }
@@ -21,6 +21,6 @@ h1,
 h2,
 h3,
 h4 {
-  font-family: Poppins, system-ui, sans-serif;
+  font-family: Outfit, system-ui, sans-serif;
   line-height: 1.25;
 }

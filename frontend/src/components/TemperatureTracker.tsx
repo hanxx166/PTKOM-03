@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Reveal from "./Reveal";
 
 interface TemperatureEntry {
   id: string;
@@ -51,7 +52,7 @@ export default function TemperatureTracker() {
     const dayNumber = Number(day);
     const temperatureNumber = Number(temperature);
     if (!Number.isInteger(dayNumber) || dayNumber < 1 || dayNumber > 14) {
-      setMessage("Hari harus berupa angka 1–14.");
+      setMessage("Hari harus berupa angka 1-14.");
       return;
     }
     if (!Number.isFinite(temperatureNumber) || temperatureNumber < 34 || temperatureNumber > 43) {
@@ -78,11 +79,11 @@ export default function TemperatureTracker() {
 
   return (
     <section className="dbd-section" id="pelacak-suhu">
-      <div className="dbd-section-heading">
+      <Reveal className="dbd-section-heading">
         <span className="dbd-kicker">Pantau kondisi</span>
         <h2>🌡️ Pelacak Suhu (Dengue Tracker)</h2>
         <p>Catat suhu beberapa kali sehari. Perubahan suhu saja tidak bisa memastikan fase atau diagnosis DBD.</p>
-      </div>
+      </Reveal>
 
       <div className="dbd-card">
         <form className="dbd-tracker-form" onSubmit={addEntry}>
@@ -137,7 +138,7 @@ export default function TemperatureTracker() {
           ))}
         </div>
         {message && <p className="dbd-error" role="alert">{message}</p>}
-        <p className="dbd-disclaimer">🟠 Hari 1–2 demam &nbsp;|&nbsp; 🔴 Hari 3–5 berisiko kritis &nbsp;|&nbsp; 🟢 Hari 6–7 pemulihan. Fase tiap orang dapat berbeda; selalu ikuti arahan tenaga kesehatan.</p>
+        <p className="dbd-disclaimer">🟠 Hari 1-2 demam &nbsp;|&nbsp; 🔴 Hari 3-5 berisiko kritis &nbsp;|&nbsp; 🟢 Hari 6-7 pemulihan. Fase tiap orang dapat berbeda; selalu ikuti arahan tenaga kesehatan.</p>
       </div>
     </section>
   );

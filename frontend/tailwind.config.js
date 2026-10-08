@@ -13,8 +13,8 @@ export default {
         okgreen: "#1f9d55",
       },
       fontFamily: {
-        head: ["Poppins", "system-ui", "sans-serif"],
-        body: ['"Nunito Sans"', "system-ui", "sans-serif"],
+        head: ["Outfit", "system-ui", "sans-serif"],
+        body: ['"Plus Jakarta Sans"', "system-ui", "sans-serif"],
       },
     },
   },

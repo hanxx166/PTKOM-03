@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { useAuth } from "../lib/auth";
+import BlindPullToggle from "./BlindPullToggle";
 
 const LINKS = [
   { id: "beranda", label: "Beranda" },
@@ -19,6 +20,7 @@ export default function Header({
 }) {
   const { user, logout } = useAuth();
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const [dark, setDark] = useState(() => {
     try {
       return localStorage.getItem("dbd-theme") === "dark";
@@ -26,6 +28,12 @@ export default function Header({
       return false;
     }
   });
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
   const isAdmin = user?.role === "admin";
 
   useEffect(() => {
@@ -43,14 +51,14 @@ export default function Header({
   };
 
   return (
-    <header className="dbd-header">
+    <header className={`dbd-header${scrolled ? " is-scrolled" : ""}`}>
       <div className="dbd-header-inner">
         <Link to="/" onClick={() => goTo("beranda")} className="dbd-logo">
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M12 21c-4.4-3.2-8-6.4-8-10a8 8 0 0 1 16 0c0 3.6-3.6 6.8-8 10Z" />
             <path d="M12 7v4l2.5 1.5" />
           </svg>
-          <span>cek<span className="dbd-logo-light">DBD</span></span>
+          <span>Cek<span className="dbd-logo-light">DBD</span></span>
         </Link>
 
         <button
@@ -77,15 +85,7 @@ export default function Header({
         </nav>
 
         <div className="dbd-header-actions">
-          <button
-            className="dbd-theme-toggle"
-            type="button"
-            onClick={() => setDark((value) => !value)}
-            aria-label={dark ? "Aktifkan mode terang" : "Aktifkan mode gelap"}
-            title="Mode Gelap/Terang"
-          >
-            {dark ? "☀️" : "🌙"}
-          </button>
+          <BlindPullToggle dark={dark} onToggle={() => setDark((value) => !value)} />
           {!user ? (
             <>
               <button className="dbd-button dbd-button-outline dbd-button-small" onClick={() => onAuth("in")}>

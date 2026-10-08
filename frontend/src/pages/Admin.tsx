@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { apiDelete, apiGet, apiPost, apiPut } from "../lib/api";
 import { useAuth } from "../lib/auth";
+import {
+  instantTransition,
+  staggerChild,
+  staggerParent,
+  useReducedMotion,
+} from "../lib/motion";
 
 interface Row {
   id: number | string;
@@ -17,6 +24,7 @@ export default function Admin() {
   const [maps, setMaps] = useState("");
   const [msg, setMsg] = useState("");
   const [form, setForm] = useState({ id: "", title: "", tag: "Tips", body: "" });
+  const reduced = useReducedMotion();
 
   const load = () => {
     apiGet<Row[]>("/api/articles").then(setArticles).catch((e: Error) => setMsg(e.message));
@@ -76,7 +84,7 @@ export default function Admin() {
       <h2 className="text-2xl font-bold">Panel Admin</h2>
       {stats && (
         <p className="text-sm text-muted">
-          Statistik cek gejala — total {stats.total} (rendah {stats.rendah}, sedang {stats.sedang}, tinggi {stats.tinggi})
+          Statistik cek gejala - total {stats.total} (rendah {stats.rendah}, sedang {stats.sedang}, tinggi {stats.tinggi})
         </p>
       )}
 
@@ -100,9 +108,23 @@ export default function Admin() {
       </form>
 
       <h3 className="mt-6 font-bold">Daftar artikel ({articles.length})</h3>
-      <div className="mt-2 divide-y divide-line rounded-[14px] border border-line bg-white">
-        {articles.map((a) => (
-          <div key={String(a.id)} className="flex items-center justify-between gap-2 p-3 text-sm">
+      <motion.div
+        className="mt-2 divide-y divide-line rounded-[14px] border border-line bg-white"
+        variants={staggerParent}
+        initial={reduced ? false : "hidden"}
+        whileInView={reduced ? undefined : "show"}
+        viewport={{ once: true }}
+      >
+        <AnimatePresence initial={false} mode="popLayout">
+          {articles.map((a) => (
+            <motion.div
+              layout
+              key={String(a.id)}
+              className="flex items-center justify-between gap-2 p-3 text-sm"
+              variants={staggerChild}
+              exit={{ opacity: 0, x: 32 }}
+              transition={reduced ? instantTransition : undefined}
+            >
             <span><b>{a.title}</b> <span className="text-muted">· {a.tag}</span></span>
             <span className="flex gap-1.5">
               <button onClick={() => setForm({ id: String(a.id), title: a.title || "", tag: a.tag || "Tips", body: (a.body || []).join("\n") })} className="rounded-lg border border-line px-2.5 py-0.5 text-xs font-semibold hover:border-acc hover:text-acc">
@@ -112,9 +134,10 @@ export default function Admin() {
                 Hapus
               </button>
             </span>
-          </div>
-        ))}
-      </div>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </motion.div>
 
       <h3 className="mt-6 font-bold">Lokasi peta</h3>
       <div className="mt-2 flex gap-2.5">

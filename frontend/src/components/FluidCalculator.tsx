@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Reveal from "./Reveal";
 
 interface PlateletEntry {
   id: string;
@@ -46,7 +47,7 @@ export default function FluidCalculator() {
     event.preventDefault();
     const kg = Number(weight);
     if (!Number.isFinite(kg) || kg < 1 || kg > 250) {
-      setMessage("Masukkan berat badan antara 1–250 kg.");
+      setMessage("Masukkan berat badan antara 1-250 kg.");
       return;
     }
     const ml = ageGroup === "anak"
@@ -71,11 +72,11 @@ export default function FluidCalculator() {
     const dayNumber = Number(day);
     const plateletValue = Number(value);
     if (!Number.isInteger(dayNumber) || dayNumber < 1 || dayNumber > 14) {
-      setMessage("Hari harus berupa angka 1–14.");
+      setMessage("Hari harus berupa angka 1-14.");
       return;
     }
     if (!Number.isInteger(plateletValue) || plateletValue < 0 || plateletValue > 500_000) {
-      setMessage("Masukkan trombosit antara 0–500.000/µL.");
+      setMessage("Masukkan trombosit antara 0-500.000/µL.");
       return;
     }
     persist([...entries, {
@@ -96,11 +97,11 @@ export default function FluidCalculator() {
 
   return (
     <section className="dbd-section" id="kalkulator">
-      <div className="dbd-section-heading">
+      <Reveal className="dbd-section-heading">
         <span className="dbd-kicker">Alat bantu edukasi</span>
         <h2>🧮 Kalkulator Cairan &amp; Trombosit</h2>
         <p>Estimasi dan pencatatan sederhana. <b>Bukan pengganti penilaian dokter.</b></p>
-      </div>
+      </Reveal>
 
       <div className="dbd-disclaimer dbd-disclaimer-wide">
         ⚠️ <b>Penting:</b> Angka di bawah hanya estimasi umum, bukan acuan klinis. Konsultasikan ke dokter atau fasilitas kesehatan, terutama bila kondisi memburuk atau ada tanda syok.

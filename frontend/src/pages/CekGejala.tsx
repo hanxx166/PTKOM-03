@@ -1,7 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { AnimatePresence, animate, motion, useMotionValue, useTransform } from "framer-motion";
 import { apiPost } from "../lib/api";
 import { useAuth } from "../lib/auth";
 import { useContent } from "../lib/content";
+import Reveal from "../components/Reveal";
+import {
+  instantTransition,
+  stepSlide,
+  useReducedMotion,
+} from "../lib/motion";
 
 type Risk = "tinggi" | "sedang" | "rendah";
 interface TriageResult {
@@ -16,6 +23,24 @@ const ADVICE: Record<Risk, string> = {
   rendah: "Pantau suhu dan kondisi tubuh. Jika demam berlanjut atau memburuk, konsultasikan ke dokter.",
 };
 
+/** Tier 3: animated score counter (useMotionValue + animate). */
+function ScoreCount({ value }: { value: number }) {
+  const reduced = useReducedMotion();
+  const motionValue = useMotionValue(reduced ? value : 0);
+  const rounded = useTransform(motionValue, (latest) => String(Math.round(latest)));
+
+  useEffect(() => {
+    if (reduced) return;
+    const controls = animate(motionValue, value, {
+      duration: 0.8,
+      ease: "easeOut",
+    });
+    return () => controls.stop();
+  }, [motionValue, reduced, value]);
+
+  return <motion.span>{rounded}</motion.span>;
+}
+
 export default function CekGejala({ onNeedAuth }: { onNeedAuth: () => void }) {
   const { content, loading, error } = useContent();
   const { user } = useAuth();
@@ -25,6 +50,7 @@ export default function CekGejala({ onNeedAuth }: { onNeedAuth: () => void }) {
   const [checked, setChecked] = useState<string[]>([]);
   const [result, setResult] = useState<TriageResult | null>(null);
   const [formError, setFormError] = useState("");
+  const reduced = useReducedMotion();
 
   if (loading) return <p className="dbd-loading">Memuat pemeriksaan...</p>;
   if (error || !content) return <p className="dbd-error">Data gejala gagal dimuat. Silakan muat ulang halaman.</p>;
@@ -94,11 +120,11 @@ export default function CekGejala({ onNeedAuth }: { onNeedAuth: () => void }) {
 
   return (
     <section className="dbd-section" id="cek-gejala">
-      <div className="dbd-section-heading">
+      <Reveal className="dbd-section-heading">
         <span className="dbd-kicker">Skrining awal</span>
         <h2>🩺 Cek Gejala (Smart Triage)</h2>
         <p>Jawab beberapa pertanyaan untuk mengukur risiko DBD. Hasil bersifat edukasi, <b>bukan diagnosis medis</b>.</p>
-      </div>
+      </Reveal>
 
       <div className="dbd-card dbd-triage-card">
         <div className="dbd-steps" aria-label={`Langkah ${step} dari 4`}>
@@ -107,13 +133,22 @@ export default function CekGejala({ onNeedAuth }: { onNeedAuth: () => void }) {
           ))}
         </div>
 
+        <AnimatePresence mode="wait" initial={false}>
         {step === 1 && (
-          <div className="dbd-step-panel">
+          <motion.div
+            key="step-1"
+            className="dbd-step-panel"
+            variants={stepSlide}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={reduced ? instantTransition : undefined}
+          >
             <h3>Langkah 1: Informasi Dasar</h3>
             <div className="dbd-form-group">
               <label htmlFor="fever-day">Sudah berapa hari demam?</label>
               <select id="fever-day" value={day} onChange={(event) => setDay(event.target.value)}>
-                <option value="">— Pilih —</option>
+                <option value="">- Pilih -</option>
                 {Array.from({ length: 6 }, (_, index) => (
                   <option value={index + 1} key={index}>Hari {index + 1}</option>
                 ))}
@@ -136,11 +171,19 @@ export default function CekGejala({ onNeedAuth }: { onNeedAuth: () => void }) {
             <div className="dbd-step-actions dbd-step-actions-end">
               <button className="dbd-button dbd-button-primary" type="button" onClick={() => nextStep(2)}>Lanjut →</button>
             </div>
-          </div>
+          </motion.div>
         )}
 
         {step === 2 && (
-          <div className="dbd-step-panel">
+          <motion.div
+            key="step-2"
+            className="dbd-step-panel"
+            variants={stepSlide}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={reduced ? instantTransition : undefined}
+          >
             <h3>Langkah 2: Gejala yang Dirasakan</h3>
             <div className="dbd-check-grid">
               {regularSymptoms.map((symptom) => {
@@ -157,11 +200,19 @@ export default function CekGejala({ onNeedAuth }: { onNeedAuth: () => void }) {
               <button className="dbd-button dbd-button-muted" type="button" onClick={() => nextStep(1)}>← Kembali</button>
               <button className="dbd-button dbd-button-primary" type="button" onClick={() => nextStep(3)}>Lanjut →</button>
             </div>
-          </div>
+          </motion.div>
         )}
 
         {step === 3 && (
-          <div className="dbd-step-panel">
+          <motion.div
+            key="step-3"
+            className="dbd-step-panel"
+            variants={stepSlide}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={reduced ? instantTransition : undefined}
+          >
             <h3>Langkah 3: Tanda Bahaya ⚠️</h3>
             <p className="dbd-step-description">Jika mengalami salah satu tanda bahaya, segera cari pertolongan medis.</p>
             <div className="dbd-check-grid">
@@ -179,21 +230,35 @@ export default function CekGejala({ onNeedAuth }: { onNeedAuth: () => void }) {
               <button className="dbd-button dbd-button-muted" type="button" onClick={() => nextStep(2)}>← Kembali</button>
               <button className="dbd-button dbd-button-primary" type="button" onClick={continueToResult}>Lihat Hasil</button>
             </div>
-          </div>
+          </motion.div>
         )}
 
         {step === 4 && result && (
-          <div className={`dbd-result dbd-risk-${result.level}`}>
-            <div className="dbd-result-icon" aria-hidden="true">
+          <motion.div
+            key="step-4"
+            className={`dbd-result dbd-risk-${result.level}`}
+            initial={{ opacity: 0, scale: 0.92 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={reduced ? instantTransition : { type: "spring", stiffness: 260, damping: 22 }}
+          >
+            <motion.div
+              className="dbd-result-icon"
+              aria-hidden="true"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={reduced ? instantTransition : { type: "spring", stiffness: 400, damping: 15, delay: 0.12 }}
+            >
               {result.level === "tinggi" ? "🚨" : result.level === "sedang" ? "🟡" : "🟢"}
-            </div>
-            <h3>{result.emergency ? "Tanda Bahaya — Segera ke IGD" : `Risiko ${result.level}`}</h3>
+            </motion.div>
+            <h3>{result.emergency ? "Tanda Bahaya - Segera ke IGD" : `Risiko ${result.level}`}</h3>
             <p>{result.emergency ? "Ada tanda bahaya yang perlu segera ditangani." : ADVICE[result.level]}</p>
             {result.emergency && <a className="dbd-button dbd-button-red" href="tel:119">📞 Hubungi 119 / Ke IGD</a>}
-            <p className="dbd-result-score">Skor skrining: {result.score}. Hasil ini bukan diagnosis dan tidak menggantikan pemeriksaan tenaga kesehatan.</p>
+            <p className="dbd-result-score">Skor skrining: <ScoreCount value={result.score} />. Hasil ini bukan diagnosis dan tidak menggantikan pemeriksaan tenaga kesehatan.</p>
             <button className="dbd-button dbd-button-muted" type="button" onClick={reset}>🔄 Ulangi Pemeriksaan</button>
-          </div>
+          </motion.div>
         )}
+        </AnimatePresence>
 
         {formError && <p className="dbd-error" role="alert">{formError}</p>}
         {!user && step < 4 && (
