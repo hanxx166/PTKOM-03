@@ -1,0 +1,346 @@
+<!doctype html>
+<!--
+  REFERENSI UI/UX Waspada DBD — 1 file untuk merger dengan kode baru.
+  Sumber: frontend/src/* (Vite + React + Tailwind). File ini STATIS, tanpa logic React/API.
+  Cara pakai: buka di browser / Live Server, copy section yang dibutuhkan ke .tsx.
+
+  PETA MERGER:
+  #tokendesign   <- tailwind.config.js:6 + src/index.css:5 + index.html:11 (font)
+  #header        <- src/components/Header.tsx:25 + src/App.tsx:26
+  #hero          <- src/components/Hero.tsx:26
+  #fakta         <- src/pages/Beranda.tsx:16
+  #artikel       <- src/pages/Artikel.tsx:33 (+ modal :60)
+  #cek-gejala    <- src/pages/CekGejala.tsx:49 (+ hasil :62, scoreLevel :5)
+  #cegah         <- src/pages/Cegah.tsx:57 (+ progress :60, modal :82)
+  #kuis          <- src/pages/Kuis.tsx:33 (+ skor :18)
+  #catatan       <- src/pages/Catatan.tsx:118 (+ insight :15, chart :129)
+  #poliklinik    <- src/pages/Poliklinik.tsx:14
+  #admin         <- src/pages/Admin.tsx:75
+  #authmodal     <- src/components/AuthModal.tsx:38
+  #footer        <- src/App.tsx:47
+-->
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>REF UI — Waspada DBD (Poliklinik ITERA)</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: { extend: {
+    colors: { acc:"#1366d6", ink:"#14263d", line:"#d5e1ee", softbg:"#f3f7fb", muted:"#566a80", danger:"#d93a3a", okgreen:"#1f9d55" },
+    fontFamily: { head:["Poppins","system-ui","sans-serif"], body:['"Nunito Sans"',"system-ui","sans-serif"] }
+  }}
+};
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+<style>
+:root{ --bg:#f3f7fb; --ink:#14263d; --acc:#1366d6; --line:#d5e1ee; }
+body{ margin:0; background:var(--bg); color:var(--ink); font-family:"Nunito Sans",system-ui,sans-serif; font-size:16px; line-height:1.65; }
+h1,h2,h3,h4{ font-family:Poppins,system-ui,sans-serif; line-height:1.25; }
+/* dari src/index.css */
+.fly{ position:absolute; width:42px; cursor:pointer; z-index:2; animation:drift 12s ease-in-out infinite alternate; }
+@keyframes drift{ 0%{transform:translate(0,0) rotate(-8deg)} 50%{transform:translate(60px,-40px) rotate(10deg)} 100%{transform:translate(-40px,50px) rotate(-5deg)} }
+.rv{ opacity:1; transform:none; } /* di React: opacity 0 -> .in saat scroll; di ref ini selalu tampil */
+.cf{ position:absolute; top:-50px; animation:fall linear forwards; }
+@keyframes fall{ to{ transform:translateY(115vh) rotate(540deg);} }
+@keyframes bump{ 0%{transform:scale(.2)} 70%{transform:scale(1.25)} 100%{transform:scale(1)} }
+.pop-emoji{ font-size:3.6rem; animation:bump .6s; }
+.ref-nav{ position:sticky; top:0; z-index:40; background:#14263d; color:#fff; }
+.ref-nav a{ color:#d6e2f0; font-size:.8rem; text-decoration:none; padding:.4rem .6rem; border-radius:8px; }
+.ref-nav a:hover{ background:rgba(255,255,255,.15); color:#fff; }
+.sec-label{ font-size:.75rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#1366d6; }
+.src{ font-size:.72rem; color:#566a80; font-family:monospace; }
+</style>
+</head>
+<body>
+
+<!-- NAVIGASI REF (khusus file ini, bukan bagian app) -->
+<nav class="ref-nav px-[4%] py-2 flex flex-wrap gap-1 items-center">
+  <b class="text-sm mr-2">REF-UI ▾</b>
+  <a href="#tokendesign">Token</a><a href="#header">Header</a><a href="#hero">Hero</a>
+  <a href="#fakta">Fakta</a><a href="#artikel">Artikel</a><a href="#cek-gejala">CekGejala</a>
+  <a href="#cegah">Cegah</a><a href="#kuis">Kuis</a><a href="#catatan">Catatan</a>
+  <a href="#poliklinik">Poliklinik</a><a href="#admin">Admin</a><a href="#authmodal">Auth</a><a href="#footer">Footer</a>
+</nav>
+
+<div class="mx-auto max-w-[1000px] px-[6%] pb-20">
+
+<!-- ============ TOKEN DESIGN ============ -->
+<!-- sumber: frontend/tailwind.config.js:6 + src/index.css:5 -->
+<section id="tokendesign" class="py-10 border-b border-line">
+  <p class="sec-label">Design token</p>
+  <h2 class="text-2xl font-bold">Token warna, font, layout</h2>
+  <p class="src">tailwind.config.js:6 · src/index.css:5 · index.html:11</p>
+  <div class="mt-3 flex flex-wrap gap-2">
+    <span class="rounded-lg px-3 py-2 text-white text-sm font-bold" style="background:#1366d6">acc #1366d6 (button, link)</span>
+    <span class="rounded-lg px-3 py-2 text-white text-sm font-bold" style="background:#14263d">ink #14263d (teks)</span>
+    <span class="rounded-lg px-3 py-2 text-sm font-bold border" style="background:#f3f7fb">softbg #f3f7fb + pattern.svg</span>
+    <span class="rounded-lg px-3 py-2 text-sm font-bold" style="background:#d5e1ee">line #d5e1ee (border)</span>
+    <span class="rounded-lg px-3 py-2 text-white text-sm font-bold" style="background:#566a80">muted #566a80</span>
+    <span class="rounded-lg px-3 py-2 text-white text-sm font-bold" style="background:#d93a3a">danger #d93a3a</span>
+    <span class="rounded-lg px-3 py-2 text-white text-sm font-bold" style="background:#1f9d55">okgreen #1f9d55</span>
+  </div>
+  <ul class="mt-3 text-sm text-muted">
+    <li>Font head: <b>Poppins 600/700</b> untuk h1–h4 · Font body: <b>Nunito Sans 400/600/700</b>.</li>
+    <li>Layout: <b>main max-w-[1000px] px-[6%]</b>, card <b>rounded-[14px] border-line bg-white p-5</b>, button primer <b>rounded-[10px] bg-acc text-white px-5 py-2.5</b>, button outline <b>border-2 border-acc text-acc</b>.</li>
+    <li>Grid umum: <b>grid gap-4 md:grid-cols-3</b> (fakta/artikel), <b>md:grid-cols-2</b> (cek gejala/cegah).</li>
+  </ul>
+</section>
+
+<!-- ============ HEADER ============ -->
+<!-- sumber: src/components/Header.tsx:25, src/App.tsx:26 -->
+<section id="header" class="py-10 border-b border-line">
+  <p class="sec-label">Header / Navigasi</p>
+  <h2 class="text-2xl font-bold">Header</h2>
+  <p class="src">src/components/Header.tsx:25 · sticky top-0, bg-white/95, border-b line</p>
+  <header class="mt-3 flex flex-wrap items-center justify-between gap-2 border border-line bg-white px-4 py-3 rounded-xl">
+    <a href="#header" class="flex items-center gap-2 font-head text-lg font-bold text-ink no-underline">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="#1366d6" aria-hidden><rect x="9" y="3" width="6" height="18" rx="1.5"/><rect x="3" y="9" width="18" height="6" rx="1.5"/></svg>
+      Poliklinik ITERA
+    </a>
+    <nav class="flex flex-wrap gap-1">
+      <a href="#hero" class="rounded px-2 py-1.5 text-[0.93rem] font-semibold text-acc underline decoration-acc decoration-2 underline-offset-4">Beranda</a>
+      <a href="#artikel" class="rounded px-2 py-1.5 text-[0.93rem] font-semibold text-ink">Artikel</a>
+      <a href="#cek-gejala" class="rounded px-2 py-1.5 text-[0.93rem] font-semibold text-ink">Cek Gejala</a>
+      <a href="#cegah" class="rounded px-2 py-1.5 text-[0.93rem] font-semibold text-ink">Cegah</a>
+      <a href="#kuis" class="rounded px-2 py-1.5 text-[0.93rem] font-semibold text-ink">Fakta/Mitos</a>
+      <a href="#catatan" class="rounded px-2 py-1.5 text-[0.93rem] font-semibold text-ink">Catatan Saya</a>
+      <a href="#poliklinik" class="rounded px-2 py-1.5 text-[0.93rem] font-semibold text-ink">Info Poliklinik</a>
+    </nav>
+    <div class="ml-auto flex items-center gap-2">
+      <button class="rounded-[10px] border-2 border-acc bg-transparent px-3 py-1.5 text-sm font-bold text-acc">Masuk</button>
+      <button class="rounded-[10px] bg-acc px-3 py-1.5 text-sm font-bold text-white">Daftar</button>
+    </div>
+  </header>
+  <p class="mt-2 text-sm text-muted">State login: ganti tombol Masuk/Daftar → <b>Nama (Admin) + Keluar</b>. Link Admin hanya muncul bila role=admin. Mobile: hamburger → menu vertikal.</p>
+</section>
+
+<!-- ============ HERO ============ -->
+<!-- sumber: src/components/Hero.tsx:26 -->
+<section id="hero" class="py-10 border-b border-line">
+  <p class="sec-label">Beranda — Hero</p>
+  <h2 class="text-2xl font-bold">Hero + nyamuk interaktif</h2>
+  <p class="src">src/components/Hero.tsx:26 · bg #dfeaf7 + img/hero.svg kanan</p>
+  <div class="relative mt-3 grid items-center gap-10 overflow-hidden rounded-[22px] bg-[#dfeaf7] p-10 md:grid-cols-[1.4fr_1fr]" style="background-image:url(img/hero.svg);background-position:right center;background-size:contain;background-repeat:no-repeat">
+    <img src="img/mosquito.svg" alt="" class="fly" style="left:46%;top:14%" />
+    <img src="img/mosquito.svg" alt="" class="fly" style="left:70%;top:58%;animation-delay:-4s" />
+    <div class="relative z-[1]">
+      <p class="mb-1 text-[0.78rem] font-bold uppercase tracking-widest text-acc">Poliklinik ITERA · Edukasi Kesehatan</p>
+      <h1 class="text-4xl font-bold md:text-5xl">Kenali DBD sebelum terlambat.</h1>
+      <p class="mt-2 max-w-[34em] text-lg">Panduan singkat tentang gejala, pencegahan, dan kapan harus ke dokter, dibuat mudah dipahami.</p>
+      <div class="my-5 flex flex-wrap gap-3">
+        <a href="#cek-gejala" class="rounded-[10px] bg-acc px-5 py-2.5 font-bold text-white no-underline">Cek gejala saya</a>
+        <a href="#artikel" class="rounded-[10px] border-2 border-acc px-5 py-2.5 font-bold text-acc no-underline">Baca artikel</a>
+      </div>
+      <p class="text-sm text-muted">Klik nyamuk yang beterbangan! Nyamuk ditepuk: <b>0</b> · total pengecekan: <b>…</b></p>
+    </div>
+    <aside class="relative z-[1] rounded-[14px] border border-[#f0c4c4] border-l-[6px] border-l-danger bg-white p-6">
+      <h2 class="text-base text-danger">Segera ke IGD jika ada:</h2>
+      <ul class="mb-3 pl-[18px]"><li>Nyeri perut hebat</li><li>Muntah terus-menerus</li><li>Mimisan / gusi berdarah / bintik merah</li><li>Sangat lemas, tangan-kaki dingin</li></ul>
+      <p class="text-sm">Darurat: <b>112</b> · Ambulans: <b>119</b></p>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ FAKTA ============ -->
+<!-- sumber: src/pages/Beranda.tsx:16, data: public/data/content.json facts -->
+<section id="fakta" class="py-10 border-b border-line">
+  <p class="sec-label">Beranda — Seputar Informasi</p>
+  <h2 class="text-2xl font-bold">Seputar Informasi</h2>
+  <p class="src">src/pages/Beranda.tsx:20 · grid md:grid-cols-3, card hover:-translate-y-1 hover:border-acc</p>
+  <div class="mt-3 grid gap-4 md:grid-cols-3">
+    <div class="rounded-[14px] border border-line bg-white p-5"><b class="block font-head text-2xl text-acc">2-7 hari</b><span class="text-sm text-muted">lama demam tinggi pada DBD</span></div>
+    <div class="rounded-[14px] border border-line bg-white p-5"><b class="block font-head text-2xl text-acc">Hari 3-7</b><span class="text-sm text-muted">fase kritis, saat demam turun</span></div>
+    <div class="rounded-[14px] border border-line bg-white p-5"><b class="block font-head text-2xl text-acc">Pagi &amp; sore</b><span class="text-sm text-muted">waktu nyamuk Aedes menggigit</span></div>
+  </div>
+</section>
+
+<!-- ============ ARTIKEL ============ -->
+<!-- sumber: src/pages/Artikel.tsx:33 -->
+<section id="artikel" class="py-10 border-b border-line">
+  <p class="sec-label">Artikel</p>
+  <h2 class="text-2xl font-bold">Artikel</h2>
+  <p class="src">src/pages/Artikel.tsx:33 · search + grid card + modal fixed inset-0 bg-black/60</p>
+  <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+    <span class="text-sm text-muted">4 artikel · tag: Dasar/Gejala/Pencegahan/Penanganan</span>
+    <input type="search" placeholder="Cari artikel..." class="rounded-[10px] border border-line bg-white px-3 py-2" />
+  </div>
+  <div class="mt-4 grid gap-4 md:grid-cols-3">
+    <button class="rounded-[14px] border border-line bg-white p-5 text-left"><span class="text-xs font-bold uppercase tracking-wide text-acc">Dasar · 2 menit</span><h3 class="my-2 text-base font-bold">Apa itu Demam Berdarah Dengue (DBD)?</h3><p class="text-sm text-muted">DBD adalah penyakit akibat virus dengue yang ditularkan lewat gigitan nyamuk…</p><small class="mt-2 block text-xs text-muted">Diunggah 1 Okt 2026</small></button>
+    <button class="rounded-[14px] border border-line bg-white p-5 text-left"><span class="text-xs font-bold uppercase tracking-wide text-acc">Gejala · 3 menit</span><h3 class="my-2 text-base font-bold">Gejala dan Fase DBD</h3><p class="text-sm text-muted">Gejala umum: demam tinggi mendadak selama 2-7 hari, sakit kepala…</p><small class="mt-2 block text-xs text-muted">Diunggah 1 Okt 2026</small></button>
+    <button class="rounded-[14px] border border-line bg-white p-5 text-left"><span class="text-xs font-bold uppercase tracking-wide text-acc">Pencegahan · 2 menit</span><h3 class="my-2 text-base font-bold">Pencegahan dengan 3M Plus</h3><p class="text-sm text-muted">Menguras dan menyikat tempat penampungan air seminggu sekali…</p><small class="mt-2 block text-xs text-muted">Diunggah 1 Okt 2026</small></button>
+  </div>
+  <div class="mt-4 rounded-[18px] border border-line bg-white p-7 max-w-[520px]">
+    <p class="sec-label">Contoh modal artikel terbuka</p>
+    <h3 class="text-xl font-bold">Gejala dan Fase DBD</h3>
+    <small class="text-xs text-muted">Diunggah 1 Okt 2026</small>
+    <p class="mt-3">Fase kritis biasanya terjadi pada hari ke-3 sampai ke-7, yaitu saat demam mulai turun…</p>
+    <button class="mt-4 rounded-[10px] bg-acc px-5 py-2 font-bold text-white">Tutup</button>
+  </div>
+</section>
+
+<!-- ============ CEK GEJALA ============ -->
+<!-- sumber: src/pages/CekGejala.tsx:49 -->
+<section id="cek-gejala" class="py-10 border-b border-line">
+  <p class="sec-label">Cek Gejala (wajib login untuk lihat hasil)</p>
+  <h2 class="text-2xl font-bold">Cek Gejala</h2>
+  <p class="src">src/pages/CekGejala.tsx:49 · scoreLevel: danger||skor≥6=tinggi, ≥3=sedang</p>
+  <p class="text-sm text-muted">Centang gejala yang sedang Anda alami. Hasil hanya skrining awal, bukan diagnosis.</p>
+  <div class="my-4 grid gap-2.5 md:grid-cols-2">
+    <label class="flex items-center gap-3 rounded-[10px] border border-line bg-white p-3"><input type="checkbox" checked class="h-[18px] w-[18px] accent-[#1366d6]" /> <span>Demam tinggi mendadak (38°C atau lebih)</span></label>
+    <label class="flex items-center gap-3 rounded-[10px] border border-line bg-white p-3"><input type="checkbox" class="h-[18px] w-[18px] accent-[#1366d6]" /> <span>Sakit kepala hebat atau nyeri di belakang mata</span></label>
+    <label class="flex items-center gap-3 rounded-[10px] border border-line bg-white p-3"><input type="checkbox" class="h-[18px] w-[18px] accent-[#1366d6]" /> <span>Nyeri otot dan sendi</span></label>
+    <label class="flex items-center gap-3 rounded-[10px] border border-line bg-white p-3"><input type="checkbox" checked class="h-[18px] w-[18px] accent-[#1366d6]" /> <span>Bintik merah, mimisan, atau gusi berdarah ⚠️</span></label>
+  </div>
+  <button class="rounded-[10px] bg-acc px-5 py-2.5 font-bold text-white">Lihat hasil</button>
+  <div class="mt-4 rounded-xl border-l-[6px] p-4 bg-[#fde8e8] border-danger">
+    <b>Risiko tinggi (skor 6)</b>
+    <p>Segera periksa ke dokter atau IGD terdekat dan lakukan cek laboratorium. Ini hanya skrining awal, bukan diagnosis medis.</p>
+  </div>
+  <p class="mt-2 text-sm text-muted">Varian box: tinggi <b>bg-[#fde8e8] border-danger</b> · sedang <b>bg-[#fff3cd] border-[#e0a100]</b> · rendah <b>bg-[#e3f5ea] border-okgreen</b>.</p>
+</section>
+
+<!-- ============ CEGAH / 3M ============ -->
+<!-- sumber: src/pages/Cegah.tsx:57 -->
+<section id="cegah" class="py-10 border-b border-line">
+  <p class="sec-label">Checklist 3M Plus + progress + confetti</p>
+  <h2 class="text-2xl font-bold">Checklist 3M Plus</h2>
+  <p class="src">src/pages/Cegah.tsx:57 · progress h-[10px] bg-line → i bg-okgreen</p>
+  <p class="text-sm text-muted">Tandai yang sudah Anda lakukan minggu ini. Progres tersimpan di browser.</p>
+  <div class="mt-3 h-[10px] overflow-hidden rounded-full bg-line"><i class="block h-full bg-okgreen" style="width:50%"></i></div>
+  <p class="text-sm text-muted">50% selesai</p>
+  <div class="my-4 grid gap-2.5 md:grid-cols-2">
+    <label class="flex items-center gap-3 rounded-[10px] border border-line bg-white p-3"><input type="checkbox" checked class="h-[18px] w-[18px] accent-[#1366d6]" /> <span>Kuras dan sikat bak mandi</span></label>
+    <label class="flex items-center gap-3 rounded-[10px] border border-line bg-white p-3"><input type="checkbox" checked class="h-[18px] w-[18px] accent-[#1366d6]" /> <span>Tutup rapat tempat penampungan air</span></label>
+    <label class="flex items-center gap-3 rounded-[10px] border border-line bg-white p-3"><input type="checkbox" class="h-[18px] w-[18px] accent-[#1366d6]" /> <span>Daur ulang atau kubur barang bekas</span></label>
+    <label class="flex items-center gap-3 rounded-[10px] border border-line bg-white p-3"><input type="checkbox" class="h-[18px] w-[18px] accent-[#1366d6]" /> <span>Taburkan larvasida di penampungan air</span></label>
+  </div>
+  <div class="rounded-[18px] border border-line bg-white p-7 text-center max-w-[420px]">
+    <div class="pop-emoji">🎉</div>
+    <h3 class="text-xl font-bold">Rumahmu siap lawan DBD!</h3>
+    <p class="mb-4 text-sm">Muncul saat 100% (fixed inset-0 bg-black/60). Plus &lt;Confetti show&gt;.</p>
+    <button class="rounded-[10px] bg-acc px-5 py-2 font-bold text-white">Tutup</button>
+  </div>
+</section>
+
+<!-- ============ KUIS ============ -->
+<!-- sumber: src/pages/Kuis.tsx:33 -->
+<section id="kuis" class="py-10 border-b border-line">
+  <p class="sec-label">Fakta atau Mitos (kuis)</p>
+  <h2 class="text-2xl font-bold">Fakta atau Mitos?</h2>
+  <p class="src">src/pages/Kuis.tsx:33 · tombol Fakta/Mitos, benar=border-okgreen, salah=border-danger</p>
+  <div class="mt-3 rounded-2xl border border-line bg-white p-6">
+    <span class="text-xs font-bold uppercase tracking-wide text-acc">Pernyataan 1 dari 6</span>
+    <h3 class="my-2 text-lg font-bold">Nyamuk Aedes aegypti berkembang biak di air bersih yang tergenang.</h3>
+    <div class="my-4 flex gap-3">
+      <button class="rounded-[10px] border-2 px-7 py-2.5 font-bold border-okgreen bg-okgreen text-white">Fakta</button>
+      <button class="rounded-[10px] border-2 px-7 py-2.5 font-bold border-ink bg-white opacity-40">Mitos</button>
+    </div>
+    <p class="rounded-[10px] p-3 bg-[#e3f5ea]">Benar! Jentiknya hidup di bak mandi, vas bunga, dan barang bekas yang berisi air bersih.</p>
+    <button class="mt-3 rounded-[10px] bg-acc px-5 py-2 font-bold text-white">Lanjut</button>
+  </div>
+  <div class="mt-3 rounded-2xl border border-line bg-white p-6">
+    <h3 class="text-xl font-bold">Skor Anda: 5 dari 6</h3>
+    <p class="text-sm">Layar akhir bila qi ≥ Q.length + tombol “Main lagi”.</p>
+  </div>
+</section>
+
+<!-- ============ CATATAN ============ -->
+<!-- sumber: src/pages/Catatan.tsx:118 -->
+<section id="catatan" class="py-10 border-b border-line">
+  <p class="sec-label">Catatan Demam Saya (khusus login)</p>
+  <h2 class="text-2xl font-bold">Catatan Demam Saya</h2>
+  <p class="src">src/pages/Catatan.tsx:118 · insight(): ≥2 demam beruntun=tinggi · chart 14 batang</p>
+  <form class="my-3 grid gap-2.5 md:grid-cols-[150px_140px_1fr_auto]" onsubmit="return false">
+    <input type="date" value="2026-10-05" class="rounded-[10px] border border-line px-3 py-2" />
+    <input type="number" step="0.1" placeholder="Suhu (°C)" value="38.5" class="rounded-[10px] border border-line px-3 py-2" />
+    <input placeholder="Catatan (opsional)" value="Badan menggigil" class="rounded-[10px] border border-line px-3 py-2" />
+    <button class="rounded-[10px] bg-acc px-5 py-2 font-bold text-white">Simpan</button>
+  </form>
+  <div class="rounded-xl border-l-[6px] p-4 bg-[#fde8e8] border-danger">Demam 38°C atau lebih tercatat 2 entri berturut-turut. Segera periksa ke dokter atau Poliklinik ITERA.</div>
+  <div class="my-4 flex items-end gap-1.5">
+    <div class="flex min-w-[34px] flex-1 flex-col items-center gap-0.5 text-xs text-muted"><span>37.2</span><div class="w-[70%] rounded-t-md bg-[#8fb4e8]" style="height:40px"></div><span>02/10</span></div>
+    <div class="flex min-w-[34px] flex-1 flex-col items-center gap-0.5 text-xs text-muted"><span>38.1</span><div class="w-[70%] rounded-t-md bg-danger" style="height:57px"></div><span>03/10</span></div>
+    <div class="flex min-w-[34px] flex-1 flex-col items-center gap-0.5 text-xs text-muted"><span>38.5</span><div class="w-[70%] rounded-t-md bg-danger" style="height:64px"></div><span>04/10</span></div>
+    <div class="flex min-w-[34px] flex-1 flex-col items-center gap-0.5 text-xs text-muted"><span>36.8</span><div class="w-[70%] rounded-t-md bg-[#8fb4e8]" style="height:33px"></div><span>05/10</span></div>
+  </div>
+  <div class="flex items-center justify-between gap-2 border-b border-line py-2 text-sm"><span>2026-10-04 · 38.5°C · Badan menggigil</span><button class="rounded-lg border border-line bg-white px-2.5 py-0.5 text-xs font-semibold">Hapus</button></div>
+  <div class="flex items-center justify-between gap-2 border-b border-line py-2 text-sm"><span>2026-10-03 · 38.1°C</span><button class="rounded-lg border border-line bg-white px-2.5 py-0.5 text-xs font-semibold">Hapus</button></div>
+  <p class="mt-2 text-sm text-muted">Belum login → tampil CTA “Masuk / Daftar” saja (Catatan.tsx:56).</p>
+</section>
+
+<!-- ============ POLIKLINIK ============ -->
+<!-- sumber: src/pages/Poliklinik.tsx:14 -->
+<section id="poliklinik" class="py-10 border-b border-line">
+  <p class="sec-label">Info Poliklinik + Maps</p>
+  <h2 class="text-2xl font-bold">Info Poliklinik</h2>
+  <p class="src">src/pages/Poliklinik.tsx:14 · grid md:2 lg:3 + iframe h-[280px] rounded-xl</p>
+  <div class="mt-4 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+    <div><h4 class="font-bold">Poliklinik ITERA</h4><p class="text-sm text-muted">Layanan kesehatan dasar untuk mahasiswa, dosen, dan tenaga kependidikan Institut Teknologi Sumatera.</p></div>
+    <div><h4 class="font-bold">Jam Operasional</h4><p>Senin - Jumat<br /><b>08.00 - 16.00 WIB</b></p><p class="text-sm text-muted">Jadwal dapat berubah, cek pengumuman di akun resmi.</p></div>
+    <div><h4 class="font-bold">Lokasi</h4><p class="text-sm">Area kampus ITERA, dekat Galeri ITERA.<br />Jl. Terusan Ryacudu, Way Huwi, Jati Agung, Lampung Selatan 35365</p></div>
+    <div><h4 class="font-bold">Layanan</h4><p class="text-sm">Pemeriksaan umum, pengobatan ringan, konsultasi medis, dan rujukan. Gratis bagi sivitas akademika.</p></div>
+    <div><h4 class="font-bold">Kontak Resmi</h4><a href="#" class="inline-flex h-[46px] w-[46px] items-center justify-center rounded-full border-2 border-acc text-acc">IG</a></div>
+  </div>
+  <div class="mt-6">
+    <div class="block h-[280px] w-full rounded-xl border border-line bg-[#eaf0f7] grid place-items-center text-muted">[iframe Google Maps embed — src/pages/Poliklinik.tsx:47]</div>
+    <a href="#" class="mt-2 inline-block text-sm text-acc">Buka di Google Maps</a>
+  </div>
+</section>
+
+<!-- ============ ADMIN ============ -->
+<!-- sumber: src/pages/Admin.tsx:75 -->
+<section id="admin" class="py-10 border-b border-line">
+  <p class="sec-label">Panel Admin (role=admin saja)</p>
+  <h2 class="text-2xl font-bold">Panel Admin</h2>
+  <p class="src">src/pages/Admin.tsx:75 · guard user.role !== admin</p>
+  <p class="text-sm text-muted">Statistik cek gejala — total 12 (rendah 5, sedang 4, tinggi 3)</p>
+  <h3 class="mt-6 font-bold">Tambah artikel</h3>
+  <form class="mt-2 grid gap-2.5 rounded-[14px] border border-line bg-white p-4" onsubmit="return false">
+    <input placeholder="Judul" class="rounded-[10px] border border-line px-3 py-2" />
+    <div class="flex gap-2.5"><select class="rounded-[10px] border border-line px-3 py-2"><option>Dasar</option><option>Gejala</option><option>Pencegahan</option></select></div>
+    <textarea placeholder="Isi artikel (satu paragraf per baris)" rows="3" class="rounded-[10px] border border-line px-3 py-2"></textarea>
+    <button class="w-fit rounded-[10px] bg-acc px-5 py-2 font-bold text-white">Simpan</button>
+  </form>
+  <h3 class="mt-6 font-bold">Daftar artikel (4)</h3>
+  <div class="mt-2 divide-y divide-line rounded-[14px] border border-line bg-white">
+    <div class="flex items-center justify-between gap-2 p-3 text-sm"><span><b>Apa itu DBD?</b> <span class="text-muted">· Dasar</span></span><span class="flex gap-1.5"><button class="rounded-lg border border-line px-2.5 py-0.5 text-xs font-semibold">Edit</button><button class="rounded-lg border border-line px-2.5 py-0.5 text-xs font-semibold text-danger">Hapus</button></span></div>
+    <div class="flex items-center justify-between gap-2 p-3 text-sm"><span><b>Gejala dan Fase DBD</b> <span class="text-muted">· Gejala</span></span><span class="flex gap-1.5"><button class="rounded-lg border border-line px-2.5 py-0.5 text-xs font-semibold">Edit</button><button class="rounded-lg border border-line px-2.5 py-0.5 text-xs font-semibold text-danger">Hapus</button></span></div>
+  </div>
+</section>
+
+<!-- ============ AUTH MODAL ============ -->
+<!-- sumber: src/components/AuthModal.tsx:38 -->
+<section id="authmodal" class="py-10 border-b border-line">
+  <p class="sec-label">Auth modal</p>
+  <h2 class="text-2xl font-bold">Masuk / Daftar</h2>
+  <p class="src">src/components/AuthModal.tsx:38 · fixed inset-0 bg-black/60, max-w-[400px]</p>
+  <div class="w-full max-w-[400px] rounded-[18px] bg-white border border-line p-7">
+    <div class="mb-3 flex gap-2">
+      <button class="flex-1 rounded-[9px] px-2 py-2 font-bold bg-acc text-white">Masuk</button>
+      <button class="flex-1 rounded-[9px] px-2 py-2 font-bold bg-[#eaf0f7]">Daftar</button>
+    </div>
+    <div class="grid gap-2.5">
+      <input placeholder="Email" class="rounded-[10px] border border-line px-3 py-2" />
+      <input type="password" placeholder="Password" class="rounded-[10px] border border-line px-3 py-2" />
+      <button class="rounded-[10px] bg-acc px-5 py-2.5 font-bold text-white">Masuk</button>
+    </div>
+    <p class="mt-2 text-center text-xs text-muted">Mode standalone: akun tersimpan di browser ini.</p>
+    <div class="mt-2 text-center"><button class="text-sm text-muted underline">Tutup</button></div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<!-- sumber: src/App.tsx:47 -->
+<footer id="footer" class="mt-8 bg-ink px-[6%] pb-5 pt-10 text-sm text-[#d6e2f0] -mx-[6%]">
+  <p class="mx-auto mt-6 max-w-[1000px] border-t border-white/20 pt-4 text-center text-xs text-[#9fb4cc]">
+    Informasi ini bukan pengganti nasihat dokter. Proyek Akhir PTKOM 2026 · HMIF ITERA
+  </p>
+  <p class="src text-center !text-[#9fb4cc]">src/App.tsx:47 · footer bg-ink</p>
+</footer>
+
+</div>
+</body>
+</html>

@@ -45,13 +45,3 @@ export interface User {
   email: string;
   role: "user" | "admin";
 }
-
-export const LEGACY_REDIRECT: Record<string, string> = {
-  top: "/",
-  artikel: "/artikel",
-  cek: "/cek-gejala",
-  cegah: "/cegah",
-  kuis: "/fakta-mitos",
-  jurnal: "/catatan",
-  poli: "/poliklinik",
-};

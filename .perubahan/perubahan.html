@@ -1,0 +1,2066 @@
+<!doctype html>
+<html lang="id" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>cekDBD — Pantau Demam Berdarah dari Rumah</title>
+    <meta
+      name="description"
+      content="Skrining gejala DBD, pelacak suhu, kalkulator cairan, dan edukasi demam berdarah dengue."
+    />
+    <meta name="theme-color" content="#1366d6" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Nunito+Sans:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ═══════════════════════════════════════
+   CSS VARIABLES & THEME (BLUE WATER)
+═══════════════════════════════════════ */
+      :root {
+        --bg: #f3f7fb;
+        --bg2: #ffffff;
+        --bg3: #e8eff7;
+        --tx: #14263d;
+        --tx2: #566a80;
+        --tx3: #8a9bb0;
+        --acc: #1366d6;
+        --acc2: #0d4fae;
+        --accL: #dbeafe;
+        --red: #d93a3a;
+        --redL: #fde8e8;
+        --org: #e0a100;
+        --orgL: #fff3cd;
+        --grn: #1f9d55;
+        --grnL: #e3f5ea;
+        --blu: #2563eb;
+        --bluL: #e8f0fe;
+        --bdr: #d5e1ee;
+        --shd: 0 2px 12px rgba(20, 38, 61, 0.06);
+        --rad: 14px;
+        --rad-s: 10px;
+        --font: "Nunito Sans", system-ui, sans-serif;
+        --head: "Poppins", system-ui, sans-serif;
+      }
+      [data-theme="dark"] {
+        --bg: #0d1520;
+        --bg2: #16202e;
+        --bg3: #1c2a3c;
+        --tx: #e8f0f8;
+        --tx2: #a3b8cc;
+        --tx3: #6d8299;
+        --acc: #4d9fff;
+        --acc2: #3580dd;
+        --accL: #1a2f4a;
+        --red: #f06060;
+        --redL: #2e1a1a;
+        --org: #f0b840;
+        --orgL: #2e2510;
+        --grn: #40d080;
+        --grnL: #122e1e;
+        --blu: #60a8f0;
+        --bluL: #141e30;
+        --bdr: #2a3a4e;
+        --shd: 0 2px 14px rgba(0, 0, 0, 0.3);
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        background: var(--bg);
+        background-image: url(img/pattern.svg), radial-gradient(
+          circle,
+          var(--bdr) 1px,
+          transparent 1px
+        );
+        background-size: auto, 20px 20px;
+        color: var(--tx);
+        font: 16px/1.65 var(--font);
+        transition:
+          background 0.3s,
+          color 0.3s;
+      }
+      [data-theme="dark"] body {
+        background-image: url(img/pattern.svg), radial-gradient(
+          circle,
+          rgba(77, 159, 255, 0.06) 1px,
+          transparent 1px
+        );
+      }
+      h1,
+      h2,
+      h3,
+      h4 {
+        font-family: var(--head);
+        line-height: 1.25;
+        margin: 0 0 0.5em;
+      }
+
+      /* ═══════════════════════════════════════
+   SCROLL REVEAL
+═══════════════════════════════════════ */
+      .rv {
+        opacity: 0;
+        transform: translateY(28px);
+        transition:
+          opacity 0.6s ease,
+          transform 0.6s ease;
+      }
+      .rv.in {
+        opacity: 1;
+        transform: none;
+      }
+      .rv-d1 {
+        transition-delay: 0.1s;
+      }
+      .rv-d2 {
+        transition-delay: 0.2s;
+      }
+      .rv-d3 {
+        transition-delay: 0.3s;
+      }
+
+      /* ═══════════════════════════════════════
+   NAV
+═══════════════════════════════════════ */
+      .topnav {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: var(--bg2);
+        border-bottom: 1px solid var(--bdr);
+        box-shadow: var(--shd);
+        transition: background 0.3s;
+      }
+      .topnav-inner {
+        max-width: 1120px;
+        margin: auto;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 10px 20px;
+        flex-wrap: wrap;
+      }
+      .logo {
+        font: 800 1.2rem var(--head);
+        color: var(--acc);
+        letter-spacing: -0.5px;
+        margin-right: auto;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .logo svg {
+        width: 26px;
+        height: 26px;
+      }
+      .nav-links {
+        display: flex;
+        gap: 2px;
+        flex-wrap: wrap;
+      }
+      .nav-links a {
+        text-decoration: none;
+        color: var(--tx2);
+        font-size: 0.82rem;
+        font-weight: 700;
+        padding: 6px 12px;
+        border-radius: 8px;
+        transition: 0.2s;
+      }
+      .nav-links a:hover,
+      .nav-links a.active {
+        background: var(--accL);
+        color: var(--acc);
+      }
+      .theme-btn {
+        background: var(--bg3);
+        border: 1px solid var(--bdr);
+        border-radius: 50%;
+        width: 34px;
+        height: 34px;
+        cursor: pointer;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: 0.2s;
+        flex-shrink: 0;
+      }
+      .theme-btn:hover {
+        border-color: var(--acc);
+        background: var(--accL);
+      }
+      .hamburger {
+        display: none;
+        background: none;
+        border: none;
+        font-size: 1.4rem;
+        cursor: pointer;
+        color: var(--tx);
+      }
+      @media (max-width: 760px) {
+        .nav-links {
+          display: none;
+          width: 100%;
+          flex-direction: column;
+          padding-top: 6px;
+        }
+        .nav-links.open {
+          display: flex;
+        }
+        .hamburger {
+          display: block;
+        }
+      }
+
+      /* ═══════════════════════════════════════
+   SECTIONS & CARDS
+═══════════════════════════════════════ */
+      section {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 52px 20px 36px;
+      }
+      .sec-title {
+        font-size: 1.55rem;
+        font-weight: 800;
+        margin-bottom: 6px;
+      }
+      .sec-sub {
+        color: var(--tx2);
+        margin-bottom: 26px;
+        max-width: 620px;
+        font-size: 0.93rem;
+      }
+      .card {
+        background: var(--bg2);
+        border: 1px solid var(--bdr);
+        border-radius: var(--rad);
+        padding: 26px;
+        box-shadow: var(--shd);
+        transition:
+          transform 0.25s,
+          border-color 0.25s,
+          box-shadow 0.25s,
+          background 0.3s;
+      }
+      .card:hover {
+        transform: translateY(-4px);
+        border-color: var(--acc);
+        box-shadow: 0 8px 24px rgba(19, 102, 214, 0.1);
+      }
+
+      /* ═══════════════════════════════════════
+   HERO (2-COLUMN)
+═══════════════════════════════════════ */
+      .hero {
+        display: grid;
+        grid-template-columns: 1.3fr 1fr;
+        gap: 36px;
+        align-items: center;
+        margin-top: 24px;
+        padding: 52px 40px;
+        border-radius: 22px;
+        background-color: #dfeaf7;
+        background-image: url(img/hero.svg), linear-gradient(135deg, #dfeaf7 0%, #c7dbf5 100%);
+        background-position: right center, center;
+        background-size: contain, cover;
+        background-repeat: no-repeat, no-repeat;
+        position: relative;
+        overflow: hidden;
+      }
+      [data-theme="dark"] .hero {
+        background-color: #1a2f4a;
+        background-image: url(img/hero.svg), linear-gradient(135deg, #1a2f4a 0%, #16253d 100%);
+        background-position: right center, center;
+        background-size: contain, cover;
+        background-repeat: no-repeat, no-repeat;
+      }
+      .hero::after {
+        content: "";
+        position: absolute;
+        width: 280px;
+        height: 280px;
+        border-radius: 50%;
+        background: rgba(19, 102, 214, 0.06);
+        top: -60px;
+        right: -40px;
+        pointer-events: none;
+      }
+      .hero-left h1 {
+        font-size: clamp(1.8rem, 4vw, 2.5rem);
+        font-weight: 800;
+        margin-bottom: 12px;
+      }
+      .hero-left p {
+        color: var(--tx2);
+        max-width: 30em;
+        margin-bottom: 20px;
+        font-size: 0.98rem;
+      }
+      .hero-right {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .hero-right .card {
+        padding: 18px 20px;
+      }
+      .hero-right .card:hover {
+        transform: translateY(-2px);
+      }
+      .cta {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      @media (max-width: 760px) {
+        .hero {
+          grid-template-columns: 1fr;
+          padding: 32px 22px;
+        }
+      }
+
+      /* ═══════════════════════════════════════
+   BUTTONS
+═══════════════════════════════════════ */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 12px 22px;
+        border-radius: var(--rad-s);
+        font: 700 0.9rem var(--font);
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+      .btn:hover {
+        transform: translateY(-2px);
+      }
+      .btn-acc {
+        background: var(--acc);
+        color: #fff;
+      }
+      .btn-acc:hover {
+        background: var(--acc2);
+        box-shadow: 0 6px 18px rgba(19, 102, 214, 0.25);
+      }
+      .btn-outline {
+        background: transparent;
+        color: var(--acc);
+        border: 2px solid var(--acc);
+      }
+      .btn-outline:hover {
+        background: var(--acc);
+        color: #fff;
+      }
+      .btn-white {
+        background: #fff;
+        color: var(--acc);
+      }
+      .btn-white:hover {
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+      }
+      .btn-sm {
+        padding: 8px 16px;
+        font-size: 0.82rem;
+        border-radius: 8px;
+      }
+      .btn-red {
+        background: var(--red);
+        color: #fff;
+      }
+      .btn-red:hover {
+        opacity: 0.9;
+      }
+
+      /* ═══════════════════════════════════════
+   EMERGENCY STRIP
+═══════════════════════════════════════ */
+      .emg {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 14px;
+        margin-top: -26px;
+        position: relative;
+        z-index: 2;
+      }
+      .emg-card {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 18px 20px;
+      }
+      .emg-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+        flex-shrink: 0;
+      }
+      .emg-icon.red {
+        background: var(--redL);
+        color: var(--red);
+      }
+      .emg-icon.org {
+        background: var(--orgL);
+        color: var(--org);
+      }
+      .emg-icon.blu {
+        background: var(--bluL);
+        color: var(--blu);
+      }
+      .emg-card h4 {
+        font-size: 0.88rem;
+        font-weight: 700;
+        margin: 0;
+      }
+      .emg-card p {
+        font-size: 0.78rem;
+        color: var(--tx2);
+        margin: 0;
+      }
+
+      /* ═══════════════════════════════════════
+   MOSQUITO GAME
+═══════════════════════════════════════ */
+      .mosquito {
+        position: fixed;
+        z-index: 9999;
+        cursor: crosshair;
+        user-select: none;
+        font-size: 26px;
+        line-height: 1;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+        will-change: left, top;
+        transition: transform 0.15s;
+      }
+      .splat-effect {
+        position: fixed;
+        z-index: 10000;
+        font-size: 28px;
+        pointer-events: none;
+        animation: splatPop 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
+      @keyframes splatPop {
+        0% {
+          transform: scale(0.6) rotate(0);
+          opacity: 1;
+        }
+        50% {
+          transform: scale(1.3) rotate(20deg);
+          opacity: 0.9;
+        }
+        100% {
+          transform: scale(0.8) rotate(45deg);
+          opacity: 0;
+        }
+      }
+      .game-box {
+        background: var(--bg3);
+        border-radius: var(--rad);
+        padding: 28px;
+        text-align: center;
+        transition: background 0.3s;
+      }
+      .game-box .score {
+        font: 800 2rem var(--head);
+        color: var(--acc);
+      }
+
+      /* ═══════════════════════════════════════
+   PHASE BAR & INFO CARDS
+═══════════════════════════════════════ */
+      .phase-bar {
+        display: flex;
+        border-radius: 10px;
+        overflow: hidden;
+        height: 38px;
+        margin: 14px 0 8px;
+        font-size: 0.68rem;
+        font-weight: 700;
+        color: #fff;
+        text-align: center;
+      }
+      .phase-bar div {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .ph1 {
+        background: var(--org);
+        flex: 2;
+      }
+      .ph2 {
+        background: var(--red);
+        flex: 3;
+      }
+      .ph3 {
+        background: var(--grn);
+        flex: 2;
+      }
+      .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 16px;
+        margin-top: 24px;
+      }
+      .info-card h3 {
+        font-size: 1rem;
+        font-weight: 700;
+        margin-bottom: 6px;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .info-card p,
+      .info-card li {
+        font-size: 0.86rem;
+        color: var(--tx2);
+      }
+      .info-card ul {
+        padding-left: 16px;
+        margin-top: 6px;
+      }
+      .info-card li {
+        margin-bottom: 3px;
+      }
+
+      /* ═══════════════════════════════════════
+   MULTI-STEP FORM
+═══════════════════════════════════════ */
+      .steps-bar {
+        display: flex;
+        gap: 4px;
+        margin-bottom: 22px;
+      }
+      .steps-bar span {
+        flex: 1;
+        height: 5px;
+        border-radius: 4px;
+        background: var(--bdr);
+        transition: 0.3s;
+      }
+      .steps-bar span.done {
+        background: var(--acc);
+      }
+      .step-panel {
+        display: none;
+      }
+      .step-panel.active {
+        display: block;
+        animation: fadeUp 0.35s;
+      }
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(12px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      .form-group {
+        margin-bottom: 16px;
+      }
+      .form-group label {
+        display: block;
+        font-weight: 700;
+        font-size: 0.88rem;
+        margin-bottom: 5px;
+      }
+      input[type="number"],
+      select {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1.5px solid var(--bdr);
+        border-radius: var(--rad-s);
+        font: inherit;
+        color: var(--tx);
+        background: var(--bg);
+        transition: border 0.2s;
+      }
+      input:focus,
+      select:focus {
+        outline: none;
+        border-color: var(--acc);
+      }
+      .check-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 8px;
+      }
+      .check-item {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        padding: 10px 13px;
+        border: 1.5px solid var(--bdr);
+        border-radius: var(--rad-s);
+        cursor: pointer;
+        transition: 0.2s;
+        font-size: 0.85rem;
+        background: var(--bg2);
+      }
+      .check-item:hover {
+        border-color: var(--acc);
+        transform: translateY(-1px);
+      }
+      .check-item input {
+        accent-color: var(--acc);
+        width: 16px;
+        height: 16px;
+      }
+      .check-item.checked {
+        border-color: var(--acc);
+        background: var(--accL);
+      }
+      .check-item.danger {
+        border-color: var(--red);
+      }
+      .check-item.danger.checked {
+        background: var(--redL);
+        border-color: var(--red);
+      }
+      .form-nav {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+      }
+      .result-box {
+        padding: 26px;
+        border-radius: var(--rad);
+        text-align: center;
+      }
+      .result-box h3 {
+        font-size: 1.2rem;
+        margin-bottom: 8px;
+      }
+      .result-box p {
+        font-size: 0.9rem;
+        margin-bottom: 14px;
+      }
+      .risk-low {
+        background: var(--grnL);
+        border: 2px solid var(--grn);
+      }
+      .risk-mid {
+        background: var(--orgL);
+        border: 2px solid var(--org);
+      }
+      .risk-high {
+        background: var(--redL);
+        border: 2px solid var(--red);
+      }
+
+      /* ═══════════════════════════════════════
+   PELACAK SUHU
+═══════════════════════════════════════ */
+      .tracker-form {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        margin-bottom: 18px;
+      }
+      .tracker-form .fg {
+        flex: 1;
+        min-width: 120px;
+      }
+      .tracker-form .fg label {
+        display: block;
+        font-size: 0.78rem;
+        font-weight: 700;
+        margin-bottom: 3px;
+        color: var(--tx2);
+      }
+      .chart-wrap {
+        background: var(--bg);
+        border-radius: var(--rad-s);
+        padding: 14px;
+        overflow-x: auto;
+      }
+      canvas#tempChart {
+        width: 100%;
+        height: 260px;
+        display: block;
+      }
+      .temp-log table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.83rem;
+        margin-top: 14px;
+      }
+      .temp-log th {
+        text-align: left;
+        padding: 8px 10px;
+        background: var(--bg3);
+        font-size: 0.76rem;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        color: var(--tx2);
+      }
+      .temp-log td {
+        padding: 8px 10px;
+        border-bottom: 1px solid var(--bdr);
+      }
+      .badge {
+        display: inline-block;
+        padding: 2px 10px;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: 700;
+      }
+      .badge-green {
+        background: var(--grnL);
+        color: var(--grn);
+      }
+      .badge-red {
+        background: var(--redL);
+        color: var(--red);
+      }
+      .badge-blue {
+        background: var(--bluL);
+        color: var(--blu);
+      }
+      .del-btn {
+        background: none;
+        border: none;
+        color: var(--red);
+        cursor: pointer;
+        font-size: 0.95rem;
+      }
+
+      /* ═══════════════════════════════════════
+   KALKULATOR
+═══════════════════════════════════════ */
+      .calc-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 18px;
+      }
+      .calc-result {
+        margin-top: 14px;
+        padding: 16px;
+        border-radius: var(--rad-s);
+        background: var(--accL);
+        text-align: center;
+      }
+      .calc-result .big {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: var(--acc);
+      }
+      .calc-result small {
+        color: var(--tx2);
+        font-size: 0.78rem;
+      }
+      .disclaimer-box {
+        margin-top: 14px;
+        padding: 14px 16px;
+        border-radius: var(--rad-s);
+        background: var(--orgL);
+        border: 1px solid var(--org);
+        font-size: 0.8rem;
+        color: var(--tx);
+        line-height: 1.5;
+      }
+      .disclaimer-box b {
+        color: var(--org);
+      }
+      .platelet-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.83rem;
+        margin-top: 12px;
+      }
+      .platelet-table th {
+        text-align: left;
+        padding: 8px 10px;
+        background: var(--bg3);
+        font-size: 0.76rem;
+        text-transform: uppercase;
+        color: var(--tx2);
+      }
+      .platelet-table td {
+        padding: 8px 10px;
+        border-bottom: 1px solid var(--bdr);
+      }
+      .pl-ok {
+        color: var(--grn);
+        font-weight: 700;
+        font-size: 0.78rem;
+      }
+      .pl-warn {
+        color: var(--org);
+        font-weight: 700;
+        font-size: 0.78rem;
+      }
+      .pl-danger {
+        color: var(--red);
+        font-weight: 700;
+        font-size: 0.78rem;
+      }
+
+      /* ═══════════════════════════════════════
+   EDUKASI & FAQ
+═══════════════════════════════════════ */
+      .art-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 16px;
+      }
+      .art-card .tag {
+        display: inline-block;
+        font-size: 0.66rem;
+        font-weight: 700;
+        padding: 3px 10px;
+        border-radius: 20px;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+      }
+      .tag-cegah {
+        background: var(--grnL);
+        color: var(--grn);
+      }
+      .tag-mitos {
+        background: var(--orgL);
+        color: var(--org);
+      }
+      .tag-p3k {
+        background: var(--bluL);
+        color: var(--blu);
+      }
+      .art-card h3 {
+        font-size: 0.95rem;
+        margin-bottom: 5px;
+      }
+      .art-card p {
+        font-size: 0.83rem;
+        color: var(--tx2);
+      }
+      .faq-list {
+        max-width: 700px;
+        margin: auto;
+      }
+      .faq-item {
+        border: 1px solid var(--bdr);
+        border-radius: var(--rad-s);
+        margin-bottom: 8px;
+        overflow: hidden;
+        background: var(--bg2);
+        transition: border-color 0.2s;
+      }
+      .faq-item:hover {
+        border-color: var(--acc);
+      }
+      .faq-q {
+        width: 100%;
+        background: var(--bg2);
+        border: none;
+        padding: 14px 16px;
+        text-align: left;
+        font-size: 0.88rem;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: var(--tx);
+        font-family: var(--font);
+      }
+      .faq-q:hover {
+        background: var(--bg3);
+      }
+      .faq-a {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s;
+        padding: 0 16px;
+        font-size: 0.84rem;
+        color: var(--tx2);
+        line-height: 1.6;
+      }
+      .faq-item.open .faq-a {
+        max-height: 400px;
+        padding: 0 16px 14px;
+      }
+      .faq-arrow {
+        transition: 0.3s;
+        font-size: 0.75rem;
+      }
+      .faq-item.open .faq-arrow {
+        transform: rotate(180deg);
+      }
+
+      /* ═══════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════ */
+      footer {
+        background: var(--tx);
+        color: #c8d8e8;
+        margin-top: 30px;
+        padding: 36px 6% 18px;
+        font-size: 0.88rem;
+      }
+      [data-theme="dark"] footer {
+        background: #0a1018;
+      }
+      .fgrid {
+        max-width: 1000px;
+        margin: auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 24px;
+      }
+      footer h4 {
+        color: #fff;
+        font-size: 0.95rem;
+        margin-bottom: 8px;
+      }
+      footer p {
+        margin: 0.25em 0;
+        font-size: 0.84rem;
+      }
+      .copy {
+        max-width: 1000px;
+        margin: 22px auto 0;
+        padding-top: 14px;
+        border-top: 1px solid rgba(255, 255, 255, 0.15);
+        text-align: center;
+        font-size: 0.78rem;
+        color: #7a92aa;
+      }
+
+      /* ═══════════════════════════════════════
+   MISC
+═══════════════════════════════════════ */
+      .mt {
+        margin-top: 18px;
+      }
+      .mb {
+        margin-bottom: 18px;
+      }
+      .text-center {
+        text-align: center;
+      }
+      .hidden {
+        display: none !important;
+      }
+      @media (max-width: 600px) {
+        .hero {
+          padding: 32px 18px;
+        }
+        section {
+          padding: 36px 14px 24px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ═══════════ NAVBAR ═══════════ -->
+    <nav class="topnav">
+      <div class="topnav-inner">
+        <a href="#beranda" class="logo">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.2"
+            stroke-linecap="round"
+          >
+            <path
+              d="M12 21c-4.4-3.2-8-6.4-8-10a8 8 0 0 1 16 0c0 3.6-3.6 6.8-8 10z"
+            />
+            <path d="M12 7v4l2.5 1.5" />
+          </svg>
+          cek<span style="font-weight: 400">DBD</span>
+        </a>
+        <button
+          class="hamburger"
+          onclick="
+            document.querySelector('.nav-links').classList.toggle('open')
+          "
+        >
+          ☰
+        </button>
+        <div class="nav-links">
+          <a href="#beranda">Beranda</a>
+          <a href="#cek-gejala">Cek Gejala</a>
+          <a href="#pelacak-suhu">Pelacak Suhu</a>
+          <a href="#kalkulator">Kalkulator</a>
+          <a href="#edukasi">Edukasi</a>
+        </div>
+        <button class="theme-btn" id="themeToggle" title="Mode Gelap/Terang">
+          🌙
+        </button>
+      </div>
+    </nav>
+
+    <!-- ═══════════ BERANDA ═══════════ -->
+    <section id="beranda" style="border-bottom: none; padding-bottom: 0">
+      <div class="hero rv">
+        <div class="hero-left">
+          <p
+            style="
+              color: var(--acc);
+              font-weight: 700;
+              letter-spacing: 0.06em;
+              text-transform: uppercase;
+              font-size: 0.74rem;
+              margin-bottom: 6px;
+            "
+          >
+            Poliklinik ITERA · Portal Siaga DBD
+          </p>
+          <h1>Kenali DBD Sebelum Terlambat.</h1>
+          <p>
+            Skrining gejala mandiri, pantau suhu harian, dan hitung kebutuhan
+            cairan — langsung dari kamar kos atau asrama.
+            <strong>Bukan pengganti dokter,</strong> tapi teman pertamamu saat
+            demam menyerang.
+          </p>
+          <div class="cta">
+            <a href="#cek-gejala" class="btn btn-acc">🩺 Cek Gejala Sekarang</a>
+            <a href="#pelacak-suhu" class="btn btn-outline"
+              >🌡️ Lacak Suhu Harian</a
+            >
+          </div>
+        </div>
+        <div class="hero-right">
+          <div class="card" style="border-left: 4px solid var(--red)">
+            <h4
+              style="font-size: 0.9rem; color: var(--red); margin-bottom: 6px"
+            >
+              🚨 Segera ke IGD jika ada:
+            </h4>
+            <ul
+              style="font-size: 0.82rem; color: var(--tx2); padding-left: 16px"
+            >
+              <li>Nyeri perut hebat & konstan</li>
+              <li>Muntah terus-menerus (&gt;3×)</li>
+              <li>Perdarahan gusi / mimisan / BAB hitam</li>
+              <li>Tangan & kaki dingin, gelisah</li>
+            </ul>
+          </div>
+          <div class="card" style="background: var(--accL); border: none">
+            <p style="font-size: 0.82rem; margin: 0">
+              🕐 <b>Jam aktif Aedes aegypti:</b> pagi 06–09 & sore 15–18. Pakai
+              lotion anti-nyamuk di jam ini!
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Emergency Strip -->
+      <div class="emg rv rv-d1">
+        <div class="card emg-card">
+          <div class="emg-icon red">🚑</div>
+          <div>
+            <h4>Ambulans / IGD</h4>
+            <p>Hubungi <b>119</b> atau ke IGD terdekat</p>
+          </div>
+        </div>
+        <div class="card emg-card">
+          <div class="emg-icon org">🏥</div>
+          <div>
+            <h4>Poliklinik ITERA</h4>
+            <p>Labtek O Lt.1 · <b>(0721) 8030188</b></p>
+          </div>
+        </div>
+        <div class="card emg-card">
+          <div class="emg-icon blu">☎️</div>
+          <div>
+            <h4>RS Airan Raya</h4>
+            <p>IGD 24 Jam (dekat kampus)</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3 Fase -->
+      <h2 class="sec-title mt rv" style="margin-top: 40px">
+        Pahami 3 Fase DBD
+      </h2>
+      <p class="sec-sub rv rv-d1">
+        Mengenali siklus pelana kuda mencegah kekeliruan fatal.
+      </p>
+      <div class="phase-bar rv rv-d1">
+        <div class="ph1">Hari 1–2 · Fase Demam</div>
+        <div class="ph2">Hari 3–5 · ⚠️ Fase Kritis</div>
+        <div class="ph3">Hari 6–7 · Pemulihan</div>
+      </div>
+      <div class="info-grid">
+        <div class="card info-card rv">
+          <h3>🔥 Fase Demam (Hari 1–2)</h3>
+          <p>Demam tinggi mendadak 39–40°C, nyeri sendi & belakang mata.</p>
+          <ul>
+            <li>Catat suhu tiap 6 jam</li>
+            <li>Perbanyak minum / oralit</li>
+            <li>Paracetamol (hindari ibuprofen)</li>
+          </ul>
+        </div>
+        <div
+          class="card info-card rv rv-d1"
+          style="border-left: 4px solid var(--red)"
+        >
+          <h3>⚠️ Fase Kritis (Hari 3–5)</h3>
+          <p>
+            <b>Suhu turun BUKAN sembuh.</b> Risiko kebocoran plasma & syok
+            tertinggi.
+          </p>
+          <ul>
+            <li>Jangan terkecoh suhu turun</li>
+            <li>Cek trombosit & hematokrit</li>
+            <li>Waspadai tanda bahaya</li>
+          </ul>
+        </div>
+        <div class="card info-card rv rv-d2">
+          <h3>💚 Fase Pemulihan (Hari 6–7)</h3>
+          <p>Suhu stabil, nafsu makan kembali, trombosit naik.</p>
+          <ul>
+            <li>Tetap pantau cairan</li>
+            <li>Kontrol ulang ke dokter</li>
+            <li>Istirahat cukup</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Mosquito Game -->
+      <div class="game-box mt rv" style="margin-top: 32px">
+        <h3 style="font-size: 1.1rem; margin-bottom: 4px">🎯 Tepuk Nyamuk!</h3>
+        <p style="font-size: 0.85rem; color: var(--tx2); margin-bottom: 14px">
+          Klik nyamuk yang terbang untuk membasminya. Nyamuk muncul otomatis.
+        </p>
+        <button class="btn btn-acc btn-sm" onclick="spawnWave()">
+          🦟 Munculkan Kawanan
+        </button>
+        <span style="margin-left: 14px; font-size: 0.9rem; font-weight: 700"
+          >Dibasmi: <span class="score" id="killCount">0</span></span
+        >
+      </div>
+    </section>
+
+    <!-- ═══════════ CEK GEJALA ═══════════ -->
+    <section id="cek-gejala">
+      <h2 class="sec-title rv">🩺 Cek Gejala (Smart Triage)</h2>
+      <p class="sec-sub rv rv-d1">
+        Jawab beberapa pertanyaan untuk mengukur risiko DBD. Hasil bersifat
+        edukasi, <b>bukan diagnosis medis</b>.
+      </p>
+      <div class="card rv rv-d1" style="max-width: 660px; margin: auto">
+        <div class="steps-bar" id="stepsBar">
+          <span class="done"></span><span></span><span></span><span></span>
+        </div>
+        <div class="step-panel active" data-step="1">
+          <h3 style="font-size: 1rem; margin-bottom: 12px">
+            Langkah 1: Informasi Dasar
+          </h3>
+          <div class="form-group">
+            <label>Sudah berapa hari demam?</label
+            ><select id="feverDay">
+              <option value="">— Pilih —</option>
+              <option value="1">Hari 1</option>
+              <option value="2">Hari 2</option>
+              <option value="3">Hari 3</option>
+              <option value="4">Hari 4</option>
+              <option value="5">Hari 5</option>
+              <option value="6">Hari 6</option>
+              <option value="7">Hari 7+</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Suhu tubuh saat ini (°C)</label
+            ><input
+              type="number"
+              id="feverTemp"
+              min="34"
+              max="43"
+              step="0.1"
+              placeholder="cth: 39.2"
+            />
+          </div>
+          <div class="form-nav">
+            <span></span
+            ><button class="btn btn-acc" onclick="nextStep(2)">Lanjut →</button>
+          </div>
+        </div>
+        <div class="step-panel" data-step="2">
+          <h3 style="font-size: 1rem; margin-bottom: 12px">
+            Langkah 2: Gejala yang Dirasakan
+          </h3>
+          <div class="check-grid" id="symptomGrid">
+            <label class="check-item"
+              ><input type="checkbox" data-w="2" /> Nyeri kepala hebat</label
+            >
+            <label class="check-item"
+              ><input type="checkbox" data-w="2" /> Nyeri sendi/otot</label
+            >
+            <label class="check-item"
+              ><input type="checkbox" data-w="2" /> Nyeri belakang mata</label
+            >
+            <label class="check-item"
+              ><input type="checkbox" data-w="2" /> Mual/muntah</label
+            >
+            <label class="check-item"
+              ><input type="checkbox" data-w="2" /> Ruam/bintik merah</label
+            >
+            <label class="check-item"
+              ><input type="checkbox" data-w="1" /> Lemas mendadak</label
+            >
+          </div>
+          <div class="form-nav">
+            <button
+              class="btn btn-sm"
+              style="background: var(--bg3); color: var(--tx)"
+              onclick="nextStep(1)"
+            >
+              ← Kembali</button
+            ><button class="btn btn-acc" onclick="nextStep(3)">Lanjut →</button>
+          </div>
+        </div>
+        <div class="step-panel" data-step="3">
+          <h3 style="font-size: 1rem; margin-bottom: 12px">
+            Langkah 3: Tanda Bahaya ⚠️
+          </h3>
+          <p style="font-size: 0.84rem; color: var(--tx2); margin-bottom: 12px">
+            Jika ada <b>salah satu</b>, segera ke IGD:
+          </p>
+          <div class="check-grid" id="dangerGrid">
+            <label class="check-item danger"
+              ><input type="checkbox" data-w="5" /> Nyeri perut hebat</label
+            >
+            <label class="check-item danger"
+              ><input type="checkbox" data-w="5" /> Muntah terus-menerus</label
+            >
+            <label class="check-item danger"
+              ><input type="checkbox" data-w="6" /> Perdarahan
+              gusi/mimisan</label
+            >
+            <label class="check-item danger"
+              ><input type="checkbox" data-w="6" /> BAB hitam/berdarah</label
+            >
+            <label class="check-item danger"
+              ><input type="checkbox" data-w="6" /> Tangan & kaki dingin</label
+            >
+            <label class="check-item danger"
+              ><input type="checkbox" data-w="6" /> Gelisah/kesadaran
+              turun</label
+            >
+          </div>
+          <div class="form-nav">
+            <button
+              class="btn btn-sm"
+              style="background: var(--bg3); color: var(--tx)"
+              onclick="nextStep(2)"
+            >
+              ← Kembali</button
+            ><button class="btn btn-acc" onclick="nextStep(4)">
+              Lihat Hasil
+            </button>
+          </div>
+        </div>
+        <div class="step-panel" data-step="4">
+          <div id="resultArea"></div>
+          <div class="form-nav">
+            <button
+              class="btn btn-sm"
+              style="background: var(--bg3); color: var(--tx)"
+              onclick="resetTriage()"
+            >
+              🔄 Ulangi
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════ PELACAK SUHU ═══════════ -->
+    <section id="pelacak-suhu">
+      <h2 class="sec-title rv">🌡️ Pelacak Suhu (Dengue Tracker)</h2>
+      <p class="sec-sub rv rv-d1">
+        Catat suhu tiap 6–8 jam. Grafik menampilkan zona fase kritis agar tidak
+        terkecoh saat suhu turun.
+      </p>
+      <div class="card rv rv-d1">
+        <div class="tracker-form">
+          <div class="fg">
+            <label>Hari ke-</label
+            ><input
+              type="number"
+              id="trackDay"
+              min="1"
+              max="14"
+              placeholder="1"
+            />
+          </div>
+          <div class="fg">
+            <label>Suhu (°C)</label
+            ><input
+              type="number"
+              id="trackTemp"
+              min="34"
+              max="43"
+              step="0.1"
+              placeholder="38.5"
+            />
+          </div>
+          <div class="fg">
+            <label>Waktu</label
+            ><select id="trackTime">
+              <option>Pagi</option>
+              <option>Siang</option>
+              <option>Sore</option>
+              <option selected>Malam</option>
+            </select>
+          </div>
+          <button
+            class="btn btn-acc btn-sm"
+            onclick="addTemp()"
+            style="align-self: flex-end"
+          >
+            + Catat
+          </button>
+        </div>
+        <div class="chart-wrap"><canvas id="tempChart"></canvas></div>
+        <p
+          style="
+            font-size: 0.78rem;
+            color: var(--tx2);
+            text-align: center;
+            margin-top: 12px;
+          "
+        >
+          🟠 Hari 1–2 Demam &nbsp;|&nbsp; 🔴 Hari 3–5
+          <b>Kritis</b> &nbsp;|&nbsp; 🟢 Hari 6–7 Pemulihan
+        </p>
+        <div class="temp-log mt">
+          <table>
+            <thead>
+              <tr>
+                <th>Hari</th>
+                <th>Waktu</th>
+                <th>Suhu</th>
+                <th>Fase</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="tempLogBody"></tbody>
+          </table>
+          <p
+            style="font-size: 0.82rem; color: var(--tx2); margin-top: 10px"
+            id="emptyTempMsg"
+          >
+            Belum ada data. Mulai catat suhu di atas. 📝
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════ KALKULATOR ═══════════ -->
+    <section id="kalkulator">
+      <h2 class="sec-title rv">🧮 Kalkulator Cairan & Trombosit</h2>
+      <p class="sec-sub rv rv-d1">
+        Alat bantu estimasi. <b>Bukan pengganti penilaian dokter.</b>
+      </p>
+      <div class="disclaimer-box rv rv-d1 mb">
+        ⚠️ <b>PENTING:</b> Seluruh angka bersifat <b>estimasi umum</b> dan
+        <b>tidak dapat dijadikan acuan klinis tunggal</b>. Selalu konsultasikan
+        ke <b>dokter atau faskes terdekat</b>. Jika ada tanda syok,
+        <b>segera ke IGD</b>.
+      </div>
+      <div class="calc-grid">
+        <div class="card rv">
+          <h3 style="font-size: 1rem; margin-bottom: 12px">
+            💧 Kalkulator Asupan Cairan
+          </h3>
+          <div class="form-group">
+            <label>Berat badan (kg)</label
+            ><input
+              type="number"
+              id="calcWeight"
+              min="1"
+              max="250"
+              placeholder="cth: 55"
+            />
+          </div>
+          <div class="form-group">
+            <label>Kategori</label
+            ><select id="calcAge">
+              <option value="anak">Anak (&lt;12 tahun)</option>
+              <option value="dewasa" selected>Dewasa (≥12 tahun)</option>
+            </select>
+          </div>
+          <button class="btn btn-acc" onclick="calcFluid()">
+            Hitung Estimasi
+          </button>
+          <div class="calc-result hidden" id="fluidResult">
+            <div class="big" id="fluidNum"></div>
+            <small id="fluidDesc"></small>
+          </div>
+          <div
+            class="disclaimer-box"
+            style="margin-top: 12px; font-size: 0.76rem"
+          >
+            📋 Angka ini hanya <b>perkiraan</b>. Pasien muntah hebat / tidak
+            bisa minum memerlukan <b>terapi infus oleh tenaga medis</b>.
+          </div>
+        </div>
+        <div class="card rv rv-d1">
+          <h3 style="font-size: 1rem; margin-bottom: 12px">🩸 Log Trombosit</h3>
+          <div class="tracker-form" style="margin-bottom: 10px">
+            <div class="fg">
+              <label>Hari ke-</label
+              ><input
+                type="number"
+                id="pltDay"
+                min="1"
+                max="14"
+                placeholder="1"
+              />
+            </div>
+            <div class="fg">
+              <label>Trombosit (/µL)</label
+              ><input
+                type="number"
+                id="pltVal"
+                min="0"
+                max="500000"
+                step="1000"
+                placeholder="150000"
+              />
+            </div>
+            <button
+              class="btn btn-acc btn-sm"
+              onclick="addPlatelet()"
+              style="align-self: flex-end"
+            >
+              + Catat
+            </button>
+          </div>
+          <canvas
+            id="pltChart"
+            style="
+              width: 100%;
+              height: 170px;
+              display: block;
+              margin-bottom: 10px;
+            "
+          ></canvas>
+          <table class="platelet-table">
+            <thead>
+              <tr>
+                <th>Hari</th>
+                <th>Trombosit</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="pltLogBody"></tbody>
+          </table>
+          <p
+            style="font-size: 0.8rem; color: var(--tx2); margin-top: 8px"
+            id="emptyPltMsg"
+          >
+            Belum ada data.
+          </p>
+          <div
+            class="disclaimer-box"
+            style="margin-top: 12px; font-size: 0.76rem"
+          >
+            ⚕️ Interpretasi trombosit <b>harus oleh dokter</b>. Pencatatan ini
+            hanya membantu mengingat riwayat lab.
+            <b>Trombosit &lt;100.000 → segera konsultasi dokter.</b>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════ EDUKASI ═══════════ -->
+    <section id="edukasi">
+      <h2 class="sec-title rv">📚 Edukasi & 3M Plus</h2>
+      <p class="sec-sub rv rv-d1">
+        Panduan pencegahan, P3K, dan klarifikasi mitos.
+      </p>
+      <div class="art-grid mb rv rv-d1">
+        <div class="card art-card">
+          <span class="tag tag-cegah">Pencegahan</span>
+          <h3>3M Plus di Kos & Asrama</h3>
+          <p>
+            <b>Menguras</b> bak mandi, <b>Menutup</b> wadah air,
+            <b>Mendaur ulang</b> barang bekas. Plus: repellent, kasa nyamuk,
+            abate gratis di Poliklinik.
+          </p>
+        </div>
+        <div class="card art-card">
+          <span class="tag tag-p3k">P3K</span>
+          <h3>Pertolongan Pertama Demam Tinggi</h3>
+          <p>
+            Kompres hangat, paracetamol sesuai dosis, perbanyak minum.
+            <b>Hindari ibuprofen & aspirin</b> — meningkatkan risiko perdarahan.
+          </p>
+        </div>
+        <div class="card art-card">
+          <span class="tag tag-cegah">Pencegahan</span>
+          <h3>Jam Rawan Nyamuk Aedes</h3>
+          <p>
+            Aktif <b>06–09 pagi</b> & <b>15–18 sore</b>. Gunakan lotion saat
+            kuliah pagi. Cek tatakan dispenser & vas bunga di kamar.
+          </p>
+        </div>
+      </div>
+      <h3 style="font-size: 1rem; margin-bottom: 12px" class="rv">
+        ❓ Mitos vs Fakta
+      </h3>
+      <div class="faq-list rv rv-d1" id="faqList">
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            🥤 Jambu biji menaikkan trombosit?<span class="faq-arrow">▼</span>
+          </button>
+          <div class="faq-a">
+            Belum ada bukti klinis kuat. Jambu baik untuk hidrasi & vitamin C,
+            tapi <b>tidak langsung menaikkan trombosit</b>. Yang utama: cairan
+            cukup + penanganan medis.
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            💨 Fogging saja cukup mencegah DBD?<span class="faq-arrow">▼</span>
+          </button>
+          <div class="faq-a">
+            <b>Tidak.</b> Fogging hanya membunuh nyamuk dewasa, bukan jentik.
+            Tanpa 3M Plus, nyamuk baru muncul dalam hitungan hari.
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            🌡️ Suhu turun = sudah sembuh?<span class="faq-arrow">▼</span>
+          </button>
+          <div class="faq-a">
+            <b>Salah dan berbahaya.</b> Suhu turun di hari 3–5 justru menandai
+            <b>fase kritis</b>. Risiko kebocoran plasma & syok tertinggi di fase
+            ini.
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            💊 Antibiotik menyembuhkan DBD?<span class="faq-arrow">▼</span>
+          </button>
+          <div class="faq-a">
+            <b>Tidak.</b> DBD disebabkan <b>virus dengue</b>, bukan bakteri.
+            Penanganan utama: cairan, istirahat, pemantauan medis.
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            🔁 Sudah pernah DBD, tidak bisa kena lagi?<span class="faq-arrow"
+              >▼</span
+            >
+          </button>
+          <div class="faq-a">
+            <b>Salah.</b> Ada 4 serotipe (DENV 1–4). Infeksi kedua dengan
+            serotipe berbeda justru <b>lebih berbahaya</b> (risiko DHF/DSS).
+          </div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            🦟 Aedes aktif di malam hari?<span class="faq-arrow">▼</span>
+          </button>
+          <div class="faq-a">
+            <b>Kurang tepat.</b> Aedes aegypti aktif <b>pagi (06–09)</b> dan
+            <b>sore (15–18)</b>. Berbeda dengan Anopheles (malaria) yang aktif
+            malam.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════ FOOTER ═══════════ -->
+    <footer>
+      <div class="fgrid">
+        <div>
+          <h4>cekDBD</h4>
+          <p>
+            Sistem edukasi & pemantauan mandiri DBD untuk civitas akademika
+            ITERA.
+          </p>
+          <p style="margin-top: 8px; font-size: 0.78rem; color: #7a92aa">
+            ⚕️ Bukan pengganti diagnosis dokter.
+          </p>
+        </div>
+        <div>
+          <h4>Kontak Medis</h4>
+          <p>📍 Poliklinik ITERA, Labtek O Lt.1, Jati Agung</p>
+          <p>📞 (0721) 8030188</p>
+          <p>🚑 Ambulans: +62 821-7788-ITERA</p>
+          <p>🕐 Senin–Jumat: 08.00–16.30 WIB</p>
+        </div>
+        <div>
+          <h4>Rujukan</h4>
+          <p>🏥 RS Airan Raya — IGD 24 Jam</p>
+          <p>🏥 RSUD Dr. H. Abdul Moeloek</p>
+          <p style="margin-top: 8px">🚨 Darurat: <b>119</b></p>
+        </div>
+      </div>
+      <div class="copy">
+        © 2025 cekDBD – Poliklinik ITERA. Sumber: WHO • Kemenkes RI • IDAI.
+      </div>
+    </footer>
+
+    <!-- ═══════════ SCRIPTS ═══════════ -->
+    <script>
+      /* ── THEME ── */
+      const themeBtn = document.getElementById("themeToggle");
+      function setTheme(t) {
+        document.documentElement.setAttribute("data-theme", t);
+        themeBtn.textContent = t === "dark" ? "☀️" : "🌙";
+        localStorage.setItem("dbd-theme", t);
+      }
+      themeBtn.onclick = () =>
+        setTheme(
+          document.documentElement.getAttribute("data-theme") === "dark"
+            ? "light"
+            : "dark",
+        );
+      (() => {
+        const s = localStorage.getItem("dbd-theme");
+        if (s) setTheme(s);
+      })();
+
+      /* ── SCROLL REVEAL ── */
+      const obs = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              e.target.classList.add("in");
+              obs.unobserve(e.target);
+            }
+          });
+        },
+        { threshold: 0.12 },
+      );
+      document.querySelectorAll(".rv").forEach((el) => obs.observe(el));
+
+      /* ── NAV ── */
+      document.querySelectorAll(".nav-links a").forEach((a) =>
+        a.addEventListener("click", () => {
+          document.querySelector(".nav-links").classList.remove("open");
+        }),
+      );
+
+      /* ── TRIAGE ── */
+      function nextStep(n) {
+        document
+          .querySelectorAll(".step-panel")
+          .forEach((p) => p.classList.remove("active"));
+        document
+          .querySelector(`.step-panel[data-step="${n}"]`)
+          .classList.add("active");
+        document
+          .querySelectorAll("#stepsBar span")
+          .forEach((b, i) => b.classList.toggle("done", i < n));
+        if (n === 4) computeTriage();
+      }
+      document.querySelectorAll(".check-item input").forEach((cb) =>
+        cb.addEventListener("change", function () {
+          this.closest(".check-item").classList.toggle("checked", this.checked);
+        }),
+      );
+      function computeTriage() {
+        let score = 0,
+          danger = false;
+        const day = parseInt(document.getElementById("feverDay").value) || 0;
+        const temp =
+          parseFloat(document.getElementById("feverTemp").value) || 0;
+        document
+          .querySelectorAll("#symptomGrid input:checked")
+          .forEach((c) => (score += parseInt(c.dataset.w)));
+        document.querySelectorAll("#dangerGrid input:checked").forEach((c) => {
+          score += parseInt(c.dataset.w);
+          danger = true;
+        });
+        if (day >= 3 && day <= 5) score += 3;
+        if (temp >= 39) score += 2;
+        else if (temp >= 38) score += 1;
+        const area = document.getElementById("resultArea");
+        if (danger) {
+          area.innerHTML = `<div class="result-box risk-high"><h3>🚨 DARURAT — Segera ke IGD</h3><p>Ada tanda bahaya. Jangan tunda penanganan medis.</p><a href="tel:119" class="btn btn-red">📞 Hubungi 119 / Ke IGD</a></div>`;
+        } else if (score >= 8) {
+          area.innerHTML = `<div class="result-box risk-mid"><h3>🟠 Risiko Sedang</h3><p>Disarankan <b>cek darah</b> dalam 24 jam di Poliklinik ITERA.</p><p style="font-size:.82rem;color:var(--tx2)">Skor: ${score}/20</p></div>`;
+        } else if (score >= 4) {
+          area.innerHTML = `<div class="result-box risk-mid"><h3>🟡 Risiko Rendah–Sedang</h3><p>Tetap waspada. Catat suhu tiap 6 jam. Jika >2 hari, ke dokter.</p><p style="font-size:.82rem;color:var(--tx2)">Skor: ${score}/20</p></div>`;
+        } else {
+          area.innerHTML = `<div class="result-box risk-low"><h3>🟢 Risiko Rendah</h3><p>Pantau suhu, perbanyak cairan. Jika berlanjut >2 hari, konsultasi dokter.</p><p style="font-size:.82rem;color:var(--tx2)">Skor: ${score}/20</p></div>`;
+        }
+      }
+      function resetTriage() {
+        document
+          .querySelectorAll("#cek-gejala input[type=checkbox]")
+          .forEach((c) => {
+            c.checked = false;
+            c.closest(".check-item").classList.remove("checked");
+          });
+        document.getElementById("feverDay").value = "";
+        document.getElementById("feverTemp").value = "";
+        nextStep(1);
+      }
+
+      /* ── PELACAK SUHU ── */
+      let tempData = JSON.parse(localStorage.getItem("dbd-temp") || "[]");
+      function addTemp() {
+        const d = parseInt(document.getElementById("trackDay").value),
+          t = parseFloat(document.getElementById("trackTemp").value);
+        if (!d || !t) return alert("Isi hari dan suhu.");
+        tempData.push({
+          day: d,
+          temp: t,
+          time: document.getElementById("trackTime").value,
+        });
+        tempData.sort((a, b) => a.day - b.day);
+        localStorage.setItem("dbd-temp", JSON.stringify(tempData));
+        document.getElementById("trackDay").value = "";
+        document.getElementById("trackTemp").value = "";
+        renderTempLog();
+        drawTempChart();
+      }
+      function deleteTemp(i) {
+        tempData.splice(i, 1);
+        localStorage.setItem("dbd-temp", JSON.stringify(tempData));
+        renderTempLog();
+        drawTempChart();
+      }
+      function phaseOf(d) {
+        return d <= 2 ? "Demam" : d <= 5 ? "Kritis" : "Pulih";
+      }
+      function badgeOf(d) {
+        return d <= 2 ? "badge-green" : d <= 5 ? "badge-red" : "badge-blue";
+      }
+      function renderTempLog() {
+        const tb = document.getElementById("tempLogBody");
+        tb.innerHTML = "";
+        document.getElementById("emptyTempMsg").style.display = tempData.length
+          ? "none"
+          : "block";
+        tempData.forEach((r, i) => {
+          tb.innerHTML += `<tr><td>H${r.day}</td><td>${r.time}</td><td><b>${r.temp}°C</b></td><td><span class="badge ${badgeOf(r.day)}">${phaseOf(r.day)}</span></td><td><button class="del-btn" onclick="deleteTemp(${i})">✕</button></td></tr>`;
+        });
+      }
+      function drawTempChart() {
+        const cv = document.getElementById("tempChart"),
+          ctx = cv.getContext("2d");
+        const dpr = window.devicePixelRatio || 1,
+          W = cv.parentElement.clientWidth - 28,
+          H = 260;
+        cv.width = W * dpr;
+        cv.height = H * dpr;
+        cv.style.width = W + "px";
+        cv.style.height = H + "px";
+        ctx.scale(dpr, dpr);
+        const pad = { l: 42, r: 14, t: 18, b: 32 },
+          cw = W - pad.l - pad.r,
+          ch = H - pad.t - pad.b;
+        const maxDay = Math.max(7, ...tempData.map((r) => r.day));
+        const x = (d) => pad.l + ((d - 1) / (maxDay - 1)) * cw,
+          y = (t) => pad.t + ((42 - t) / (42 - 35)) * ch;
+        ctx.clearRect(0, 0, W, H);
+        const isDark =
+          document.documentElement.getAttribute("data-theme") === "dark";
+        [
+          {
+            s: 1,
+            e: 2,
+            c: isDark ? "rgba(240,184,64,.1)" : "rgba(224,161,0,.08)",
+          },
+          {
+            s: 3,
+            e: 5,
+            c: isDark ? "rgba(240,96,96,.12)" : "rgba(217,58,58,.08)",
+          },
+          {
+            s: 6,
+            e: 7,
+            c: isDark ? "rgba(64,208,128,.08)" : "rgba(31,157,85,.06)",
+          },
+        ].forEach((z) => {
+          ctx.fillStyle = z.c;
+          ctx.fillRect(
+            x(Math.max(z.s, 1)),
+            pad.t,
+            x(Math.min(z.e, maxDay)) - x(Math.max(z.s, 1)),
+            ch,
+          );
+        });
+        ctx.strokeStyle = isDark ? "#2a3a4e" : "#d5e1ee";
+        ctx.lineWidth = 0.5;
+        for (let t = 35; t <= 42; t++) {
+          ctx.beginPath();
+          ctx.moveTo(pad.l, y(t));
+          ctx.lineTo(W - pad.r, y(t));
+          ctx.stroke();
+          ctx.fillStyle = isDark ? "#6d8299" : "#8a9bb0";
+          ctx.font = "10px sans-serif";
+          ctx.textAlign = "right";
+          ctx.fillText(t + "°", pad.l - 5, y(t) + 3);
+        }
+        for (let d = 1; d <= maxDay; d++) {
+          ctx.fillStyle = isDark ? "#6d8299" : "#8a9bb0";
+          ctx.font = "10px sans-serif";
+          ctx.textAlign = "center";
+          ctx.fillText("H" + d, x(d), H - pad.b + 16);
+        }
+        ctx.setLineDash([4, 3]);
+        ctx.strokeStyle = "rgba(217,58,58,.4)";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(pad.l, y(38));
+        ctx.lineTo(W - pad.r, y(38));
+        ctx.stroke();
+        ctx.setLineDash([]);
+        if (!tempData.length) {
+          ctx.fillStyle = isDark ? "#6d8299" : "#8a9bb0";
+          ctx.font = "13px sans-serif";
+          ctx.textAlign = "center";
+          ctx.fillText("Belum ada data suhu 🌡️", W / 2, H / 2);
+          return;
+        }
+        ctx.strokeStyle = isDark ? "#4d9fff" : "#1366d6";
+        ctx.lineWidth = 2.5;
+        ctx.lineJoin = "round";
+        ctx.beginPath();
+        tempData.forEach((r, i) => {
+          const px = x(r.day),
+            py = y(r.temp);
+          i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+        });
+        ctx.stroke();
+        tempData.forEach((r) => {
+          ctx.beginPath();
+          ctx.arc(x(r.day), y(r.temp), 5, 0, Math.PI * 2);
+          ctx.fillStyle =
+            r.day <= 2
+              ? isDark
+                ? "#f0b840"
+                : "#e0a100"
+              : r.day <= 5
+                ? isDark
+                  ? "#f06060"
+                  : "#d93a3a"
+                : isDark
+                  ? "#40d080"
+                  : "#1f9d55";
+          ctx.fill();
+          ctx.strokeStyle = isDark ? "#16202e" : "#fff";
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        });
+      }
+
+      /* ── KALKULATOR CAIRAN ── */
+      function calcFluid() {
+        const w = parseFloat(document.getElementById("calcWeight").value);
+        if (!w || w <= 0) return alert("Masukkan berat badan.");
+        const age = document.getElementById("calcAge").value;
+        let ml;
+        if (age === "anak") {
+          if (w <= 10) ml = w * 100;
+          else if (w <= 20) ml = 1000 + (w - 10) * 50;
+          else ml = 1500 + (w - 20) * 20;
+        } else ml = w * 35;
+        const gelas = Math.round(ml / 240);
+        document.getElementById("fluidResult").classList.remove("hidden");
+        document.getElementById("fluidNum").textContent =
+          ml.toLocaleString("id") + " ml/hari";
+        document.getElementById("fluidDesc").textContent =
+          `≈ ${gelas} gelas. Bisa dibagi: air putih, oralit, jus, kuah sup. +20% jika demam >39°C.`;
+      }
+
+      /* ── TROMBOSIT ── */
+      let pltData = JSON.parse(localStorage.getItem("dbd-plt") || "[]");
+      function addPlatelet() {
+        const d = parseInt(document.getElementById("pltDay").value),
+          v = parseInt(document.getElementById("pltVal").value);
+        if (!d || !v) return alert("Lengkapi field.");
+        pltData.push({ day: d, val: v });
+        pltData.sort((a, b) => a.day - b.day);
+        localStorage.setItem("dbd-plt", JSON.stringify(pltData));
+        document.getElementById("pltDay").value = "";
+        document.getElementById("pltVal").value = "";
+        renderPltLog();
+        drawPltChart();
+      }
+      function deletePlt(i) {
+        pltData.splice(i, 1);
+        localStorage.setItem("dbd-plt", JSON.stringify(pltData));
+        renderPltLog();
+        drawPltChart();
+      }
+      function renderPltLog() {
+        const tb = document.getElementById("pltLogBody");
+        tb.innerHTML = "";
+        document.getElementById("emptyPltMsg").style.display = pltData.length
+          ? "none"
+          : "block";
+        pltData.forEach((r, i) => {
+          const st =
+            r.val < 50000
+              ? "🔴 Kritis"
+              : r.val < 100000
+                ? "🟠 Waspada"
+                : "🟢 Normal";
+          const cls =
+            r.val < 50000 ? "pl-danger" : r.val < 100000 ? "pl-warn" : "pl-ok";
+          tb.innerHTML += `<tr><td>H${r.day}</td><td>${r.val.toLocaleString("id")}</td><td class="${cls}">${st}</td><td><button class="del-btn" onclick="deletePlt(${i})">✕</button></td></tr>`;
+        });
+      }
+      function drawPltChart() {
+        const cv = document.getElementById("pltChart"),
+          ctx = cv.getContext("2d");
+        const dpr = window.devicePixelRatio || 1,
+          W = cv.parentElement.clientWidth - 52,
+          H = 170;
+        cv.width = W * dpr;
+        cv.height = H * dpr;
+        cv.style.width = W + "px";
+        cv.style.height = H + "px";
+        ctx.scale(dpr, dpr);
+        if (!pltData.length) {
+          ctx.clearRect(0, 0, W, H);
+          return;
+        }
+        const pad = { l: 48, r: 12, t: 12, b: 26 },
+          cw = W - pad.l - pad.r,
+          ch = H - pad.t - pad.b;
+        const maxD = Math.max(7, ...pltData.map((r) => r.day)),
+          maxV = Math.max(200000, ...pltData.map((r) => r.val));
+        const x = (d) => pad.l + ((d - 1) / (maxD - 1)) * cw,
+          y = (v) => pad.t + ((maxV - v) / maxV) * ch;
+        ctx.clearRect(0, 0, W, H);
+        [
+          [100000, "rgba(224,161,0,.4)"],
+          [50000, "rgba(217,58,58,.4)"],
+        ].forEach(([v, c]) => {
+          ctx.setLineDash([4, 4]);
+          ctx.strokeStyle = c;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(pad.l, y(v));
+          ctx.lineTo(W - pad.r, y(v));
+          ctx.stroke();
+          ctx.setLineDash([]);
+          ctx.fillStyle = c.replace(".4", ".9");
+          ctx.font = "9px sans-serif";
+          ctx.textAlign = "left";
+          ctx.fillText(v / 1000 + "k", pad.l + 3, y(v) - 3);
+        });
+        const isDark =
+          document.documentElement.getAttribute("data-theme") === "dark";
+        ctx.strokeStyle = isDark ? "#60a8f0" : "#2563eb";
+        ctx.lineWidth = 2;
+        ctx.lineJoin = "round";
+        ctx.beginPath();
+        pltData.forEach((r, i) => {
+          const px = x(r.day),
+            py = y(r.val);
+          i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+        });
+        ctx.stroke();
+        pltData.forEach((r) => {
+          ctx.beginPath();
+          ctx.arc(x(r.day), y(r.val), 4, 0, Math.PI * 2);
+          ctx.fillStyle =
+            r.val < 50000
+              ? isDark
+                ? "#f06060"
+                : "#d93a3a"
+              : r.val < 100000
+                ? isDark
+                  ? "#f0b840"
+                  : "#e0a100"
+                : isDark
+                  ? "#40d080"
+                  : "#1f9d55";
+          ctx.fill();
+        });
+      }
+
+      /* ── FAQ ── */
+      function toggleFaq(btn) {
+        btn.closest(".faq-item").classList.toggle("open");
+      }
+
+      /* ── MOSQUITO GAME ── */
+      let kills = 0;
+      function spawnMosquito() {
+        const m = document.createElement("div");
+        m.className = "mosquito";
+        m.textContent = "🦟";
+        m.style.left = Math.random() * (innerWidth - 80) + 40 + "px";
+        m.style.top = Math.random() * (innerHeight * 0.5) + 100 + "px";
+        document.body.appendChild(m);
+        let px = parseFloat(m.style.left),
+          py = parseFloat(m.style.top),
+          vx = (Math.random() - 0.5) * 3,
+          vy = (Math.random() - 0.5) * 3;
+        const iv = setInterval(() => {
+          px += vx;
+          py += vy;
+          if (px < 20 || px > innerWidth - 60) vx = -vx;
+          if (py < 80 || py > innerHeight - 80) vy = -vy;
+          m.style.left = px + "px";
+          m.style.top = py + "px";
+        }, 25);
+        m.onclick = (e) => {
+          clearInterval(iv);
+          kills++;
+          document.getElementById("killCount").textContent = kills;
+          const s = document.createElement("div");
+          s.className = "splat-effect";
+          s.textContent = "💥";
+          s.style.left = e.clientX - 13 + "px";
+          s.style.top = e.clientY - 13 + "px";
+          document.body.appendChild(s);
+          setTimeout(() => s.remove(), 650);
+          m.remove();
+        };
+        setTimeout(() => {
+          if (document.body.contains(m)) {
+            clearInterval(iv);
+            m.remove();
+          }
+        }, 11000);
+      }
+      function spawnWave() {
+        for (let i = 0; i < 4; i++) setTimeout(spawnMosquito, i * 300);
+      }
+      setInterval(() => {
+        if (document.querySelectorAll(".mosquito").length < 3) spawnMosquito();
+      }, 5000);
+      setTimeout(spawnMosquito, 1500);
+
+      /* ── INIT ── */
+      renderTempLog();
+      drawTempChart();
+      renderPltLog();
+      drawPltChart();
+      window.addEventListener("resize", () => {
+        drawTempChart();
+        drawPltChart();
+      });
+    </script>
+  </body>
+</html>

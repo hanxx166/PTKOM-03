@@ -10,49 +10,17 @@
 }
 
 body {
+  min-width: 320px;
   margin: 0;
-  background: var(--bg) url(/img/pattern.svg);
-  color: var(--ink);
   font-family: "Nunito Sans", system-ui, sans-serif;
   font-size: 16px;
   line-height: 1.65;
 }
 
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
   font-family: Poppins, system-ui, sans-serif;
   line-height: 1.25;
 }
-
-/* Animasi nyamuk (port dari style.css lama) */
-.fly {
-  position: absolute;
-  width: 42px;
-  cursor: pointer;
-  z-index: 2;
-  animation: drift 12s ease-in-out infinite alternate;
-}
-.fly.hit {
-  animation: none;
-  opacity: 0;
-  transform: scale(0.2) rotate(120deg);
-  transition: 0.35s;
-}
-@keyframes drift {
-  0% { transform: translate(0, 0) rotate(-8deg); }
-  50% { transform: translate(60px, -40px) rotate(10deg); }
-  100% { transform: translate(-40px, 50px) rotate(-5deg); }
-}
-
-/* Reveal on scroll */
-.rv { opacity: 0; transform: translateY(24px); transition: 0.6s; }
-.rv.in { opacity: 1; transform: none; }
-@media (prefers-reduced-motion: reduce) {
-  .fly { animation: none; }
-  .rv { opacity: 1; transform: none; transition: none; }
-}
-
-/* Confetti */
-.cf { position: absolute; top: -50px; animation: fall linear forwards; }
-@keyframes fall { to { transform: translateY(115vh) rotate(540deg); } }
-@keyframes bump { 0% { transform: scale(0.2); } 70% { transform: scale(1.25); } 100% { transform: scale(1); } }
-.pop-emoji { font-size: 3.6rem; animation: bump 0.6s; }

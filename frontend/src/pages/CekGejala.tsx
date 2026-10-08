@@ -1,78 +1,205 @@
-import { useAuth } from "../lib/auth";
+import { useState } from "react";
 import { apiPost } from "../lib/api";
+import { useAuth } from "../lib/auth";
 import { useContent } from "../lib/content";
 
-function scoreLevel(score: number, hasDanger: boolean): "tinggi" | "sedang" | "rendah" {
-  if (hasDanger || score >= 6) return "tinggi";
-  if (score >= 3) return "sedang";
-  return "rendah";
+type Risk = "tinggi" | "sedang" | "rendah";
+interface TriageResult {
+  level: Risk;
+  score: number;
+  emergency: boolean;
 }
 
-const ADVICE: Record<string, string> = {
-  tinggi: "Segera periksa ke dokter atau IGD terdekat dan lakukan cek laboratorium.",
-  sedang: "Istirahat, banyak minum, dan periksa ke dokter bila demam berlanjut lebih dari 2 hari.",
-  rendah: "Gejala belum mengarah kuat ke DBD. Tetap pantau kondisi Anda.",
+const ADVICE: Record<Risk, string> = {
+  tinggi: "Segera cari pertolongan medis. Jika ada tanda bahaya, jangan menunda untuk pergi ke IGD.",
+  sedang: "Tetap waspada, catat suhu tiap 6 jam, cukupkan cairan, dan konsultasikan kondisi ke tenaga kesehatan.",
+  rendah: "Pantau suhu dan kondisi tubuh. Jika demam berlanjut atau memburuk, konsultasikan ke dokter.",
 };
 
 export default function CekGejala({ onNeedAuth }: { onNeedAuth: () => void }) {
-  const { content, loading } = useContent();
+  const { content, loading, error } = useContent();
   const { user } = useAuth();
-  const [checked, setChecked] = React.useState<string[]>([]);
-  const [result, setResult] = React.useState<string | null>(null);
+  const [step, setStep] = useState(1);
+  const [day, setDay] = useState("");
+  const [temperature, setTemperature] = useState("");
+  const [checked, setChecked] = useState<string[]>([]);
+  const [result, setResult] = useState<TriageResult | null>(null);
+  const [formError, setFormError] = useState("");
 
-  if (loading || !content) return <p className="py-10">Memuat...</p>;
+  if (loading) return <p className="dbd-loading">Memuat pemeriksaan...</p>;
+  if (error || !content) return <p className="dbd-error">Data gejala gagal dimuat. Silakan muat ulang halaman.</p>;
 
-  const show = () => {
+  const regularSymptoms = content.symptoms.filter((item) => !item.danger);
+  const dangerSymptoms = content.symptoms.filter((item) => item.danger);
+  const toggle = (id: string) => {
+    setChecked((selected) => selected.includes(id)
+      ? selected.filter((value) => value !== id)
+      : [...selected, id]);
+  };
+
+  const nextStep = (next: number) => {
+    if (next === 2) {
+      if (!day || !temperature) {
+        setFormError("Isi hari demam dan suhu tubuh untuk melanjutkan.");
+        return;
+      }
+      const temp = Number(temperature);
+      if (!Number.isFinite(temp) || temp < 34 || temp > 43) {
+        setFormError("Masukkan suhu antara 34°C dan 43°C.");
+        return;
+      }
+    }
+    setFormError("");
+    setStep(next);
+    if (next === 4) calculateResult();
+  };
+
+  const calculateResult = () => {
+    const selected = content.symptoms.filter((item) => checked.includes(String(item.id)));
+    const emergency = selected.some((item) => item.danger);
+    let score = selected.reduce((total, item) => total + item.w, 0);
+    if (Number(day) >= 3 && Number(day) <= 5) score += 3;
+    if (Number(temperature) >= 39) score += 2;
+    else if (Number(temperature) >= 38) score += 1;
+    const level: Risk = emergency || score >= 8 ? "tinggi" : score >= 4 ? "sedang" : "rendah";
+    setResult({ level, score, emergency });
+
+    if (user) {
+      apiPost("/api/checks", {
+        level,
+        score,
+        symptomIds: selected.map((item) => String(item.id)),
+      }).catch(() => {
+        // The local screening result remains available if statistics cannot be reached.
+      });
+    }
+  };
+
+  const reset = () => {
+    setDay("");
+    setTemperature("");
+    setChecked([]);
+    setResult(null);
+    setFormError("");
+    setStep(1);
+  };
+
+  const continueToResult = () => {
     if (!user) {
       onNeedAuth();
       return;
     }
-    if (!checked.length) {
-      setResult("Pilih minimal satu gejala.");
-      return;
-    }
-    const ch = content.symptoms.filter((x) => checked.includes(String(x.id)));
-    const sc = ch.reduce((a, x) => a + x.w, 0);
-    const lv = scoreLevel(sc, ch.some((x) => x.danger));
-    setResult(`${lv}|${sc}`);
-    // Catat ke statistik (best-effort, boleh anonim)
-    apiPost("/api/checks", { level: lv, score: sc, symptomIds: checked }).catch(() => {});
+    nextStep(4);
   };
 
-  const toggle = (id: string) =>
-    setChecked((c) => (c.includes(id) ? c.filter((x) => x !== id) : [...c, id]));
-
-  const [lv, sc] = result?.includes("|") ? result.split("|") : [];
-  const cls = lv === "tinggi" ? "bg-[#fde8e8] border-danger" : lv === "sedang" ? "bg-[#fff3cd] border-[#e0a100]" : lv === "rendah" ? "bg-[#e3f5ea] border-okgreen" : "bg-white border-line";
-
   return (
-    <section className="py-11">
-      <h2 className="text-2xl font-bold">Cek Gejala</h2>
-      <p className="text-sm text-muted">Centang gejala yang sedang Anda alami. Hasil hanya skrining awal, bukan diagnosis.</p>
-      <div className="my-4 grid gap-2.5 md:grid-cols-2">
-        {content.symptoms.map((x) => (
-          <label key={String(x.id)} className="flex cursor-pointer items-center gap-3 rounded-[10px] border border-line bg-white p-3 hover:border-acc">
-            <input type="checkbox" className="h-[18px] w-[18px] accent-[#1366d6]" checked={checked.includes(String(x.id))} onChange={() => toggle(String(x.id))} />
-            <span>{x.label}</span>
-          </label>
-        ))}
+    <section className="dbd-section" id="cek-gejala">
+      <div className="dbd-section-heading">
+        <span className="dbd-kicker">Skrining awal</span>
+        <h2>🩺 Cek Gejala (Smart Triage)</h2>
+        <p>Jawab beberapa pertanyaan untuk mengukur risiko DBD. Hasil bersifat edukasi, <b>bukan diagnosis medis</b>.</p>
       </div>
-      <button onClick={show} className="rounded-[10px] bg-acc px-5 py-2.5 font-bold text-white">Lihat hasil</button>
-      {result && (
-        <div className={`mt-4 rounded-xl border-l-[6px] p-4 ${cls}`}>
-          {lv ? (
-            <>
-              <b>{lv === "tinggi" ? "Risiko tinggi" : lv === "sedang" ? "Risiko sedang" : "Risiko rendah"} (skor {sc})</b>
-              <p>{ADVICE[lv]} Ini hanya skrining awal, bukan diagnosis medis.</p>
-            </>
-          ) : (
-            <p>{result}</p>
-          )}
+
+      <div className="dbd-card dbd-triage-card">
+        <div className="dbd-steps" aria-label={`Langkah ${step} dari 4`}>
+          {Array.from({ length: 4 }, (_, index) => (
+            <span key={index} className={index < step ? "is-done" : ""} />
+          ))}
         </div>
-      )}
-      {!user && <p className="mt-2 text-sm text-muted">Hasil hanya untuk pengguna yang sudah masuk.</p>}
+
+        {step === 1 && (
+          <div className="dbd-step-panel">
+            <h3>Langkah 1: Informasi Dasar</h3>
+            <div className="dbd-form-group">
+              <label htmlFor="fever-day">Sudah berapa hari demam?</label>
+              <select id="fever-day" value={day} onChange={(event) => setDay(event.target.value)}>
+                <option value="">— Pilih —</option>
+                {Array.from({ length: 6 }, (_, index) => (
+                  <option value={index + 1} key={index}>Hari {index + 1}</option>
+                ))}
+                <option value={7}>Hari 7+</option>
+              </select>
+            </div>
+            <div className="dbd-form-group">
+              <label htmlFor="fever-temperature">Suhu tubuh saat ini (°C)</label>
+              <input
+                id="fever-temperature"
+                type="number"
+                min="34"
+                max="43"
+                step="0.1"
+                placeholder="Contoh: 39.2"
+                value={temperature}
+                onChange={(event) => setTemperature(event.target.value)}
+              />
+            </div>
+            <div className="dbd-step-actions dbd-step-actions-end">
+              <button className="dbd-button dbd-button-primary" type="button" onClick={() => nextStep(2)}>Lanjut →</button>
+            </div>
+          </div>
+        )}
+
+        {step === 2 && (
+          <div className="dbd-step-panel">
+            <h3>Langkah 2: Gejala yang Dirasakan</h3>
+            <div className="dbd-check-grid">
+              {regularSymptoms.map((symptom) => {
+                const id = String(symptom.id);
+                return (
+                  <label className={`dbd-check-item${checked.includes(id) ? " is-checked" : ""}`} key={id}>
+                    <input type="checkbox" checked={checked.includes(id)} onChange={() => toggle(id)} />
+                    <span>{symptom.label}</span>
+                  </label>
+                );
+              })}
+            </div>
+            <div className="dbd-step-actions">
+              <button className="dbd-button dbd-button-muted" type="button" onClick={() => nextStep(1)}>← Kembali</button>
+              <button className="dbd-button dbd-button-primary" type="button" onClick={() => nextStep(3)}>Lanjut →</button>
+            </div>
+          </div>
+        )}
+
+        {step === 3 && (
+          <div className="dbd-step-panel">
+            <h3>Langkah 3: Tanda Bahaya ⚠️</h3>
+            <p className="dbd-step-description">Jika mengalami salah satu tanda bahaya, segera cari pertolongan medis.</p>
+            <div className="dbd-check-grid">
+              {dangerSymptoms.map((symptom) => {
+                const id = String(symptom.id);
+                return (
+                  <label className={`dbd-check-item dbd-check-danger${checked.includes(id) ? " is-checked" : ""}`} key={id}>
+                    <input type="checkbox" checked={checked.includes(id)} onChange={() => toggle(id)} />
+                    <span>{symptom.label}</span>
+                  </label>
+                );
+              })}
+            </div>
+            <div className="dbd-step-actions">
+              <button className="dbd-button dbd-button-muted" type="button" onClick={() => nextStep(2)}>← Kembali</button>
+              <button className="dbd-button dbd-button-primary" type="button" onClick={continueToResult}>Lihat Hasil</button>
+            </div>
+          </div>
+        )}
+
+        {step === 4 && result && (
+          <div className={`dbd-result dbd-risk-${result.level}`}>
+            <div className="dbd-result-icon" aria-hidden="true">
+              {result.level === "tinggi" ? "🚨" : result.level === "sedang" ? "🟡" : "🟢"}
+            </div>
+            <h3>{result.emergency ? "Tanda Bahaya — Segera ke IGD" : `Risiko ${result.level}`}</h3>
+            <p>{result.emergency ? "Ada tanda bahaya yang perlu segera ditangani." : ADVICE[result.level]}</p>
+            {result.emergency && <a className="dbd-button dbd-button-red" href="tel:119">📞 Hubungi 119 / Ke IGD</a>}
+            <p className="dbd-result-score">Skor skrining: {result.score}. Hasil ini bukan diagnosis dan tidak menggantikan pemeriksaan tenaga kesehatan.</p>
+            <button className="dbd-button dbd-button-muted" type="button" onClick={reset}>🔄 Ulangi Pemeriksaan</button>
+          </div>
+        )}
+
+        {formError && <p className="dbd-error" role="alert">{formError}</p>}
+        {!user && step < 4 && (
+          <p className="dbd-login-note">Masuk untuk melihat dan menyimpan hasil skrining Anda.</p>
+        )}
+      </div>
     </section>
   );
 }
-
-import * as React from "react";
