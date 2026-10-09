@@ -1,10 +1,9 @@
 import bcrypt from "bcryptjs";
-import crypto from "crypto";
 import { Router } from "express";
 import jwt from "jsonwebtoken";
 import { z } from "zod";
 import { prisma } from "../lib/prisma";
-import { requireAuth, signAccess, signRefresh, timingSafeEqual, type Authed } from "../middleware/auth";
+import { requireAuth, signAccess, signRefresh, type Authed } from "../middleware/auth";
 
 // Normalisasi hash bcrypt PHP ($2y$) agar bisa diverifikasi bcryptjs ($2b$ = algoritma sama)
 const portable = (h: string) => h.replace(/^\$2y\$/, "$2b$");
@@ -17,30 +16,19 @@ function pub(u: { name: string; email: string; role: string }) {
 }
 
 router.post("/signup", async (req, res) => {
-  const s = z.object({ name: z.string().trim().min(1).max(60), email, password: z.string().min(6), admin_code: z.string().optional().default("") }).safeParse(req.body);
+  const s = z.object({ name: z.string().trim().min(1).max(60), email, password: z.string().min(6) }).safeParse(req.body);
   if (!s.success) {
     res.status(400).json({ error: "Lengkapi data dengan benar (password minimal 6 karakter)" });
     return;
   }
   const { name, password } = s.data;
   const em = s.data.email;
-  const adminCode = s.data.admin_code || "";
   if (await prisma.user.findUnique({ where: { email: em } })) {
     res.status(409).json({ error: "Email sudah terdaftar" });
     return;
   }
-  let role = "user";
-  if (adminCode !== "") {
-    const cfg = process.env.ADMIN_CODE || "";
-    await new Promise((r) => setTimeout(r, 700));
-    if (cfg === "" || !timingSafeEqual(cfg, adminCode)) {
-      res.status(403).json({ error: "Kode admin salah" });
-      return;
-    }
-    role = "admin";
-  }
   const passwordHash = await bcrypt.hash(password, 12);
-  const u = await prisma.user.create({ data: { name: name.slice(0, 60), email: em, passwordHash, role } });
+  const u = await prisma.user.create({ data: { name: name.slice(0, 60), email: em, passwordHash } });
   const access = signAccess({ id: u.id, email: u.email, role: u.role, name: u.name });
   const refresh = signRefresh({ id: u.id, email: u.email, role: u.role, name: u.name });
   res.cookie("refresh", refresh, { httpOnly: true, sameSite: "lax", maxAge: 7 * 864e5 });

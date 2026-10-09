@@ -28,6 +28,7 @@ async function main() {
     const em = `smoke${Date.now()}@x.co`;
     let r = await fetch(`${BASE}/api/auth/signup`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: "Smoke", email: em, password: "rahasia123" }) });
     ok("signup 200", r.ok);
+    ok("signup role user", (await r.json()).user.role === "user");
     r = await fetch(`${BASE}/api/auth/signup`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: "Smoke", email: em, password: "rahasia123" }) });
     ok("signup duplikat 409", r.status === 409);
     r = await fetch(`${BASE}/api/auth/login`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: em, password: "salah" }) });

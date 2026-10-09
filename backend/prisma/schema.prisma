@@ -1,11 +1,12 @@
-// Lokal: SQLite tanpa Docker. Deploy gratis (Supabase):
-// ganti provider menjadi "postgresql" + DATABASE_URL pooler Supabase.
+// Lokal: SQLite tanpa Docker, nol dependensi eksternal.
+// Deploy gratis (Supabase): ganti provider menjadi "postgresql" + DATABASE_URL pooler Supabase,
+// lalu buat ulang migrasi, termasuk 11 baris ENABLE ROW LEVEL SECURITY untuk mengunci Data API.
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
