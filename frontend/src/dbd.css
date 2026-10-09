@@ -90,18 +90,40 @@ html[data-theme="dark"] body {
 }
 
 .dbd-header {
+  --hdr-blur: 0px;
+  --hdr-alpha: 0;
   position: sticky;
   top: 0;
   z-index: 40;
   border-bottom: 1px solid transparent;
   background: transparent;
-  transition: background-color 0.25s, border-color 0.25s, backdrop-filter 0.25s;
+  /* Backdrop-filter is discrete in some browsers, so the visible fade rides
+     on the ::before opacity (GPU-friendly) while blur follows a scroll var. */
+  -webkit-backdrop-filter: blur(var(--hdr-blur)) saturate(1.4);
+  backdrop-filter: blur(var(--hdr-blur)) saturate(1.4);
+  transition: border-color 0.5s ease, box-shadow 0.5s ease;
+}
+
+.dbd-header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: rgba(255, 255, 255, 0.85);
+  background: color-mix(in srgb, var(--dbd-surface) 85%, transparent);
+  opacity: var(--hdr-alpha);
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+
+html[data-theme="dark"] .dbd-header::before {
+  background: rgba(13, 21, 32, 0.85);
+  background: color-mix(in srgb, var(--dbd-surface) 85%, transparent);
 }
 
 .dbd-header.is-scrolled {
   border-bottom-color: var(--dbd-border);
-  background: color-mix(in srgb, var(--dbd-surface) 80%, transparent);
-  backdrop-filter: blur(16px);
+  box-shadow: 0 8px 32px rgba(20, 38, 61, 0.12);
 }
 
 @media (min-width: 761px) {
@@ -161,14 +183,16 @@ html[data-theme="dark"] body {
 
 .dbd-nav-link,
 .dbd-admin-link {
-  padding: 8px 9px;
+  padding: 8px 16px;
   border: 0;
-  border-radius: 8px;
+  border-radius: 999px;
   background: transparent;
   color: var(--dbd-text);
   font: 700 0.85rem "Plus Jakarta Sans", system-ui, sans-serif;
   text-decoration: none;
+  white-space: nowrap;
   cursor: pointer;
+  transition: background-color 0.18s, color 0.18s;
 }
 
 .dbd-nav-link:hover,
@@ -359,6 +383,35 @@ html[data-theme="dark"] body {
   box-shadow: var(--dbd-shadow);
 }
 
+.dbd-card-narrow {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.dbd-triage-card,
+.dbd-card-narrow,
+.dbd-calc-grid > .dbd-card {
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+
+@media (hover: hover) {
+  .dbd-triage-card:hover,
+  .dbd-card-narrow:hover,
+  .dbd-calc-grid > .dbd-card:hover {
+    transform: translateY(-4px);
+    border-color: color-mix(in srgb, var(--dbd-accent) 35%, var(--dbd-border));
+    box-shadow: 0 12px 32px rgba(20, 38, 61, 0.14);
+  }
+}
+
+.dbd-triage-card:focus-within,
+.dbd-card-narrow:focus-within,
+.dbd-calc-grid > .dbd-card:focus-within {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--dbd-accent) 35%, var(--dbd-border));
+  box-shadow: 0 12px 32px rgba(20, 38, 61, 0.14);
+}
+
 .dbd-danger-card {
   padding: 18px 20px;
 }
@@ -455,6 +508,8 @@ html[data-theme="dark"] body {
 
 .dbd-fly {
   position: absolute;
+  top: 0;
+  left: 0;
   z-index: 2;
   padding: 6px;
   border: 0;
@@ -463,6 +518,23 @@ html[data-theme="dark"] body {
   line-height: 0;
   cursor: crosshair;
   filter: drop-shadow(0 2px 3px rgba(20, 38, 61, 0.2));
+  transition: opacity 0.4s ease;
+}
+
+.dbd-fly.is-perched {
+  filter: drop-shadow(0 4px 5px rgba(20, 38, 61, 0.28));
+}
+
+.dbd-fly.is-perched::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 26px;
+  height: 6px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: rgba(20, 38, 61, 0.18);
 }
 
 .dbd-emergency-strip {
@@ -507,8 +579,8 @@ html[data-theme="dark"] body {
 .dbd-emergency-icon.is-blue { background: var(--dbd-blue-soft); }
 
 .dbd-section {
-  padding: 62px 0 14px;
-  scroll-margin-top: 82px;
+  padding: 24px 0 14px;
+  scroll-margin-top: 92px;
 }
 
 .dbd-section-heading {
@@ -528,7 +600,7 @@ html[data-theme="dark"] body {
 }
 
 .dbd-phase-section {
-  padding-top: 50px;
+  padding-top: 24px;
 }
 
 .dbd-phase-bar {
@@ -642,12 +714,15 @@ html[data-theme="dark"] body {
 .dbd-check-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-auto-rows: 1fr;
+  align-items: stretch;
   gap: 8px;
 }
 
 .dbd-check-item {
   display: flex;
-  min-height: 48px;
+  height: 100%;
+  min-height: 56px;
   align-items: center;
   gap: 9px;
   padding: 9px 12px;
@@ -655,13 +730,16 @@ html[data-theme="dark"] body {
   border-radius: 9px;
   background: var(--dbd-surface);
   font-size: 0.87rem;
+  line-height: 1.4;
+  text-align: left;
   cursor: pointer;
   transition: border-color 0.15s, background 0.15s;
 }
 
 .dbd-check-item:hover,
 .dbd-check-item.is-checked { border-color: var(--dbd-accent); background: var(--dbd-accent-soft); }
-.dbd-check-item input { width: 17px; height: 17px; accent-color: var(--dbd-accent); }
+.dbd-check-item input { flex: 0 0 auto; width: 17px; height: 17px; margin: 0; accent-color: var(--dbd-accent); }
+.dbd-check-item span { flex: 1 1 auto; min-width: 0; overflow-wrap: break-word; }
 .dbd-check-danger { border-color: var(--dbd-red); }
 .dbd-check-danger.is-checked { border-color: var(--dbd-red); background: var(--dbd-red-soft); }
 .dbd-check-danger input { accent-color: var(--dbd-red); }
@@ -774,6 +852,26 @@ html[data-theme="dark"] body {
   font-size: 0.84rem;
 }
 
+.dbd-info-box {
+  max-width: 760px;
+  margin: 0 auto 18px;
+  padding: 14px 16px;
+  border: 1px solid var(--dbd-border);
+  border-radius: 12px;
+  background: var(--dbd-accent-soft);
+  color: var(--dbd-muted);
+  font: 400 0.87rem/1.65 "Plus Jakarta Sans", system-ui, sans-serif;
+}
+
+.dbd-info-box b,
+.dbd-info-box strong { color: var(--dbd-text); }
+
+.dbd-info-box p { margin: 0; }
+.dbd-info-box p + p { margin-top: 6px; }
+.dbd-info-box ul { margin: 8px 0 0; padding-left: 18px; color: var(--dbd-muted); }
+.dbd-info-box li + li { margin-top: 3px; }
+.dbd-info-box-compact { max-width: none; margin: 0 0 14px; }
+
 .dbd-calc-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -873,7 +971,7 @@ html[data-theme="dark"] .dbd-footer { background: #080e16; }
   .dbd-nav { display: none; flex-direction: column; align-items: stretch; gap: 2px; padding: 5px 0; }
   .dbd-nav.is-open { display: flex; }
   .dbd-nav-link,
-  .dbd-admin-link { padding: 10px; text-align: left; }
+  .dbd-admin-link { padding: 10px 14px; border-radius: 12px; text-align: left; }
   .dbd-header-actions { order: 4; width: 100%; justify-content: flex-end; }
   .dbd-hero { grid-template-columns: 1fr; min-height: auto; padding: 34px 22px; background-size: auto 65%; background-position: right bottom; }
   .dbd-hero-copy { max-width: 620px; }
@@ -908,4 +1006,7 @@ html[data-theme="dark"] .dbd-footer { background: #080e16; }
   *,
   *::before,
   *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  .dbd-triage-card,
+  .dbd-card-narrow,
+  .dbd-calc-grid > .dbd-card { transform: none !important; }
 }

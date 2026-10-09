@@ -110,6 +110,10 @@ export default function FluidCalculator() {
       <div className="dbd-calc-grid">
         <div className="dbd-card">
           <h3>💧 Kalkulator Asupan Cairan</h3>
+          <div className="dbd-info-box dbd-info-box-compact">
+            <p><b>Ini perkiraan minum harian biasa</b> (bukan dosis infus), dihitung dari berat badan.</p>
+            <p>Tetap ikuti anjuran dokter, apalagi kalau muntah terus atau tidak bisa minum.</p>
+          </div>
           <form onSubmit={calculateFluid}>
             <div className="dbd-form-group">
               <label htmlFor="calc-weight">Berat badan (kg)</label>
@@ -135,6 +139,14 @@ export default function FluidCalculator() {
 
         <div className="dbd-card">
           <h3>🩸 Log Trombosit</h3>
+          <div className="dbd-info-box dbd-info-box-compact">
+            <p><b>Trombosit = keping darah</b> yang membantu darah membeku. Normalnya sekitar 150–400 ribu/µL, saat DBD bisa turun.</p>
+            <ul>
+              <li>Di bawah 100 ribu → segera konsultasi ke dokter.</li>
+              <li>Di bawah 50 ribu → kondisi bahaya, ke IGD.</li>
+              <li>Isi angka <b>hanya dari hasil lab</b>, bukan tebak sendiri.</li>
+            </ul>
+          </div>
           <form className="dbd-tracker-form dbd-tracker-compact" onSubmit={addPlatelet}>
             <div className="dbd-form-group">
               <label htmlFor="platelet-day">Hari ke-</label>

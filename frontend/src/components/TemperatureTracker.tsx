@@ -85,7 +85,16 @@ export default function TemperatureTracker() {
         <p>Catat suhu beberapa kali sehari. Perubahan suhu saja tidak bisa memastikan fase atau diagnosis DBD.</p>
       </Reveal>
 
-      <div className="dbd-card">
+      <div className="dbd-info-box">
+        <p><b>Buat apa?</b> Untuk melihat pola demam harian. Catat 2–4× sehari (Pagi / Siang / Sore / Malam).</p>
+        <ul>
+          <li>Garis merah di grafik = 38°C (batas demam).</li>
+          <li>Suhu turun di hari 3–5 <b>belum tentu sembuh</b> — itu masa kritis, tetap waspada.</li>
+          <li>Data tersimpan di browser HP kamu saja.</li>
+        </ul>
+      </div>
+
+      <div className="dbd-card dbd-card-narrow">
         <form className="dbd-tracker-form" onSubmit={addEntry}>
           <div className="dbd-form-group">
             <label htmlFor="track-day">Hari ke-</label>

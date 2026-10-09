@@ -126,6 +126,11 @@ export default function CekGejala({ onNeedAuth }: { onNeedAuth: () => void }) {
         <p>Jawab beberapa pertanyaan untuk mengukur risiko DBD. Hasil bersifat edukasi, <b>bukan diagnosis medis</b>.</p>
       </Reveal>
 
+      <div className="dbd-info-box">
+        <p><b>Cara pakai:</b> 1) isi hari demam + suhu → 2) centang gejala → 3) centang tanda bahaya → 4) lihat hasil.</p>
+        <p>Ini <b>skrining awal</b>, bukan diagnosis dokter. Kalau ada 1 saja tanda bahaya, langsung ke IGD.</p>
+      </div>
+
       <div className="dbd-card dbd-triage-card">
         <div className="dbd-steps" aria-label={`Langkah ${step} dari 4`}>
           {Array.from({ length: 4 }, (_, index) => (
