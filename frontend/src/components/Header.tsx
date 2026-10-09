@@ -4,20 +4,14 @@ import { useAuth } from "../lib/auth";
 import BlindPullToggle from "./BlindPullToggle";
 
 const LINKS = [
-  { id: "beranda", label: "Beranda" },
-  { id: "cek-gejala", label: "Cek Gejala" },
-  { id: "pelacak-suhu", label: "Pelacak Suhu" },
-  { id: "kalkulator", label: "Kalkulator" },
-  { id: "edukasi", label: "Edukasi" },
+  { to: "/", label: "Beranda" },
+  { to: "/cek-gejala", label: "Cek Gejala" },
+  { to: "/pelacak-suhu", label: "Pelacak Suhu" },
+  { to: "/kalkulator", label: "Kalkulator" },
+  { to: "/edukasi", label: "Edukasi" },
 ];
 
-export default function Header({
-  onAuth,
-  onNavigate,
-}: {
-  onAuth: (mode: "in" | "up") => void;
-  onNavigate: (id: string) => void;
-}) {
+export default function Header({ onAuth }: { onAuth: (mode: "in" | "up") => void }) {
   const { user, logout } = useAuth();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -45,15 +39,10 @@ export default function Header({
     }
   }, [dark]);
 
-  const goTo = (id: string) => {
-    setOpen(false);
-    onNavigate(id);
-  };
-
   return (
     <header className={`dbd-header${scrolled ? " is-scrolled" : ""}`}>
       <div className="dbd-header-inner">
-        <Link to="/" onClick={() => goTo("beranda")} className="dbd-logo">
+        <Link to="/" onClick={() => setOpen(false)} className="dbd-logo">
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M12 21c-4.4-3.2-8-6.4-8-10a8 8 0 0 1 16 0c0 3.6-3.6 6.8-8 10Z" />
             <path d="M12 7v4l2.5 1.5" />
@@ -73,9 +62,15 @@ export default function Header({
 
         <nav className={`dbd-nav${open ? " is-open" : ""}`} aria-label="Navigasi utama">
           {LINKS.map((link) => (
-            <button key={link.id} type="button" onClick={() => goTo(link.id)}>
+            <NavLink
+              key={link.to}
+              to={link.to}
+              end={link.to === "/"}
+              onClick={() => setOpen(false)}
+              className={({ isActive }) => `dbd-nav-link${isActive ? " is-active" : ""}`}
+            >
               {link.label}
-            </button>
+            </NavLink>
           ))}
           {isAdmin && (
             <NavLink to="/admin" onClick={() => setOpen(false)} className="dbd-admin-link">

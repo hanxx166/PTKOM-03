@@ -1,10 +1,6 @@
 import { motion } from "framer-motion";
-import CekGejala from "./CekGejala";
-import Education from "../components/Education";
-import FluidCalculator from "../components/FluidCalculator";
 import Hero from "../components/Hero";
 import Reveal from "../components/Reveal";
-import TemperatureTracker from "../components/TemperatureTracker";
 import { useContent } from "../lib/content";
 import {
   cardHoverBox,
@@ -53,9 +49,8 @@ const EMERGENCY = [
   },
 ];
 
-export default function Dashboard({ onNeedAuth }: { onNeedAuth: () => void }) {
-  const { totalChecks, content } = useContent();
-  const mapsQuery = encodeURIComponent(content?.contact?.maps || "Poliklinik ITERA, Lampung Selatan");
+export default function Dashboard() {
+  const { totalChecks } = useContent();
   const reduced = useReducedMotion();
 
   return (
@@ -117,36 +112,6 @@ export default function Dashboard({ onNeedAuth }: { onNeedAuth: () => void }) {
           ))}
         </motion.div>
       </section>
-
-      <CekGejala onNeedAuth={onNeedAuth} />
-      <TemperatureTracker />
-      <FluidCalculator />
-      <Education />
-
-      <footer className="dbd-footer">
-        <div className="dbd-footer-grid">
-          <div>
-            <h2>CekDBD</h2>
-            <p>Sistem edukasi dan pemantauan mandiri DBD untuk sivitas akademika ITERA.</p>
-            <p className="dbd-footer-muted">⚕️ Bukan pengganti diagnosis dokter.</p>
-          </div>
-          <div>
-            <h3>Kontak Medis</h3>
-            <p>📍 Poliklinik ITERA, Labtek O Lt.1, Jati Agung</p>
-            <p>📞 <a href="tel:+627218030188">(0721) 8030188</a></p>
-            <p>🕐 Senin-Jumat: 08.00-16.30 WIB</p>
-            <a href={`https://www.google.com/maps/search/?api=1&query=${mapsQuery}`} target="_blank" rel="noreferrer">Buka lokasi di Google Maps ↗</a>
-            <p><a href="https://www.instagram.com/poliklinik_itera/" target="_blank" rel="noreferrer">Instagram Poliklinik ITERA ↗</a></p>
-          </div>
-          <div>
-            <h3>Rujukan</h3>
-            <p>🏥 RS Airan Raya - IGD 24 jam</p>
-            <p>🏥 RSUD Dr. H. Abdul Moeloek</p>
-            <p>🚨 Darurat: <a href="tel:119"><b>119</b></a></p>
-          </div>
-        </div>
-        <p className="dbd-copyright">© 2026 CekDBD. Informasi ini bukan pengganti nasihat dokter.</p>
-      </footer>
     </>
   );
 }
