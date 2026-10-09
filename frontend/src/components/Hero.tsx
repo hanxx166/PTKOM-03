@@ -13,6 +13,10 @@ import {
 const FLY_SIZE = 42;
 // Slow glide speed in px per second.
 const SPEED = 40;
+// Perched (mangkal) behaviour: chance to rest at a random spot after each leg.
+const PERCH_CHANCE = 0.45;
+const PERCH_MIN_S = 1.8;
+const PERCH_MAX_S = 3.2;
 
 function Mosquito({
   arena,
@@ -24,12 +28,20 @@ function Mosquito({
   onHit: (x: number, y: number) => void;
 }) {
   const [hit, setHit] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const [perched, setPerched] = useState(false);
   const controls = useAnimation();
   const reduced = useReducedMotion();
 
   useEffect(() => {
     if (!arena) return;
     let alive = true;
+    const timers: number[] = [];
+    const wait = (ms: number) =>
+      new Promise<void>((resolve) => {
+        const id = window.setTimeout(() => resolve(), ms);
+        timers.push(id);
+      });
     const randomPoint = () => {
       const rect = arena.getBoundingClientRect();
       return {
@@ -38,12 +50,14 @@ function Mosquito({
       };
     };
     const fly = async () => {
-      if (startDelay > 0)
-        await new Promise((resolve) => setTimeout(resolve, startDelay * 1000));
+      if (startDelay > 0) await wait(startDelay * 1000);
       if (!alive) return;
       // Randomize the starting spot so mosquitoes don't bunch up at a corner.
+      // Only show the mosquito after the staggered spawn delay so it never
+      // flashes at (0,0) while waiting.
       let current = randomPoint();
       controls.set({ x: current.x, y: current.y });
+      setVisible(true);
       if (reduced) return;
       while (alive) {
         const target = randomPoint();
@@ -65,12 +79,24 @@ function Mosquito({
         } catch {
           break; // stopped on unmount
         }
+        if (!alive) break;
         current = target;
+        // Mangkal: rest at a random spot for a while before taking off again.
+        if (Math.random() < PERCH_CHANCE) {
+          setPerched(true);
+          const rest = PERCH_MIN_S + Math.random() * (PERCH_MAX_S - PERCH_MIN_S);
+          await wait(rest * 1000);
+          if (!alive) break;
+          setPerched(false);
+          await wait(250);
+          if (!alive) break;
+        }
       }
     };
     fly();
     return () => {
       alive = false;
+      timers.forEach((id) => window.clearTimeout(id));
       controls.stop();
     };
   }, [arena, controls, reduced, startDelay]);
@@ -79,7 +105,8 @@ function Mosquito({
     <motion.button
       type="button"
       aria-label="Tepuk nyamuk"
-      className="dbd-fly"
+      className={`dbd-fly${perched ? " is-perched" : ""}`}
+      style={{ opacity: visible ? 1 : 0 }}
       initial={false}
       animate={controls}
       onClick={(event) => {
@@ -95,7 +122,9 @@ function Mosquito({
         animate={
           hit
             ? { scale: 0.2, opacity: 0, rotate: 110 }
-            : { scale: 1, opacity: 1, rotate: 0 }
+            : perched
+              ? { scale: 0.9, opacity: 0.92, rotate: -8 }
+              : { scale: 1, opacity: 1, rotate: 0 }
         }
         transition={{
           scale: { type: "spring", stiffness: 500, damping: 18 },
@@ -202,10 +231,11 @@ export default function Hero({ totalChecks }: { totalChecks: number }) {
     <section className="dbd-hero" id="beranda">
       <WaterRipples reduced={reduced} />
       <div ref={setArena} className="dbd-fly-arena">
-        <Mosquito arena={arena} startDelay={0} onHit={handleHit} />
-        <Mosquito arena={arena} startDelay={1.1} onHit={handleHit} />
-        <Mosquito arena={arena} startDelay={2.3} onHit={handleHit} />
-        <Mosquito arena={arena} startDelay={0.6} onHit={handleHit} />
+        <Mosquito arena={arena} startDelay={0.2} onHit={handleHit} />
+        <Mosquito arena={arena} startDelay={1.7} onHit={handleHit} />
+        <Mosquito arena={arena} startDelay={3.2} onHit={handleHit} />
+        <Mosquito arena={arena} startDelay={4.7} onHit={handleHit} />
+        <Mosquito arena={arena} startDelay={6.2} onHit={handleHit} />
         {fx && <MosquitoSplat key={fx.id} x={fx.x} y={fx.y} particles={fx.particles} />}
       </div>
 
