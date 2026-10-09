@@ -10,7 +10,7 @@ services:
       - key: NODE_VERSION
         value: 20
       - key: DATABASE_URL
-        sync: false # isi manual dengan pooler URL Supabase (:6543)
+        sync: false # isi manual dengan pooler URL Supabase: host *.pooler.supabase.com, port 5432
       - key: JWT_SECRET
         generateValue: true
       - key: FRONTEND_URL

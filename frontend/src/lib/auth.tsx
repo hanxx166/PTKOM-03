@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import type { User } from "./types";
-import { API_BASE, HAS_BACKEND } from "./backend";
+import { API_BASE, forgetAccessToken, HAS_BACKEND, refreshSession, setAccessToken, setSessionLostHandler } from "./backend";
 
 interface AuthCtx {
   user: User | null;
@@ -12,22 +12,6 @@ interface AuthCtx {
 
 const Ctx = createContext<AuthCtx | null>(null);
 
-export function getToken(): string {
-  try {
-    return localStorage.getItem("token") || "";
-  } catch {
-    return "";
-  }
-}
-
-function setToken(t: string) {
-  try {
-    if (t) localStorage.setItem("token", t);
-    else localStorage.removeItem("token");
-  } catch {
-    /* abaikan */
-  }
-}
 async function sha(s: string): Promise<string> {
   if (crypto.subtle) {
     const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
@@ -41,21 +25,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [mode] = useState(() => (HAS_BACKEND ? "server" : "local"));
 
   useEffect(() => {
-    // Coba sesi BE baru, fallback localStorage (mode gratis/standalone)
+    // Refresh gagal = sesi benar-benar habis. Bersihkan state supaya header
+    // tidak masih menampilkan orang yang sudah logout di server.
+    setSessionLostHandler(() => {
+      forgetAccessToken();
+      setUser(null);
+      try {
+        localStorage.removeItem("user");
+      } catch {
+        /* abaikan */
+      }
+    });
+
+    // Sumber kebenaran di mode server adalah refresh cookie, bukan localStorage:
+    // cookie httpOnly bertahan 7 hari, sedangkan access token hanya 15 menit.
+    // Refresh gagal berarti sesi habis, jadi jangan fallback ke localStorage;
+    // itu akan menampilkan login yang sudah tidak berlaku di server.
     (async () => {
       if (HAS_BACKEND) {
-        try {
-          const r = await fetch(`${API_BASE}/api/auth/me`, {
-            headers: getToken() ? { Authorization: "Bearer " + getToken() } : {},
-          });
-          const j = await r.json();
-          if (j.user) {
-            setUser(j.user);
-            return;
-          }
-        } catch {
-          /* abaikan */
-        }
+        setUser(await refreshSession());
+        return;
       }
       try {
         const u = JSON.parse(localStorage.getItem("user") || "null");
@@ -87,7 +76,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
       const j = await r.json();
       if (!r.ok) throw new Error(j.error || "Login gagal");
-      setToken(j.token || "");
+      setAccessToken(j.token || "");
       persist(j.user);
       return;
     }
@@ -111,7 +100,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
       const j = await r.json();
       if (!r.ok) throw new Error(j.error || "Daftar gagal");
-      setToken(j.token || "");
+      setAccessToken(j.token || "");
       persist(j.user);
       return;
     }
@@ -132,7 +121,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     }
     persist(null);
-    setToken("");
+    setAccessToken("");
   }, []);
 
   return <Ctx.Provider value={{ user, mode, login, signup, logout }}>{children}</Ctx.Provider>;

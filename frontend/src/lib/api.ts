@@ -1,22 +1,26 @@
 import type { ContentBundle } from "./types";
-import { API_BASE, HAS_BACKEND } from "./backend";
+import { API_BASE, getAccessToken, HAS_BACKEND, refreshSession } from "./backend";
 
-async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
-  const token = (() => {
-    try {
-      return localStorage.getItem("token") || "";
-    } catch {
-      return "";
-    }
-  })();
-  const r = await fetch(url, {
+/**
+ * Satu request dengan token access. Kalau 401 (access token kedaluwarsa),
+ * coba tukar refresh cookie sekali lalu ulangi request yang sama. Satu kali
+ * saja supaya sesi yang benar-benar sudah habis tidak berubah jadi loop.
+ */
+function once(url: string, init?: RequestInit): Promise<Response> {
+  const token = getAccessToken();
+  return fetch(url, {
+    ...init,
     headers: {
       "Content-Type": "application/json",
       ...(token ? { Authorization: "Bearer " + token } : {}),
       ...(init?.headers || {}),
     },
-    ...init,
   });
+}
+
+async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
+  let r = await once(url, init);
+  if (r.status === 401 && (await refreshSession())) r = await once(url, init);
   const j = await r.json().catch(() => {
     throw new Error("Backend belum berjalan");
   });
