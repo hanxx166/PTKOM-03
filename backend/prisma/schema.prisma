@@ -70,6 +70,15 @@ model Fact {
   text String
 }
 
+// FAQ: pertanyaan umum beserta jawabannya, terpisah dari Fact yang berisi
+// angka statistik. Jawaban boleh memakai markdown **tebal**.
+model Faq {
+  id        Int    @id @default(autoincrement())
+  question  String
+  answer    String
+  sortOrder Int    @default(0)
+}
+
 model SiteSetting {
   key   String @id
   value String

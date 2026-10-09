@@ -31,7 +31,7 @@ async function main() {
   ok("health", ready);
   try {
     const c = await (await fetch(`${BASE}/api/content`)).json();
-    ok("content lengkap", c.articles?.length >= 4 && c.symptoms?.length >= 1 && c.tasks?.length >= 1);
+    ok("content lengkap", c.articles?.length >= 4 && c.symptoms?.length >= 1 && c.tasks?.length >= 1 && c.faq?.length >= 6);
     const em = emailSmoke;
     let r = await fetch(`${BASE}/api/auth/signup`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: "Smoke", email: em, password: "rahasia123" }) });
     ok("signup 200", r.ok);

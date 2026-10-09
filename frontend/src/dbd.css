@@ -8,6 +8,7 @@
   --dbd-accent: #1366d6;
   --dbd-accent-hover: #0d4fae;
   --dbd-accent-soft: #dbeafe;
+  --dbd-on-fill: #ffffff;
   --dbd-border: #d5e1ee;
   --dbd-red: #d93a3a;
   --dbd-red-soft: #fde8e8;
@@ -31,6 +32,7 @@ html[data-theme="dark"] {
   --dbd-accent: #4d9fff;
   --dbd-accent-hover: #3580dd;
   --dbd-accent-soft: #1a2f4a;
+  --dbd-on-fill: #07121f;
   --dbd-border: #2a3a4e;
   --dbd-red: #f06060;
   --dbd-red-soft: #2e1a1a;
@@ -52,6 +54,13 @@ html {
 html,
 body {
   overflow-x: clip;
+}
+
+/* Badan nyamuk memakai currentColor dari svg; bagian highlight memakai warna
+   latar supaya tetap terlihat di mode terang dan mode gelap. */
+.dbd-mosquito path:last-of-type {
+  fill: var(--dbd-bg);
+  stroke: var(--dbd-bg);
 }
 
 body {
@@ -226,7 +235,7 @@ html[data-theme="dark"] body {
 
 .dbd-button-primary {
   background: var(--dbd-accent);
-  color: #fff;
+  color: var(--dbd-on-fill);
 }
 
 .dbd-button-primary:hover {
@@ -242,7 +251,7 @@ html[data-theme="dark"] body {
 
 .dbd-button-outline:hover {
   background: var(--dbd-accent);
-  color: #fff;
+  color: var(--dbd-on-fill);
 }
 
 .dbd-button-small {
@@ -258,7 +267,7 @@ html[data-theme="dark"] body {
 
 .dbd-button-red {
   background: var(--dbd-red);
-  color: #fff;
+  color: var(--dbd-on-fill);
 }
 
 .dbd-hero {
@@ -527,7 +536,7 @@ html[data-theme="dark"] body {
   min-height: 40px;
   overflow: hidden;
   border-radius: 10px;
-  color: #fff;
+  color: var(--dbd-on-fill);
   font-size: 0.73rem;
   font-weight: 800;
   text-align: center;
@@ -807,8 +816,21 @@ html[data-theme="dark"] body {
 .dbd-tag { display: inline-block; margin-bottom: 9px; padding: 3px 9px; border-radius: 20px; font-size: 0.68rem; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; }
 .dbd-tag.is-prevention { background: var(--dbd-green-soft); color: var(--dbd-green); }
 .dbd-tag.is-first-aid { background: var(--dbd-blue-soft); color: var(--dbd-blue); }
+.dbd-tag.is-basic { background: var(--dbd-blue-soft); color: var(--dbd-blue); }
+.dbd-tag.is-symptom { background: var(--dbd-red-soft); color: var(--dbd-red); }
+.dbd-tag.is-handling { background: var(--dbd-orange-soft); color: var(--dbd-orange); }
+.dbd-tag.is-tip { background: var(--dbd-accent-soft); color: var(--dbd-accent); }
 
-.dbd-faq-heading { margin: 28px 0 12px; text-align: center; font-size: 1.08rem; }
+.dbd-article-list { max-width: 780px; margin: 0 auto; }
+
+.dbd-article-card { margin-bottom: 12px; padding: 21px; }
+.dbd-article-card h3 { margin: 0 0 6px; font-size: 1.05rem; }
+.dbd-article-meta { margin: 0 0 12px; color: var(--dbd-muted); font-size: 0.75rem; }
+.dbd-article-card p { margin: 0; line-height: 1.65; }
+.dbd-article-card p + p { margin-top: 9px; }
+
+.dbd-faq-heading,
+.dbd-subheading { margin: 28px 0 12px; text-align: center; font-size: 1.08rem; }
 .dbd-faq-list { max-width: 780px; margin: 0 auto; }
 .dbd-faq-item { margin-bottom: 8px; overflow: hidden; border: 1px solid var(--dbd-border); border-radius: 10px; background: var(--dbd-surface); }
 .dbd-faq-item h4 { margin: 0; }

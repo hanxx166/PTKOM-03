@@ -31,12 +31,20 @@ export interface Fact {
   text: string;
 }
 
+/** FAQ: pertanyaan umum. `answer` boleh memakai markdown **tebal**. */
+export interface Faq {
+  id: number | string;
+  question: string;
+  answer: string;
+}
+
 export interface ContentBundle {
   articles: Article[];
   symptoms: Symptom[];
   tasks: Task3M[];
   quiz: QuizItem[];
   facts: Fact[];
+  faq: Faq[];
   contact: { maps: string };
 }
 

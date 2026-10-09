@@ -49,17 +49,17 @@ export default function AuthModal({
           transition={reduced ? instantTransition : { duration: 0.2 }}
         >
           <motion.div
-            className="w-full max-w-[400px] rounded-[18px] bg-white p-7"
+            className="w-full max-w-[400px] rounded-[18px] bg-surface p-7"
             initial={{ opacity: 0, scale: 0.95, y: 16 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.97, y: 8 }}
             transition={reduced ? instantTransition : { type: "spring", stiffness: 380, damping: 30 }}
           >
         <div className="mb-3 flex gap-2">
-          <button type="button" className={`flex-1 rounded-[9px] px-2 py-2 font-bold ${mode === "in" ? "bg-acc text-white" : "bg-[#eaf0f7]"}`} onClick={() => setMode("in")}>
+          <button type="button" className={`flex-1 rounded-[9px] px-2 py-2 font-bold ${mode === "in" ? "bg-acc text-onfill" : "bg-softbg"}`} onClick={() => setMode("in")}>
             Masuk
           </button>
-          <button type="button" className={`flex-1 rounded-[9px] px-2 py-2 font-bold ${mode === "up" ? "bg-acc text-white" : "bg-[#eaf0f7]"}`} onClick={() => setMode("up")}>
+          <button type="button" className={`flex-1 rounded-[9px] px-2 py-2 font-bold ${mode === "up" ? "bg-acc text-onfill" : "bg-softbg"}`} onClick={() => setMode("up")}>
             Daftar
           </button>
         </div>
@@ -67,7 +67,7 @@ export default function AuthModal({
           {mode === "up" && <input name="name" placeholder="Nama lengkap" required className="rounded-[10px] border border-line px-3 py-2" />}
           <input name="email" type="email" placeholder="Email" required className="rounded-[10px] border border-line px-3 py-2" />
           <input name="password" type="password" placeholder={mode === "up" ? "Buat password (min. 6 karakter)" : "Password"} minLength={6} required className="rounded-[10px] border border-line px-3 py-2" />
-          <button disabled={loading} className="rounded-[10px] bg-acc px-5 py-2.5 font-bold text-white disabled:opacity-60">
+          <button disabled={loading} className="rounded-[10px] bg-acc px-5 py-2.5 font-bold text-onfill disabled:opacity-60">
             {loading ? "Memproses..." : mode === "in" ? "Masuk" : "Daftar"}
           </button>
         </form>

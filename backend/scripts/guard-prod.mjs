@@ -25,6 +25,8 @@ if (provider !== "postgresql") problems.push(`provider di prisma/schema.prisma m
 
 // RLS wajib ada kalau sudah PostgreSQL: tanpa ini anon key Supabase bisa
 // membaca dan menulis tabel langsung, melewati seluruh backend.
+// Dicek per tabel, bukan sekadar mencari string: cek string bisa lolos meski
+// tabel baru belum punya RLS, karena migration lama masih punya statement-nya.
 if (provider === "postgresql") {
   const dir = "prisma/migrations";
   const files = fs.existsSync(dir) ? fs.readdirSync(dir, { recursive: true, encoding: "utf8" }) : [];
@@ -32,11 +34,20 @@ if (provider === "postgresql") {
     .filter((f) => String(f).endsWith(".sql"))
     .map((f) => fs.readFileSync(`${dir}/${f}`, "utf8"))
     .join("\n");
-  if (!sql.includes("ENABLE ROW LEVEL SECURITY")) {
+
+  const tables = [...schema.matchAll(/^model\s+(\w+)\s*\{([\s\S]*?)^\}/gm)].map(
+    ([, model, body]) => /@@map\("([^"]+)"\)/.exec(body)?.[1] ?? model,
+  );
+  const unprotected = tables.filter(
+    (t) => !new RegExp(`ALTER\\s+TABLE\\s+"${t}"\\s+ENABLE\\s+ROW\\s+LEVEL\\s+SECURITY`, "i").test(sql),
+  );
+
+  if (unprotected.length) {
     problems.push(
-      "Tidak ada migrasi RLS di prisma/migrations. Tanpa ENABLE ROW LEVEL SECURITY, " +
-        "anon key Supabase bisa membaca dan menulis User, FeverEntry, dan SymptomCheck " +
-        "langsung ke database. Salin prisma/pg-rls.sql ke prisma/migrations/<timestamp>_enable_rls/migration.sql.",
+      `Tabel tanpa RLS di prisma/migrations: ${unprotected.join(", ")}. ` +
+        "Tanpa ENABLE ROW LEVEL SECURITY, anon key Supabase bisa membaca dan menulis " +
+        "tabel itu langsung ke database, melewati seluruh backend. " +
+        "Tambahkan ALTER TABLE \"<tabel>\" ENABLE ROW LEVEL SECURITY di migration yang membuat tabel tersebut.",
     );
   }
 }
