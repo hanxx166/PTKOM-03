@@ -68,4 +68,87 @@ router.put("/checklist", async (req: Authed, res) => {
   res.json({ ok: true });
 });
 
+const FEVER_TIMES = ["Pagi", "Siang", "Sore", "Malam"] as const;
+
+const feverLog = z.object({
+  day: z.coerce.number().int().min(1).max(14),
+  time: z.enum(FEVER_TIMES),
+  temp: z.coerce.number().min(34).max(43),
+});
+
+// Catatan suhu per-user, beberapa kali sehari.
+router.get("/fever-log", async (req: Authed, res) => {
+  const rows = await prisma.feverLog.findMany({
+    where: { userId: req.user!.id },
+    orderBy: [{ day: "asc" }, { id: "asc" }],
+    take: 100,
+  });
+  res.json({ entries: rows.map((r) => ({ id: r.id, day: r.day, time: r.time, temp: r.temp })) });
+});
+
+router.post("/fever-log", async (req: Authed, res) => {
+  const s = feverLog.safeParse(req.body);
+  if (!s.success) {
+    res.status(400).json({ error: "Data tidak valid (hari 1-14, waktu Pagi/Siang/Sore/Malam, suhu 34-43)" });
+    return;
+  }
+  const r = await prisma.feverLog.upsert({
+    where: { userId_day_time: { userId: req.user!.id, day: s.data.day, time: s.data.time } },
+    update: { temp: s.data.temp },
+    create: { userId: req.user!.id, ...s.data },
+  });
+  res.json({ ok: true, entry: { id: r.id, day: r.day, time: r.time, temp: r.temp } });
+});
+
+router.delete("/fever-log/:id", async (req: Authed, res) => {
+  const id = Number(req.params.id);
+  const row = await prisma.feverLog.findUnique({ where: { id } });
+  if (!row || row.userId !== req.user!.id) {
+    res.status(404).json({ error: "Catatan tidak ditemukan" });
+    return;
+  }
+  await prisma.feverLog.delete({ where: { id } });
+  res.json({ ok: true });
+});
+
+const plateletLog = z.object({
+  day: z.coerce.number().int().min(1).max(14),
+  value: z.coerce.number().int().min(0).max(500_000),
+});
+
+// Log trombosit per-user, satu nilai lab per hari.
+router.get("/platelets", async (req: Authed, res) => {
+  const rows = await prisma.plateletLog.findMany({
+    where: { userId: req.user!.id },
+    orderBy: [{ day: "asc" }, { id: "asc" }],
+    take: 100,
+  });
+  res.json({ entries: rows.map((r) => ({ id: r.id, day: r.day, value: r.value })) });
+});
+
+router.post("/platelets", async (req: Authed, res) => {
+  const s = plateletLog.safeParse(req.body);
+  if (!s.success) {
+    res.status(400).json({ error: "Data tidak valid (hari 1-14, trombosit 0-500.000)" });
+    return;
+  }
+  const r = await prisma.plateletLog.upsert({
+    where: { userId_day: { userId: req.user!.id, day: s.data.day } },
+    update: { value: s.data.value },
+    create: { userId: req.user!.id, ...s.data },
+  });
+  res.json({ ok: true, entry: { id: r.id, day: r.day, value: r.value } });
+});
+
+router.delete("/platelets/:id", async (req: Authed, res) => {
+  const id = Number(req.params.id);
+  const row = await prisma.plateletLog.findUnique({ where: { id } });
+  if (!row || row.userId !== req.user!.id) {
+    res.status(404).json({ error: "Catatan tidak ditemukan" });
+    return;
+  }
+  await prisma.plateletLog.delete({ where: { id } });
+  res.json({ ok: true });
+});
+
 export default router;

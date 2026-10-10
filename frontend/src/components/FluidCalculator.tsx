@@ -1,31 +1,6 @@
 import { useState } from "react";
 import Reveal from "./Reveal";
-
-interface PlateletEntry {
-  id: string;
-  day: number;
-  value: number;
-}
-
-const KEY = "dbd-plt";
-
-function readEntries(): { entries: PlateletEntry[]; error: string } {
-  try {
-    const value: unknown = JSON.parse(localStorage.getItem(KEY) || "[]");
-    if (!Array.isArray(value)) throw new Error("Format data trombosit tidak valid.");
-    return {
-      entries: value.flatMap((item, index): PlateletEntry[] => {
-        if (!item || !Number.isFinite(item.day)) return [];
-        const plateletValue = Number.isFinite(item.value) ? item.value : item.val;
-        if (!Number.isFinite(plateletValue)) return [];
-        return [{ id: typeof item.id === "string" ? item.id : `legacy-${index}`, day: item.day, value: plateletValue }];
-      }),
-      error: "",
-    };
-  } catch (error) {
-    return { entries: [], error: error instanceof Error ? error.message : "Data trombosit lokal tidak dapat dibaca." };
-  }
-}
+import { useTrackerLog } from "../lib/tracker";
 
 function plateletStatus(value: number): { label: string; className: string } {
   if (value < 50_000) return { label: "Rendah", className: "is-danger" };
@@ -34,14 +9,13 @@ function plateletStatus(value: number): { label: string; className: string } {
 }
 
 export default function FluidCalculator() {
+  const { entries, message: loadMessage, add: addLog, remove: removeLog } = useTrackerLog("platelet");
   const [weight, setWeight] = useState("");
   const [ageGroup, setAgeGroup] = useState("dewasa");
   const [fluidEstimate, setFluidEstimate] = useState<number | null>(null);
   const [day, setDay] = useState("");
   const [value, setValue] = useState("");
-  const [initial] = useState(readEntries);
-  const [entries, setEntries] = useState(initial.entries);
-  const [message, setMessage] = useState(initial.error);
+  const [message, setMessage] = useState("");
 
   const calculateFluid = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -57,17 +31,7 @@ export default function FluidCalculator() {
     setMessage("");
   };
 
-  const persist = (next: PlateletEntry[]) => {
-    try {
-      localStorage.setItem(KEY, JSON.stringify(next));
-      setEntries(next);
-      setMessage("");
-    } catch (error) {
-      setMessage(error instanceof Error ? `Gagal menyimpan data trombosit: ${error.message}` : "Gagal menyimpan data trombosit di browser.");
-    }
-  };
-
-  const addPlatelet = (event: React.FormEvent<HTMLFormElement>) => {
+  const addPlatelet = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const dayNumber = Number(day);
     const plateletValue = Number(value);
@@ -79,16 +43,24 @@ export default function FluidCalculator() {
       setMessage("Masukkan trombosit antara 0-500.000/µL.");
       return;
     }
-    persist([...entries, {
-      id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
-      day: dayNumber,
-      value: plateletValue,
-    }].sort((a, b) => a.day - b.day));
-    setDay("");
-    setValue("");
+    try {
+      await addLog({ day: dayNumber, value: plateletValue });
+      setMessage("");
+      setDay("");
+      setValue("");
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Gagal menyimpan catatan trombosit.");
+    }
   };
 
-  const removeEntry = (id: string) => persist(entries.filter((entry) => entry.id !== id));
+  const removeEntry = async (id: number | string) => {
+    try {
+      await removeLog(id);
+      setMessage("");
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Gagal menghapus catatan trombosit.");
+    }
+  };
   const points = entries.map((entry, index) => {
     const x = entries.length === 1 ? 340 : 48 + (index / (entries.length - 1)) * 584;
     const y = 166 - (Math.min(entry.value, 500_000) / 500_000) * 132;
@@ -198,7 +170,7 @@ export default function FluidCalculator() {
           <p className="dbd-disclaimer">Interpretasi trombosit harus dilakukan dokter. Nilai trombosit rendah perlu dibahas dengan tenaga kesehatan, bukan digunakan sendiri untuk menentukan diagnosis.</p>
         </div>
       </div>
-      {message && <p className="dbd-error" role="alert">{message}</p>}
+      {message || loadMessage ? <p className="dbd-error" role="alert">{message || loadMessage}</p> : null}
     </section>
   );
 }
