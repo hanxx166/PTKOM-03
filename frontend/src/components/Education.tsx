@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Reveal from "./Reveal";
+import { useContent } from "../lib/content";
 import {
   cardHoverBox,
   cardHoverTransition,
@@ -31,35 +32,35 @@ const TOPICS = [
   },
 ];
 
-const FAQS = [
-  {
-    question: "Jambu biji menaikkan trombosit?",
-    answer: <>Belum ada bukti klinis kuat bahwa jambu biji secara langsung menaikkan trombosit. Buah dapat menjadi bagian dari pola makan, tetapi tidak menggantikan cairan dan penanganan medis.</>,
-  },
-  {
-    question: "Fogging saja cukup mencegah DBD?",
-    answer: <><b>Tidak.</b> Fogging menyasar nyamuk dewasa dan tidak menghilangkan jentik. Pencegahan perlu dilengkapi pemberantasan sarang nyamuk dan 3M Plus.</>,
-  },
-  {
-    question: "Suhu turun berarti sudah sembuh?",
-    answer: <><b>Belum tentu.</b> Pada DBD, kondisi dapat memburuk ketika demam turun. Tetap waspadai tanda bahaya dan ikuti pemantauan tenaga kesehatan.</>,
-  },
-  {
-    question: "Antibiotik menyembuhkan DBD?",
-    answer: <>DBD disebabkan virus dengue, sehingga antibiotik tidak mengobati virus. Penanganan ditentukan dokter berdasarkan kondisi pasien.</>,
-  },
-  {
-    question: "Sudah pernah DBD, tidak bisa kena lagi?",
-    answer: <><b>Salah.</b> Terdapat beberapa serotipe virus dengue. Seseorang dapat terinfeksi kembali, jadi pencegahan tetap penting.</>,
-  },
-  {
-    question: "Aedes aktif di malam hari?",
-    answer: <>Aedes aegypti umumnya lebih aktif pada pagi dan sore hari. Gunakan perlindungan dari gigitan nyamuk sepanjang hari sesuai kebutuhan.</>,
-  },
-];
+/** Jawaban FAQ disimpan polos di database, bold ditulis **seperti ini**. */
+const bold = (t: string) =>
+  t
+    .split(/(\*\*[^*]+\*\*)/g)
+    .filter(Boolean)
+    .map((part, i) => (part.startsWith("**") ? <b key={i}>{part.slice(2, -2)}</b> : part));
+
+/** Warna badge tag artikel. Tag di luar daftar ini tetap tampil tanpa warna. */
+const TAG_CLASS: Record<string, string> = {
+  Dasar: "is-basic",
+  Gejala: "is-symptom",
+  Pencegahan: "is-prevention",
+  Penanganan: "is-handling",
+  Tips: "is-tip",
+};
+
+const BULAN = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+
+/** Ubah "2026-10-01" jadi "1 Oktober 2026". Tanggal lain ditampilkan apa adanya. */
+const tanggal = (iso: string) => {
+  const [y, bulan, hari] = iso.split("-").map(Number);
+  return BULAN[bulan - 1] && hari ? `${hari} ${BULAN[bulan - 1]} ${y}` : iso;
+};
 
 export default function Education() {
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const { content } = useContent();
+  const faq = content?.faq ?? [];
+  const articles = content?.articles ?? [];
+  const [openFaq, setOpenFaq] = useState<number | string | null>(null);
   const reduced = useReducedMotion();
 
   return (
@@ -67,7 +68,7 @@ export default function Education() {
       <Reveal className="dbd-section-heading">
         <span className="dbd-kicker">Kenali dan cegah</span>
         <h2>📚 Edukasi &amp; 3M Plus</h2>
-        <p>Panduan pencegahan, pertolongan pertama, dan klarifikasi mitos seputar DBD.</p>
+        <p>Panduan pencegahan, pertolongan pertama, dan pertanyaan yang sering muncul seputar DBD.</p>
       </Reveal>
 
       <motion.div
@@ -92,22 +93,15 @@ export default function Education() {
         ))}
       </motion.div>
 
-      <h3 className="dbd-faq-heading">Mitos vs Fakta</h3>
-      <motion.div
-        className="dbd-faq-list"
-        variants={staggerParent}
-        initial={reduced ? false : "hidden"}
-        whileInView={reduced ? undefined : "show"}
-        viewport={{ once: true }}
-      >
-        {FAQS.map((faq, index) => {
-          const isOpen = openFaq === index;
-          const answerId = `dbd-faq-answer-${index}`;
+      <h3 className="dbd-faq-heading">Pertanyaan Umum</h3>
+      <div className="dbd-faq-list">
+        {faq.map((m) => {
+          const isOpen = openFaq === m.id;
+          const answerId = `dbd-faq-answer-${m.id}`;
           return (
-            <motion.article
+            <article
               className={`dbd-faq-item${isOpen ? " is-open" : ""}`}
-              key={faq.question}
-              variants={staggerChild}
+              key={m.id}
             >
               <h4>
                 <button
@@ -115,9 +109,9 @@ export default function Education() {
                   className="dbd-faq-question"
                   aria-expanded={isOpen}
                   aria-controls={answerId}
-                  onClick={() => setOpenFaq(isOpen ? null : index)}
+                  onClick={() => setOpenFaq(isOpen ? null : m.id)}
                 >
-                  <span>{faq.question}</span><span className="dbd-faq-arrow" aria-hidden="true">▼</span>
+                  <span>{m.question}</span><span className="dbd-faq-arrow" aria-hidden="true">▼</span>
                 </button>
               </h4>
               <AnimatePresence initial={false}>
@@ -130,14 +124,34 @@ export default function Education() {
                     transition={reduced ? instantTransition : { duration: 0.28, ease: "easeInOut" }}
                     style={{ overflow: "hidden" }}
                   >
-                    <div className="dbd-faq-answer" id={answerId}>{faq.answer}</div>
+                    <div className="dbd-faq-answer" id={answerId}>{bold(m.answer)}</div>
                   </motion.div>
                 )}
               </AnimatePresence>
-            </motion.article>
+            </article>
           );
         })}
-      </motion.div>
+      </div>
+
+      {articles.length > 0 && (
+        <>
+          <h3 className="dbd-subheading">Bacaan</h3>
+          <div className="dbd-article-list">
+            {articles.map((a) => (
+              <article className="dbd-card dbd-article-card" key={String(a.id)}>
+                <span className={`dbd-tag ${TAG_CLASS[a.tag || ""] ?? ""}`}>{a.tag}</span>
+                <h3>{a.title}</h3>
+                <p className="dbd-article-meta">
+                  {a.mins} menit baca{a.date ? ` · ${tanggal(a.date)}` : ""}
+                </p>
+                {(a.body || []).map((paragraf, i) => (
+                  <p key={i}>{bold(paragraf)}</p>
+                ))}
+              </article>
+            ))}
+          </div>
+        </>
+      )}
     </section>
   );
 }

@@ -15,12 +15,13 @@ const asList = (v: string) => {
 };
 
 export async function bundle() {
-  const [articles, symptoms, tasks, quiz, facts, contact, total] = await Promise.all([
+  const [articles, symptoms, tasks, quiz, facts, faq, contact, total] = await Promise.all([
     prisma.article.findMany({ orderBy: { id: "asc" } }),
     prisma.symptom.findMany(),
     prisma.task.findMany({ orderBy: { sortOrder: "asc" } }),
     prisma.quizItem.findMany({ orderBy: { id: "asc" } }),
     prisma.fact.findMany({ orderBy: { id: "asc" } }),
+    prisma.faq.findMany({ orderBy: { sortOrder: "asc" } }),
     prisma.siteSetting.findUnique({ where: { key: "contact.maps" } }),
     prisma.symptomCheck.count(),
   ]);
@@ -30,6 +31,7 @@ export async function bundle() {
     tasks: tasks.map((t) => ({ id: t.id, text: t.text })),
     quiz: quiz.map((q) => ({ s: q.statement, a: q.isFact, e: q.explanation })),
     facts: facts.map((f) => ({ id: f.id, big: f.big, text: f.text })),
+    faq: faq.map((m) => ({ id: m.id, question: m.question, answer: m.answer })),
     contact: { maps: contact ? JSON.parse(contact.value) as string : "Poliklinik ITERA, Lampung Selatan" },
     totalChecks: total,
   };
@@ -151,6 +153,66 @@ router.delete("/symptoms/:id", requireAuth, (req: Authed, res, next) => requireA
     res.json({ ok: true });
   } catch {
     res.status(404).json({ error: "Gejala tidak ditemukan" });
+  }
+});
+
+// --- FAQ: baca publik, tulis admin ---
+// Berbeda dari Fact yang berisi angka statistik. Jawaban disimpan polos,
+// bold ditulis dengan markdown **tebal** dan dirender di frontend.
+const faqShape = (m: { id: number; question: string; answer: string }) => ({
+  id: m.id,
+  question: m.question,
+  answer: m.answer,
+});
+
+router.get("/faq", async (_req, res) => {
+  res.json((await prisma.faq.findMany({ orderBy: { sortOrder: "asc" } })).map(faqShape));
+});
+
+const faqSchema = z.object({
+  question: z.string().min(1).max(200),
+  answer: z.string().min(1).max(2000),
+});
+
+router.post("/faq", requireAuth, (req: Authed, res, next) => requireAdmin(req, res, next), async (req, res) => {
+  const s = faqSchema.safeParse(req.body);
+  if (!s.success) {
+    res.status(400).json({ error: "Data tidak valid" });
+    return;
+  }
+  const n = await prisma.faq.count();
+  const m = await prisma.faq.create({
+    data: { question: s.data.question, answer: s.data.answer, sortOrder: n },
+  });
+  bust();
+  res.status(201).json(faqShape(m));
+});
+
+router.put("/faq/:id", requireAuth, (req: Authed, res, next) => requireAdmin(req, res, next), async (req, res) => {
+  const s = faqSchema.safeParse(req.body);
+  if (!s.success) {
+    res.status(400).json({ error: "Data tidak valid" });
+    return;
+  }
+  try {
+    const m = await prisma.faq.update({
+      where: { id: Number(req.params.id) },
+      data: { question: s.data.question, answer: s.data.answer },
+    });
+    bust();
+    res.json(faqShape(m));
+  } catch {
+    res.status(404).json({ error: "Pertanyaan tidak ditemukan" });
+  }
+});
+
+router.delete("/faq/:id", requireAuth, (req: Authed, res, next) => requireAdmin(req, res, next), async (req, res) => {
+  try {
+    await prisma.faq.delete({ where: { id: Number(req.params.id) } });
+    bust();
+    res.json({ ok: true });
+  } catch {
+    res.status(404).json({ error: "Pertanyaan tidak ditemukan" });
   }
 });
 

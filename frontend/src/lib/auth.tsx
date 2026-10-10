@@ -1,33 +1,17 @@
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import type { User } from "./types";
+import { API_BASE, forgetAccessToken, HAS_BACKEND, refreshSession, setAccessToken, setSessionLostHandler } from "./backend";
 
 interface AuthCtx {
   user: User | null;
   mode: string;
   login: (email: string, password: string) => Promise<void>;
-  signup: (name: string, email: string, password: string, adminCode?: string) => Promise<void>;
+  signup: (name: string, email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
 }
 
 const Ctx = createContext<AuthCtx | null>(null);
-const API_BASE = (import.meta.env.VITE_API_URL || "").replace(/\/$/, "");
 
-export function getToken(): string {
-  try {
-    return localStorage.getItem("token") || "";
-  } catch {
-    return "";
-  }
-}
-
-function setToken(t: string) {
-  try {
-    if (t) localStorage.setItem("token", t);
-    else localStorage.removeItem("token");
-  } catch {
-    /* abaikan */
-  }
-}
 async function sha(s: string): Promise<string> {
   if (crypto.subtle) {
     const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
@@ -38,24 +22,29 @@ async function sha(s: string): Promise<string> {
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [mode] = useState(() => (API_BASE ? "server" : "local"));
+  const [mode] = useState(() => (HAS_BACKEND ? "server" : "local"));
 
   useEffect(() => {
-    // Coba sesi BE baru, fallback localStorage (mode gratis/standalone)
+    // Refresh gagal = sesi benar-benar habis. Bersihkan state supaya header
+    // tidak masih menampilkan orang yang sudah logout di server.
+    setSessionLostHandler(() => {
+      forgetAccessToken();
+      setUser(null);
+      try {
+        localStorage.removeItem("user");
+      } catch {
+        /* abaikan */
+      }
+    });
+
+    // Sumber kebenaran di mode server adalah refresh cookie, bukan localStorage:
+    // cookie httpOnly bertahan 7 hari, sedangkan access token hanya 15 menit.
+    // Refresh gagal berarti sesi habis, jadi jangan fallback ke localStorage;
+    // itu akan menampilkan login yang sudah tidak berlaku di server.
     (async () => {
-      if (API_BASE) {
-        try {
-          const r = await fetch(`${API_BASE}/api/auth/me`, {
-            headers: getToken() ? { Authorization: "Bearer " + getToken() } : {},
-          });
-          const j = await r.json();
-          if (j.user) {
-            setUser(j.user);
-            return;
-          }
-        } catch {
-          /* abaikan */
-        }
+      if (HAS_BACKEND) {
+        setUser(await refreshSession());
+        return;
       }
       try {
         const u = JSON.parse(localStorage.getItem("user") || "null");
@@ -78,7 +67,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = useCallback(async (email: string, password: string) => {
     const em = email.trim().toLowerCase();
-    if (API_BASE) {
+    if (HAS_BACKEND) {
       const r = await fetch(`${API_BASE}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -87,7 +76,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
       const j = await r.json();
       if (!r.ok) throw new Error(j.error || "Login gagal");
-      setToken(j.token || "");
+      setAccessToken(j.token || "");
       persist(j.user);
       return;
     }
@@ -98,33 +87,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     persist({ name: u.name, email: u.email, role: (u.role === "admin" ? "admin" : "user") as "user" | "admin" });
   }, []);
 
-  const signup = useCallback(async (name: string, email: string, password: string, adminCode = "") => {
+  const signup = useCallback(async (name: string, email: string, password: string) => {
     const em = email.trim().toLowerCase();
     if (!name.trim() || !em.includes("@") || password.length < 6)
       throw new Error("Lengkapi data dengan benar (password minimal 6 karakter)");
-    if (API_BASE) {
+    if (HAS_BACKEND) {
       const r = await fetch(`${API_BASE}/api/auth/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ name: name.trim(), email: em, password, admin_code: adminCode }),
+        body: JSON.stringify({ name: name.trim(), email: em, password }),
       });
       const j = await r.json();
       if (!r.ok) throw new Error(j.error || "Daftar gagal");
-      setToken(j.token || "");
+      setAccessToken(j.token || "");
       persist(j.user);
       return;
     }
     const users = JSON.parse(localStorage.getItem("users") || "[]");
     if (users.some((x: { email: string }) => x.email === em)) throw new Error("Email sudah terdaftar");
-    const u = { name: name.trim(), email: em, hash: await sha(password), role: (users.length ? "user" : "admin") as "user" | "admin" };
+    const u = { name: name.trim(), email: em, hash: await sha(password), role: "user" as const };
     users.push(u);
     localStorage.setItem("users", JSON.stringify(users));
     persist({ name: u.name, email: u.email, role: u.role });
   }, []);
 
   const logout = useCallback(async () => {
-    if (API_BASE) {
+    if (HAS_BACKEND) {
       try {
         await fetch(`${API_BASE}/api/auth/logout`, { method: "POST", credentials: "include" });
       } catch {
@@ -132,7 +121,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     }
     persist(null);
-    setToken("");
+    setAccessToken("");
   }, []);
 
   return <Ctx.Provider value={{ user, mode, login, signup, logout }}>{children}</Ctx.Provider>;

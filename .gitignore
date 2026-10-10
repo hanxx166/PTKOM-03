@@ -6,7 +6,8 @@ data/resets.json
 data/kode-reset.txt
 # fullstack
 backend/.env
-backend/dev.db*
+backend/**/*.db
+backend/**/*.db-journal
 backend/dist/
 backend/node_modules/
 frontend/.env

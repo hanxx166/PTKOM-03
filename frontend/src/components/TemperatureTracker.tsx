@@ -1,53 +1,17 @@
 import { useState } from "react";
 import Reveal from "./Reveal";
+import { useTrackerLog } from "../lib/tracker";
 
-interface TemperatureEntry {
-  id: string;
-  day: number;
-  temperature: number;
-  time: string;
-}
-
-const KEY = "dbd-temp";
 const TIMES = ["Pagi", "Siang", "Sore", "Malam"];
 
-function initialEntries(): { entries: TemperatureEntry[]; error: string } {
-  try {
-    const value: unknown = JSON.parse(localStorage.getItem(KEY) || "[]");
-    if (!Array.isArray(value)) throw new Error("Format data suhu tidak valid.");
-    return {
-      entries: value.flatMap((item, index): TemperatureEntry[] => {
-        if (!item || !Number.isFinite(item.day) || typeof item.time !== "string") return [];
-        const temperature = Number.isFinite(item.temperature) ? item.temperature : item.temp;
-        if (!Number.isFinite(temperature)) return [];
-        return [{ id: typeof item.id === "string" ? item.id : `legacy-${index}`, day: item.day, temperature, time: item.time }];
-      }),
-      error: "",
-    };
-  } catch (error) {
-    return { entries: [], error: error instanceof Error ? error.message : "Data suhu lokal tidak dapat dibaca." };
-  }
-}
-
 export default function TemperatureTracker() {
-  const [initial] = useState(initialEntries);
-  const [entries, setEntries] = useState(initial.entries);
+  const { entries, message: loadMessage, add: addLog, remove: removeLog } = useTrackerLog("fever");
   const [day, setDay] = useState("");
   const [temperature, setTemperature] = useState("");
   const [time, setTime] = useState("Malam");
-  const [message, setMessage] = useState(initial.error);
+  const [message, setMessage] = useState("");
 
-  const persist = (next: TemperatureEntry[]) => {
-    try {
-      localStorage.setItem(KEY, JSON.stringify(next));
-      setEntries(next);
-      setMessage("");
-    } catch (error) {
-      setMessage(error instanceof Error ? `Gagal menyimpan data suhu: ${error.message}` : "Gagal menyimpan data suhu di browser.");
-    }
-  };
-
-  const addEntry = (event: React.FormEvent<HTMLFormElement>) => {
+  const addEntry = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const dayNumber = Number(day);
     const temperatureNumber = Number(temperature);
@@ -59,21 +23,27 @@ export default function TemperatureTracker() {
       setMessage("Masukkan suhu antara 34°C dan 43°C.");
       return;
     }
-    const next = [...entries, {
-      id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
-      day: dayNumber,
-      temperature: temperatureNumber,
-      time,
-    }].sort((a, b) => a.day - b.day || TIMES.indexOf(a.time) - TIMES.indexOf(b.time));
-    persist(next);
-    setDay("");
-    setTemperature("");
+    try {
+      await addLog({ day: dayNumber, time, temp: temperatureNumber });
+      setMessage("");
+      setDay("");
+      setTemperature("");
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Gagal menyimpan catatan suhu.");
+    }
   };
 
-  const removeEntry = (id: string) => persist(entries.filter((entry) => entry.id !== id));
+  const removeEntry = async (id: number | string) => {
+    try {
+      await removeLog(id);
+      setMessage("");
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Gagal menghapus catatan suhu.");
+    }
+  };
   const points = entries.map((entry, index) => {
     const x = entries.length === 1 ? 340 : 48 + (index / (entries.length - 1)) * 584;
-    const y = 170 - ((entry.temperature - 34) / 9) * 132;
+    const y = 170 - ((entry.temp - 34) / 9) * 132;
     return { ...entry, x, y };
   });
 
@@ -85,16 +55,7 @@ export default function TemperatureTracker() {
         <p>Catat suhu beberapa kali sehari. Perubahan suhu saja tidak bisa memastikan fase atau diagnosis DBD.</p>
       </Reveal>
 
-      <div className="dbd-info-box">
-        <p><b>Buat apa?</b> Untuk melihat pola demam harian. Catat 2–4× sehari (Pagi / Siang / Sore / Malam).</p>
-        <ul>
-          <li>Garis merah di grafik = 38°C (batas demam).</li>
-          <li>Suhu turun di hari 3–5 <b>belum tentu sembuh</b> — itu masa kritis, tetap waspada.</li>
-          <li>Data tersimpan di browser HP kamu saja.</li>
-        </ul>
-      </div>
-
-      <div className="dbd-card dbd-card-narrow">
+      <div className="dbd-card">
         <form className="dbd-tracker-form" onSubmit={addEntry}>
           <div className="dbd-form-group">
             <label htmlFor="track-day">Hari ke-</label>
@@ -128,7 +89,7 @@ export default function TemperatureTracker() {
               {points.length > 1 && <polyline points={points.map((point) => `${point.x},${point.y}`).join(" ")} className="dbd-chart-line" />}
               {points.map((point) => (
                 <g key={point.id}>
-                  <circle cx={point.x} cy={point.y} r="6" className={point.temperature >= 38 ? "dbd-chart-hot-point" : "dbd-chart-point"} />
+                  <circle cx={point.x} cy={point.y} r="6" className={point.temp >= 38 ? "dbd-chart-hot-point" : "dbd-chart-point"} />
                   <text x={point.x} y="198" textAnchor="middle" className="dbd-chart-label">H{point.day} {point.time.slice(0, 2)}</text>
                 </g>
               ))}
@@ -141,12 +102,12 @@ export default function TemperatureTracker() {
         <div className="dbd-log-list">
           {[...entries].reverse().map((entry) => (
             <div className="dbd-log-row" key={entry.id}>
-              <span><b>Hari {entry.day}</b> · {entry.time} · {entry.temperature.toFixed(1)}°C</span>
+              <span><b>Hari {entry.day}</b> · {entry.time} · {entry.temp.toFixed(1)}°C</span>
               <button className="dbd-text-button" type="button" onClick={() => removeEntry(entry.id)} aria-label={`Hapus catatan Hari ${entry.day} ${entry.time}`}>Hapus</button>
             </div>
           ))}
         </div>
-        {message && <p className="dbd-error" role="alert">{message}</p>}
+        {message || loadMessage ? <p className="dbd-error" role="alert">{message || loadMessage}</p> : null}
         <p className="dbd-disclaimer">🟠 Hari 1-2 demam &nbsp;|&nbsp; 🔴 Hari 3-5 berisiko kritis &nbsp;|&nbsp; 🟢 Hari 6-7 pemulihan. Fase tiap orang dapat berbeda; selalu ikuti arahan tenaga kesehatan.</p>
       </div>
     </section>

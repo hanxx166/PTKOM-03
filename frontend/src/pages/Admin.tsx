@@ -1,13 +1,7 @@
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import AdminCrud from "../components/AdminCrud";
 import { apiDelete, apiGet, apiPost, apiPut } from "../lib/api";
 import { useAuth } from "../lib/auth";
-import {
-  instantTransition,
-  staggerChild,
-  staggerParent,
-  useReducedMotion,
-} from "../lib/motion";
 
 interface Row {
   id: number | string;
@@ -24,7 +18,6 @@ export default function Admin() {
   const [maps, setMaps] = useState("");
   const [msg, setMsg] = useState("");
   const [form, setForm] = useState({ id: "", title: "", tag: "Tips", body: "" });
-  const reduced = useReducedMotion();
 
   const load = () => {
     apiGet<Row[]>("/api/articles").then(setArticles).catch((e: Error) => setMsg(e.message));
@@ -89,7 +82,7 @@ export default function Admin() {
       )}
 
       <h3 className="mt-6 font-bold">{form.id ? "Edit artikel" : "Tambah artikel"}</h3>
-      <form onSubmit={submitArticle} className="mt-2 grid gap-2.5 rounded-[14px] border border-line bg-white p-4">
+      <form onSubmit={submitArticle} className="mt-2 grid gap-2.5 rounded-[14px] border border-line bg-surface p-4">
         <input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="Judul" required className="rounded-[10px] border border-line px-3 py-2" />
         <div className="flex gap-2.5">
           <select value={form.tag} onChange={(e) => setForm({ ...form, tag: e.target.value })} className="rounded-[10px] border border-line px-3 py-2">
@@ -104,29 +97,15 @@ export default function Admin() {
           )}
         </div>
         <textarea value={form.body} onChange={(e) => setForm({ ...form, body: e.target.value })} placeholder="Isi artikel (satu paragraf per baris)" rows={5} required className="rounded-[10px] border border-line px-3 py-2" />
-        <button className="w-fit rounded-[10px] bg-acc px-5 py-2 font-bold text-white">Simpan</button>
+        <button className="w-fit rounded-[10px] bg-acc px-5 py-2 font-bold text-onfill">Simpan</button>
       </form>
 
       <h3 className="mt-6 font-bold">Daftar artikel ({articles.length})</h3>
-      <motion.div
-        className="mt-2 divide-y divide-line rounded-[14px] border border-line bg-white"
-        variants={staggerParent}
-        initial={reduced ? false : "hidden"}
-        whileInView={reduced ? undefined : "show"}
-        viewport={{ once: true }}
-      >
-        <AnimatePresence initial={false} mode="popLayout">
-          {articles.map((a) => (
-            <motion.div
-              layout
-              key={String(a.id)}
-              className="flex items-center justify-between gap-2 p-3 text-sm"
-              variants={staggerChild}
-              exit={{ opacity: 0, x: 32 }}
-              transition={reduced ? instantTransition : undefined}
-            >
+      <ul className="mt-2 divide-y divide-line rounded-[14px] border border-line bg-surface">
+        {articles.map((a) => (
+          <li key={String(a.id)} className="flex items-center justify-between gap-2 p-3 text-sm">
             <span><b>{a.title}</b> <span className="text-muted">· {a.tag}</span></span>
-            <span className="flex gap-1.5">
+            <span className="flex shrink-0 gap-1.5">
               <button onClick={() => setForm({ id: String(a.id), title: a.title || "", tag: a.tag || "Tips", body: (a.body || []).join("\n") })} className="rounded-lg border border-line px-2.5 py-0.5 text-xs font-semibold hover:border-acc hover:text-acc">
                 Edit
               </button>
@@ -134,15 +113,33 @@ export default function Admin() {
                 Hapus
               </button>
             </span>
-            </motion.div>
-          ))}
-        </AnimatePresence>
-      </motion.div>
+          </li>
+        ))}
+      </ul>
+
+      <AdminCrud
+        title="gejala"
+        endpoint="/api/symptoms"
+        fields={[
+          { name: "label", label: "Nama gejala", kind: "text" },
+          { name: "w", label: "Bobot 1-3", kind: "number", min: 1, max: 3 },
+          { name: "danger", label: "Tandai sebagai gejala bahaya", kind: "checkbox" },
+        ]}
+      />
+
+      <AdminCrud
+        title="FAQ"
+        endpoint="/api/faq"
+        fields={[
+          { name: "question", label: "Pertanyaan", kind: "text" },
+          { name: "answer", label: "Jawaban (tebal pakai **teks**)", kind: "textarea" },
+        ]}
+      />
 
       <h3 className="mt-6 font-bold">Lokasi peta</h3>
       <div className="mt-2 flex gap-2.5">
         <input value={maps} onChange={(e) => setMaps(e.target.value)} placeholder="Kata kunci lokasi di Google Maps" className="flex-1 rounded-[10px] border border-line px-3 py-2" />
-        <button onClick={saveMaps} className="rounded-[10px] bg-acc px-5 py-2 font-bold text-white">Simpan</button>
+        <button onClick={saveMaps} className="rounded-[10px] bg-acc px-5 py-2 font-bold text-onfill">Simpan</button>
       </div>
       {msg && <p className="mt-3 text-sm text-danger">{msg}</p>}
     </section>

@@ -177,5 +177,37 @@
    "big": "Pagi & sore",
    "text": "waktu nyamuk Aedes menggigit"
   }
+ ],
+ "faq": [
+  {
+   "id": 1,
+   "question": "Jambu biji menaikkan trombosit?",
+   "answer": "Belum ada bukti klinis kuat bahwa jambu biji secara langsung menaikkan trombosit. Buah dapat menjadi bagian dari pola makan, tetapi tidak menggantikan cairan dan penanganan medis."
+  },
+  {
+   "id": 2,
+   "question": "Fogging saja cukup mencegah DBD?",
+   "answer": "**Tidak.** Fogging menyasar nyamuk dewasa dan tidak menghilangkan jentik. Pencegahan perlu dilengkapi penghapusan sarang nyamuk dan 3M Plus."
+  },
+  {
+   "id": 3,
+   "question": "Apakah demam turun berarti pasien sudah sehat?",
+   "answer": "**Belum tentu.** Pada DBD, kondisi dapat memburuk ketika demam turun. Tetap waspadai tanda bahaya dan ikuti pemantauan tenaga kesehatan."
+  },
+  {
+   "id": 4,
+   "question": "Apakah antibiotik menyembuhkan DBD?",
+   "answer": "DBD disebabkan virus dengue, sehingga antibiotik tidak bekerja untuk virus. Penanganan ditentukan dokter berdasarkan kondisi pasien."
+  },
+  {
+   "id": 5,
+   "question": "Sudah pernah DBD, tidak bisa kena lagi?",
+   "answer": "**Salah.** Terdapat beberapa serotipe virus dengue. Seseorang bisa kena lagi, jadi pencegahan tetap penting."
+  },
+  {
+   "id": 6,
+   "question": "Apakah Aedes aktif di malam hari?",
+   "answer": "Aedes aegypti umumnya lebih aktif pada pagi dan sore hari. Gunakan perlindungan dari gigitan nyamuk sepanjang hari sesuai kebutuhan."
+  }
  ]
 }
