@@ -20,6 +20,8 @@ model User {
   role         String   @default("user")
   createdAt    DateTime @default(now())
   feverEntries FeverEntry[]
+  feverLogs    FeverLog[]
+  platelets    PlateletLog[]
   checks       SymptomCheck[]
   progress     ChecklistProgress[]
 }
@@ -112,4 +114,29 @@ model ChecklistProgress {
   doneAt DateTime @default(now())
   user   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   @@id([userId, taskId])
+}
+
+// Pantau kondisi modern: suhu multi-catatan per hari (Pagi/Siang/Sore/Malam).
+// Tabel terpisah dari FeverEntry lama (1 entri/hari) yang sudah terlanjur ada
+// dan mungkin berisi data di produksi.
+model FeverLog {
+  id     Int    @id @default(autoincrement())
+  userId Int
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  day    Int
+  time   String
+  temp   Float
+  @@unique([userId, day, time])
+  @@index([userId])
+}
+
+// Log trombosit per user, satu nilai lab per hari.
+model PlateletLog {
+  id     Int @id @default(autoincrement())
+  userId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  day    Int
+  value  Int
+  @@unique([userId, day])
+  @@index([userId])
 }
