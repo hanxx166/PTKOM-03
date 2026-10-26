@@ -51,6 +51,14 @@ npm run seed
 
 Migrasi menyiapkan struktur database. Seed mengisi konten awal dari `backend/prisma/seed-data.json`. **Seed menghapus lalu membuat ulang data konten** seperti artikel, gejala, checklist, kuis, dan fakta; gunakan saat setup database kosong, bukan setiap kali menjalankan server.
 
+Untuk menambah konten baru tanpa menyentuh data yang sudah ada di produksi (artikel/FAQ/kejadian buatan admin), jalankan dari folder `backend/`:
+
+```powershell
+npm run seed:update
+```
+
+`seed:update` (`prisma/seed-update.ts`) hanya **menambah item yang belum ada** — dicocokkan lewat judul artikel, pertanyaan FAQ, pernyataan kuis, dan teks tugas/fakta. Tidak ada `deleteMany`, tidak menimpa konten yang sudah ada.
+
 Untuk database kosong sekali saja, jalankan `npx prisma migrate deploy` lalu `npm run seed`. Setelah itu tidak perlu diulang.
 
 Pasang dependensi frontend satu kali:
@@ -152,6 +160,8 @@ Karena `DATABASE_URL` lokal dan produksi menunjuk database yang sama, dua perint
 
 - `npx prisma migrate reset` — menghapus seluruh tabel dan data
 - `npm run seed` — `prisma/seed.ts` memakai `deleteMany()` tanpa kondisi pada `Article`, `Symptom`, `Task`, `QuizItem`, dan `Fact`
+
+`npm run seed:update` **tidak termasuk** dalam daftar ini: ia insert-only dan aman dijalankan kapan pun.
 
 `npm run smoke` aman: ia menghapus user, entri journal, dan baris statistik yang dibuatnya sendiri.
 
