@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import Checklist3M from "./Checklist3M";
 import Reveal from "./Reveal";
 import { useContent } from "../lib/content";
 import {
@@ -29,6 +30,24 @@ const TOPICS = [
     className: "is-prevention",
     title: "Jam Rawan Nyamuk Aedes",
     text: <>Aedes aegypti lebih aktif pada <b>pagi (06-09)</b> dan <b>sore (15-18)</b>. Gunakan lotion antinyamuk dan periksa tatakan dispenser atau vas bunga.</>,
+  },
+  {
+    tag: "Dasar",
+    className: "is-basic",
+    title: "Faktor Risiko DBD",
+    text: <>Risiko lebih besar jika <b>tinggal atau bepergian di daerah tropis</b> (Asia Tenggara, Pasifik Barat, Amerika Latin, Afrika) atau <b>pernah mengidap DBD sebelumnya</b>. Infeksi kedua dari serotipe lain berisiko lebih parah.</>,
+  },
+  {
+    tag: "Penanganan",
+    className: "is-handling",
+    title: "Komplikasi yang Harus Diwaspadai",
+    text: <>DBD berat dapat menyebabkan <b>perdarahan internal, syok dengue (DSS), dan kerusakan organ</b>. Pada ibu hamil, berisiko kelahiran prematur dan berat badan lahir rendah. Segera ke IGD bila muncul tanda bahaya.</>,
+  },
+  {
+    tag: "Tips",
+    className: "is-tip",
+    title: "Makanan Saat DBD",
+    text: <>Utamakan <b>makanan lembut dan mudah dicerna</b>: bubur, jeruk, ikan, sup daging sapi cincang, dan agar-agar. <b>Hindari makanan pedas, berminyak, dan sulit dicerna</b> yang bisa memperburuk kondisi perut.</>,
   },
 ];
 
@@ -92,6 +111,8 @@ export default function Education() {
           </motion.article>
         ))}
       </motion.div>
+
+      <Checklist3M />
 
       <h3 className="dbd-faq-heading">Pertanyaan Umum</h3>
       <div className="dbd-faq-list">

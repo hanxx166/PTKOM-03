@@ -1001,6 +1001,122 @@ html[data-theme="dark"] .dbd-footer { background: #080e16; }
   .dbd-disclaimer-wide { font-size: 0.78rem; }
 }
 
+/* Kalkulator cairan tunggal (tanpa log trombosit; log pindah ke Pelacak Suhu) */
+.dbd-calc-single {
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+/* Heading kartu di Pelacak Suhu & Trombosit */
+.dbd-subheading-top {
+  margin: 0 0 14px;
+  font-size: 1.05rem;
+}
+
+.dbd-platelet-card {
+  margin-top: 18px;
+}
+
+/* Checklist 3M Plus */
+.dbd-checklist-card {
+  padding: clamp(17px, 3vw, 25px);
+}
+
+.dbd-checklist-progress {
+  height: 10px;
+  border-radius: 999px;
+  background: var(--dbd-soft);
+  overflow: hidden;
+}
+
+.dbd-checklist-progress-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: var(--dbd-green);
+  transition: width 0.3s ease;
+}
+
+.dbd-checklist-count {
+  margin: 8px 0 14px;
+  color: var(--dbd-muted);
+  font-size: 0.85rem;
+}
+
+.dbd-checklist-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 10px;
+}
+
+.dbd-checklist-done {
+  margin-top: 14px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: var(--dbd-green-soft);
+  color: var(--dbd-green);
+  font-weight: 600;
+}
+
+/* Halaman Cek Lab */
+.dbd-lab-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin: 20px 0;
+}
+
+.dbd-lab-card {
+  padding: 22px;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+
+.dbd-lab-icon {
+  display: block;
+  font-size: 1.6rem;
+  margin-bottom: 8px;
+}
+
+.dbd-lab-card h3 {
+  margin: 0 0 8px;
+  font-size: 1.02rem;
+}
+
+.dbd-lab-detects {
+  color: var(--dbd-muted);
+  font-size: 0.88rem;
+  margin: 0 0 8px;
+}
+
+.dbd-lab-when {
+  margin: 10px 0 0;
+  font-size: 0.85rem;
+  color: var(--dbd-muted);
+}
+
+.dbd-lab-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.dbd-lab-when-list {
+  margin: 10px 0 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 8px;
+}
+
+.dbd-lab-cta .dbd-button {
+  margin-top: 10px;
+}
+
+@media (max-width: 760px) {
+  .dbd-lab-split {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *,
