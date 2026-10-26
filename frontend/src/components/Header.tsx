@@ -6,6 +6,7 @@ import BlindPullToggle from "./BlindPullToggle";
 const LINKS = [
   { to: "/", label: "Beranda" },
   { to: "/cek-gejala", label: "Cek Gejala" },
+  { to: "/cek-lab", label: "Cek Lab" },
   { to: "/pelacak-suhu", label: "Pelacak Suhu" },
   { to: "/kalkulator", label: "Kalkulator" },
   { to: "/edukasi", label: "Edukasi" },

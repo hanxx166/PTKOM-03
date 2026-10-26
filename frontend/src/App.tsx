@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 import { HashRouter, Navigate, Route, Routes, useLocation } from "react-router-dom";
+import Admin from "./pages/Admin";
 import AuthModal from "./components/AuthModal";
 import CekGejala from "./pages/CekGejala";
+import CekLab from "./pages/CekLab";
+import Dashboard from "./pages/Dashboard";
 import Education from "./components/Education";
 import FluidCalculator from "./components/FluidCalculator";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 import TemperatureTracker from "./components/TemperatureTracker";
-import Admin from "./pages/Admin";
-import Dashboard from "./pages/Dashboard";
 import { AuthProvider } from "./lib/auth";
 import { ContentProvider } from "./lib/content";
 
@@ -48,6 +49,7 @@ function Shell() {
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/cek-gejala" element={<CekGejala onNeedAuth={needAuth} />} />
+          <Route path="/cek-lab" element={<CekLab />} />
           <Route path="/pelacak-suhu" element={<TemperatureTracker />} />
           <Route path="/kalkulator" element={<FluidCalculator />} />
           <Route path="/edukasi" element={<Education />} />
