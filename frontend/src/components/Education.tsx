@@ -59,27 +59,9 @@ const bold = (t: string) =>
     .filter(Boolean)
     .map((part, i) => (part.startsWith("**") ? <b key={i}>{part.slice(2, -2)}</b> : part));
 
-/** Warna badge tag artikel. Tag di luar daftar ini tetap tampil tanpa warna. */
-const TAG_CLASS: Record<string, string> = {
-  Dasar: "is-basic",
-  Gejala: "is-symptom",
-  Pencegahan: "is-prevention",
-  Penanganan: "is-handling",
-  Tips: "is-tip",
-};
-
-const BULAN = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-
-/** Ubah "2026-10-01" jadi "1 Oktober 2026". Tanggal lain ditampilkan apa adanya. */
-const tanggal = (iso: string) => {
-  const [y, bulan, hari] = iso.split("-").map(Number);
-  return BULAN[bulan - 1] && hari ? `${hari} ${BULAN[bulan - 1]} ${y}` : iso;
-};
-
 export default function Education() {
   const { content } = useContent();
   const faq = content?.faq ?? [];
-  const articles = content?.articles ?? [];
   const [openFaq, setOpenFaq] = useState<number | string | null>(null);
   const reduced = useReducedMotion();
 
@@ -157,25 +139,7 @@ export default function Education() {
         })}
       </div>
 
-      {articles.length > 0 && (
-        <>
-          <h3 className="dbd-subheading">Bacaan</h3>
-          <div className="dbd-article-list">
-            {articles.map((a) => (
-              <article className="dbd-card dbd-article-card" key={String(a.id)}>
-                <span className={`dbd-tag ${TAG_CLASS[a.tag || ""] ?? ""}`}>{a.tag}</span>
-                <h3>{a.title}</h3>
-                <p className="dbd-article-meta">
-                  {a.mins} menit baca{a.date ? ` · ${tanggal(a.date)}` : ""}
-                </p>
-                {(a.body || []).map((paragraf, i) => (
-                  <p key={i}>{bold(paragraf)}</p>
-                ))}
-              </article>
-            ))}
-          </div>
-        </>
-      )}
+
     </section>
   );
 }

@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useState } from "react";
 import Hero from "../components/Hero";
 import Reveal from "../components/Reveal";
 import { useContent } from "../lib/content";
@@ -28,6 +29,27 @@ const PHASES = [
   },
 ];
 
+const TAG_CLASS: Record<string, string> = {
+  Dasar: "is-basic",
+  Gejala: "is-symptom",
+  Pencegahan: "is-prevention",
+  Penanganan: "is-handling",
+  Tips: "is-tip",
+};
+
+const BULAN = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+
+const tanggal = (iso: string) => {
+  const [y, bulan, hari] = iso.split("-").map(Number);
+  return BULAN[bulan - 1] && hari ? `${hari} ${BULAN[bulan - 1]} ${y}` : iso;
+};
+
+const bold = (t: string) =>
+  t
+    .split(/(\*\*[^*]+\*\*)/g)
+    .filter(Boolean)
+    .map((part, i) => (part.startsWith("**") ? <b key={i}>{part.slice(2, -2)}</b> : part));
+
 const EMERGENCY = [
   {
     icon: "🚑",
@@ -50,7 +72,9 @@ const EMERGENCY = [
 ];
 
 export default function Dashboard() {
-  const { totalChecks } = useContent();
+  const { content, totalChecks } = useContent();
+  const articles = content?.articles ?? [];
+  const [feedback, setFeedback] = useState("");
   const reduced = useReducedMotion();
 
   return (
@@ -112,6 +136,46 @@ export default function Dashboard() {
           ))}
         </motion.div>
       </section>
+
+      {articles.length > 0 && (
+        <>
+          <h3 className="dbd-subheading">Bacaan</h3>
+          <div className="dbd-article-list">
+            {articles.map((a) => (
+              <article className="dbd-card dbd-article-card" key={String(a.id)}>
+                <span className={`dbd-tag ${TAG_CLASS[a.tag || ""] ?? ""}`}>{a.tag}</span>
+                <h3>{a.title}</h3>
+                <p className="dbd-article-meta">
+                  {a.mins} menit baca{a.date ? ` · ${tanggal(a.date)}` : ""}
+                </p>
+                {(a.body || []).map((paragraf, i) => (
+                  <p key={i}>{bold(paragraf)}</p>
+                ))}
+              </article>
+            ))}
+          </div>
+        </>
+      )}
+
+      <div className="dbd-card" style={{ marginTop: 24 }}>
+        <h3 style={{ textAlign: "center" }}>Kirim Masukan</h3>
+        <p style={{ textAlign: "center" }}>Bantu kami meningkatkan cekDBD.</p>
+        <textarea
+          value={feedback}
+          onChange={(e) => setFeedback(e.target.value)}
+          placeholder="Tulis masukan Anda di sini."
+          rows={4}
+          style={{ width: "100%", boxSizing: "border-box", padding: 12, borderRadius: 10, border: "1px solid var(--dbd-border)", background: "var(--dbd-surface)", color: "var(--dbd-text)", font: "inherit" }}
+        />
+        <div style={{ textAlign: "center", marginTop: 12 }}>
+          <a
+            className="dbd-button dbd-button-primary"
+            href={`mailto:?subject=${encodeURIComponent("Masukan cekDBD")}&body=${encodeURIComponent(feedback || "Tulis masukan Anda di sini.")}`}
+          >
+            Kirim masukan
+          </a>
+        </div>
+      </div>
     </>
   );
 }

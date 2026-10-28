@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Reveal from "./Reveal";
+import { useAuth } from "../lib/auth";
 import { useTrackerLog } from "../lib/tracker";
 
 const TIMES = ["Pagi", "Siang", "Sore", "Malam"];
@@ -10,7 +11,8 @@ function plateletStatus(value: number): { label: string; className: string } {
   return { label: "Catatan", className: "is-normal" };
 }
 
-export default function TemperatureTracker() {
+export default function TemperatureTracker({ onNeedAuth }: { onNeedAuth: () => void }) {
+  const { user } = useAuth();
   const fever = useTrackerLog("fever");
   const platelet = useTrackerLog("platelet");
   const [day, setDay] = useState("");
@@ -22,6 +24,10 @@ export default function TemperatureTracker() {
 
   const addEntry = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (!user) {
+      onNeedAuth();
+      return;
+    }
     const dayNumber = Number(day);
     const temperatureNumber = Number(temperature);
     if (!Number.isInteger(dayNumber) || dayNumber < 1 || dayNumber > 14) {
@@ -53,6 +59,10 @@ export default function TemperatureTracker() {
 
   const addPlatelet = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (!user) {
+      onNeedAuth();
+      return;
+    }
     const dayNumber = Number(pltDay);
     const plateletValue = Number(pltValue);
     if (!Number.isInteger(dayNumber) || dayNumber < 1 || dayNumber > 14) {
@@ -138,7 +148,7 @@ export default function TemperatureTracker() {
               {feverPoints.map((point) => (
                 <g key={point.id}>
                   <circle cx={point.x} cy={point.y} r="6" className={point.temp >= 38 ? "dbd-chart-hot-point" : "dbd-chart-point"} />
-                  <text x={point.x} y="198" textAnchor="middle" className="dbd-chart-label">H{point.day} {point.time.slice(0, 2)}</text>
+                   <text x={point.x} y="198" textAnchor="middle" className="dbd-chart-label">H{point.day}</text>
                 </g>
               ))}
             </svg>
@@ -147,7 +157,6 @@ export default function TemperatureTracker() {
           )}
         </div>
         <ul className="dbd-chart-legend" aria-label="Keterangan grafik suhu">
-          <li><span className="dbd-legend-swatch is-line" aria-hidden="true" />Garis biru: perubahan suhu dari satu catatan ke catatan berikutnya</li>
           <li><span className="dbd-legend-swatch is-dash" aria-hidden="true" />Garis merah putus-putus: batas demam 38°C</li>
           <li><span className="dbd-legend-swatch is-dot" aria-hidden="true" />Titik biru: suhu di bawah 38°C</li>
           <li><span className="dbd-legend-swatch is-dot-hot" aria-hidden="true" />Titik merah: suhu 38°C atau lebih</li>

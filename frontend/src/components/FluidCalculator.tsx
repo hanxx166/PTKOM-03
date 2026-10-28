@@ -5,13 +5,17 @@ export default function FluidCalculator() {
   const [weight, setWeight] = useState("");
   const [ageGroup, setAgeGroup] = useState("dewasa");
   const [fluidEstimate, setFluidEstimate] = useState<number | null>(null);
+  const [error, setError] = useState("");
 
   const calculateFluid = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const kg = Number(weight);
-    if (!Number.isFinite(kg) || kg < 1 || kg > 250) {
+    if (!Number.isFinite(kg) || kg < 3 || kg > 250) {
+      setError("Berat badan harus antara 3 dan 250 kg.");
+      setFluidEstimate(null);
       return;
     }
+    setError("");
     const ml = ageGroup === "anak"
       ? kg <= 10 ? kg * 100 : kg <= 20 ? 1000 + (kg - 10) * 50 : 1500 + (kg - 20) * 20
       : kg * 35;
@@ -40,7 +44,7 @@ export default function FluidCalculator() {
           <form onSubmit={calculateFluid}>
             <div className="dbd-form-group">
               <label htmlFor="calc-weight">Berat badan (kg)</label>
-              <input id="calc-weight" type="number" min="1" max="250" step="0.1" required value={weight} onChange={(event) => setWeight(event.target.value)} placeholder="Contoh: 55" />
+              <input id="calc-weight" type="number" min="3" max="250" step="0.1" required value={weight} onChange={(event) => setWeight(event.target.value)} placeholder="Contoh: 55" />
             </div>
             <div className="dbd-form-group">
               <label htmlFor="calc-age">Kategori usia</label>
@@ -51,13 +55,13 @@ export default function FluidCalculator() {
             </div>
             <button className="dbd-button dbd-button-primary" type="submit">Hitung Estimasi</button>
           </form>
+          {error && <p className="dbd-error" role="alert">{error}</p>}
           {fluidEstimate !== null && (
             <div className="dbd-calc-result" aria-live="polite">
               <b>{fluidEstimate.toLocaleString("id-ID")} ml/hari</b>
               <span>≈ {Math.round(fluidEstimate / 240)} gelas 240 ml. Kebutuhan dapat berbeda; minta saran tenaga kesehatan.</span>
             </div>
           )}
-          <p className="dbd-disclaimer">Pasien yang muntah hebat atau tidak bisa minum perlu penilaian tenaga medis.</p>
         </div>
       </div>
     </section>

@@ -50,7 +50,7 @@ function Shell() {
           <Route path="/" element={<Dashboard />} />
           <Route path="/cek-gejala" element={<CekGejala onNeedAuth={needAuth} />} />
           <Route path="/cek-lab" element={<CekLab />} />
-          <Route path="/pelacak-suhu" element={<TemperatureTracker />} />
+          <Route path="/pelacak-suhu" element={<TemperatureTracker onNeedAuth={needAuth} />} />
           <Route path="/kalkulator" element={<FluidCalculator />} />
           <Route path="/edukasi" element={<Education />} />
           <Route path="/admin" element={<Admin />} />

@@ -83,7 +83,7 @@
 .dbd-obat-filter:focus-visible { outline: 3px solid var(--dbd-accent-soft); outline-offset: 2px; }
 
 /* ---------- Kartu obat ---------- */
-.dbd-obat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; }
+.dbd-obat-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-top: 24px; }
 .dbd-obat-card { padding: 18px; border-top: 4px solid var(--dbd-border); }
 .dbd-obat-card.is-ok { border-top-color: var(--dbd-green); }
 .dbd-obat-card.is-care { border-top-color: var(--dbd-orange); }
@@ -133,6 +133,7 @@
 /* ---------- Responsif ---------- */
 @media (max-width: 900px) {
   .dbd-obat-rules { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .dbd-obat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 760px) {
   .dbd-obat-banner { grid-template-columns: 1fr; }
@@ -140,6 +141,7 @@
 }
 @media (max-width: 480px) {
   .dbd-obat-rules { grid-template-columns: 1fr; }
+  .dbd-obat-grid { grid-template-columns: 1fr; }
   .dbd-obat-filter { flex: 1 1 calc(50% - 8px); }
 }
 @media (prefers-reduced-motion: reduce) {

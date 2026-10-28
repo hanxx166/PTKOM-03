@@ -42,6 +42,7 @@ const WHEN_TO_CHECK = [
 export default function CekLab() {
   const reduced = useReducedMotion();
 
+
   return (
     <section className="dbd-section" id="cek-lab">
       <Reveal className="dbd-section-heading">
@@ -51,8 +52,7 @@ export default function CekLab() {
       </Reveal>
 
       <div className="dbd-info-box">
-        <p><b>Siapa yang perlu cek?</b> Bila demam tinggi lebih dari 2 hari, ada tanda bahaya, atau sedang menjalani pemantauan fase kritis DBD.</p>
-        <p>Tes laboratorium <b>bukan satu-satunya dasar diagnosis</b> — dokter juga mempertimbangkan gejala dan riwayat kesehatan.</p>
+        <p><b>Tes lab bukan diagnosis.</b> Periksa bila demam lebih dari 2 hari atau muncul tanda bahaya; hasil trombosit dibaca oleh dokter.</p>
       </div>
 
       <motion.div

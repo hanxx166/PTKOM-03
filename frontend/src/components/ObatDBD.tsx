@@ -23,6 +23,8 @@ interface Drug {
   note: string;
   /** Nama bahan / merek yang dicocokkan di "Cek Nama Obat" (huruf kecil, min. 4 huruf). */
   aliases: string[];
+  /** Foto obat opsional. */
+  image?: string;
 }
 
 const LEVELS: Record<Level, { label: string; icon: string; title: string }> = {
@@ -192,6 +194,8 @@ export default function ObatDBD() {
   const reduced = useReducedMotion();
   const [filter, setFilter] = useState<Filter>("all");
   const [query, setQuery] = useState("");
+  const [openId, setOpenId] = useState<string | null>(null);
+  const [filterOpen, setFilterOpen] = useState(false);
 
   const searched = normalize(query).length >= 4;
   const result = useMemo(() => findDrug(query), [query]);
@@ -226,15 +230,70 @@ export default function ObatDBD() {
       <Reveal>
         <div className="dbd-card dbd-obat-check">
           <label htmlFor="dbd-obat-input">🔎 Cek nama obat</label>
-          <input
-            id="dbd-obat-input"
-            type="search"
-            inputMode="search"
-            autoComplete="off"
-            placeholder="Contoh: ibuprofen, Sanmol, antibiotik"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
+          <div style={{ display: "flex", gap: 12, alignItems: "center", marginBottom: 12 }}>
+            <input
+              id="dbd-obat-input"
+              type="search"
+              inputMode="search"
+              autoComplete="off"
+              placeholder="Contoh: ibuprofen, Sanmol, antibiotik"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              style={{ flex: 1 }}
+            />
+            <div style={{ position: "relative" }}>
+              <button
+                type="button"
+                className="dbd-obat-filter is-active"
+                onClick={() => setFilterOpen((v) => !v)}
+                aria-haspopup="listbox"
+                aria-expanded={filterOpen}
+              >
+                Filter
+              </button>
+              {filterOpen && (
+                <div
+                  role="listbox"
+                  style={{
+                    position: "absolute",
+                    right: 0,
+                    top: "calc(100% + 4px)",
+                    background: "#fff",
+                    border: "1px solid #ddd",
+                    borderRadius: 8,
+                    padding: 4,
+                    zIndex: 10,
+                    minWidth: 140,
+                  }}
+                >
+                  {FILTERS.map((f) => (
+                    <button
+                      type="button"
+                      key={f.id}
+                      role="option"
+                      aria-selected={filter === f.id}
+                      onClick={() => {
+                        setFilter(f.id);
+                        setFilterOpen(false);
+                      }}
+                      style={{
+                        display: "block",
+                        width: "100%",
+                        textAlign: "left",
+                        padding: "6px 8px",
+                        border: "none",
+                        background: filter === f.id ? "#eee" : "transparent",
+                        borderRadius: 6,
+                        cursor: "pointer",
+                      }}
+                    >
+                      {f.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
           <div className="dbd-obat-result-wrap" aria-live="polite">
             {result && (
               <div className={`dbd-obat-result is-${result.level}`}>
@@ -255,20 +314,6 @@ export default function ObatDBD() {
         </div>
       </Reveal>
 
-      <div className="dbd-obat-filters" role="group" aria-label="Filter golongan obat">
-        {FILTERS.map((f) => (
-          <button
-            type="button"
-            key={f.id}
-            className={`dbd-obat-filter${filter === f.id ? " is-active" : ""}`}
-            aria-pressed={filter === f.id}
-            onClick={() => setFilter(f.id)}
-          >
-            {f.label}
-          </button>
-        ))}
-      </div>
-
       <AnimatePresence mode="wait" initial={false}>
         <motion.div
           className="dbd-obat-grid"
@@ -286,14 +331,16 @@ export default function ObatDBD() {
               variants={staggerChild}
               whileHover={{ y: -4, boxShadow: cardHoverBox }}
               transition={cardHoverTransition}
+              onClick={() => setOpenId(openId === d.id ? null : d.id)}
+              style={{ cursor: "pointer" }}
             >
               <div className="dbd-obat-card-head">
-                <span className="dbd-obat-icon" aria-hidden="true">{d.icon}</span>
+                {d.image ? <img className="dbd-obat-photo" src={d.image} alt="" /> : <span className="dbd-obat-icon" aria-hidden="true">{d.icon}</span>}
                 <h4>{d.name}</h4>
                 <span className={`dbd-obat-badge is-${d.level}`}>{LEVELS[d.level].label}</span>
               </div>
               <p className="dbd-obat-use">{d.use}</p>
-              <p className="dbd-obat-note">{d.note}</p>
+              {openId === d.id && <p className="dbd-obat-note">{d.note}</p>}
             </motion.article>
           ))}
         </motion.div>
