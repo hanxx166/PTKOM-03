@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #f3f7fb;
+  --ink: #14263d;
+  --acc: #1366d6;
+  --line: #d5e1ee;
+}
+
+body {
+  min-width: 320px;
+  margin: 0;
+  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: Outfit, system-ui, sans-serif;
+  line-height: 1.25;
+}

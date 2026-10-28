@@ -1,0 +1,181 @@
+{
+ "articles": [
+  {
+   "id": 1,
+   "tag": "Dasar",
+   "mins": 2,
+   "title": "Apa itu Demam Berdarah Dengue (DBD)?",
+   "body": [
+    "DBD adalah penyakit akibat virus dengue yang ditularkan lewat gigitan nyamuk Aedes aegypti.",
+    "Nyamuk ini aktif menggigit pada pagi dan sore hari, dan berkembang biak di genangan air bersih seperti bak mandi, vas bunga, dan ban bekas.",
+    "DBD masih menjadi masalah kesehatan di Indonesia, terutama saat musim hujan."
+   ],
+   "date": "2026-10-01"
+  },
+  {
+   "id": 2,
+   "tag": "Gejala",
+   "mins": 3,
+   "title": "Gejala dan Fase DBD",
+   "body": [
+    "Gejala umum: demam tinggi mendadak selama 2-7 hari, sakit kepala, nyeri di belakang mata, nyeri otot dan sendi, mual, serta ruam.",
+    "Fase kritis biasanya terjadi pada hari ke-3 sampai ke-7, yaitu saat demam mulai turun. Pada fase ini pasien justru perlu diawasi ketat.",
+    "Tanda bahaya: nyeri perut hebat, muntah terus-menerus, perdarahan (mimisan, gusi berdarah, bintik merah), sangat lemas, gelisah, serta tangan dan kaki dingin."
+   ],
+   "date": "2026-10-01"
+  },
+  {
+   "id": 3,
+   "tag": "Pencegahan",
+   "mins": 2,
+   "title": "Pencegahan dengan 3M Plus",
+   "body": [
+    "Menguras dan menyikat tempat penampungan air seminggu sekali.",
+    "Menutup rapat tempat penampungan air.",
+    "Memanfaatkan atau mendaur ulang barang bekas yang dapat menampung air.",
+    "Plus: menaburkan bubuk larvasida, memakai kelambu atau lotion antinyamuk, dan memelihara ikan pemakan jentik."
+   ],
+   "date": "2026-10-01"
+  },
+  {
+   "id": 4,
+   "tag": "Penanganan",
+   "mins": 2,
+   "title": "Kapan Harus ke Dokter?",
+   "body": [
+    "Segera periksa ke fasilitas kesehatan bila demam tinggi berlangsung lebih dari 2 hari.",
+    "Bila muncul tanda bahaya seperti nyeri perut hebat, muntah terus, atau perdarahan, segera ke IGD.",
+    "Perbanyak minum air putih atau oralit selama sakit. Jangan minum aspirin atau ibuprofen tanpa arahan dokter."
+   ],
+   "date": "2026-10-01"
+  }
+ ],
+ "symptoms": [
+  {
+   "id": "demam",
+   "label": "Demam tinggi mendadak (38°C atau lebih)",
+   "w": 3,
+   "danger": false
+  },
+  {
+   "id": "kepala",
+   "label": "Sakit kepala hebat atau nyeri di belakang mata",
+   "w": 2,
+   "danger": false
+  },
+  {
+   "id": "otot",
+   "label": "Nyeri otot dan sendi",
+   "w": 1,
+   "danger": false
+  },
+  {
+   "id": "mual",
+   "label": "Mual atau muntah",
+   "w": 1,
+   "danger": false
+  },
+  {
+   "id": "ruam",
+   "label": "Ruam merah di kulit",
+   "w": 2,
+   "danger": false
+  },
+  {
+   "id": "bintik",
+   "label": "Bintik merah, mimisan, atau gusi berdarah",
+   "w": 3,
+   "danger": true
+  },
+  {
+   "id": "perut",
+   "label": "Nyeri perut hebat",
+   "w": 3,
+   "danger": true
+  },
+  {
+   "id": "lemas",
+   "label": "Sangat lemas, gelisah, tangan dan kaki dingin",
+   "w": 3,
+   "danger": true
+  }
+ ],
+ "tasks": [
+  {
+   "id": 1,
+   "text": "Kuras dan sikat bak mandi"
+  },
+  {
+   "id": 2,
+   "text": "Tutup rapat tempat penampungan air"
+  },
+  {
+   "id": 3,
+   "text": "Daur ulang atau kubur barang bekas"
+  },
+  {
+   "id": 4,
+   "text": "Taburkan larvasida di penampungan air"
+  },
+  {
+   "id": 5,
+   "text": "Pasang kasa atau kelambu"
+  },
+  {
+   "id": 6,
+   "text": "Cek jentik di vas dan tatakan pot"
+  }
+ ],
+ "quiz": [
+  {
+   "s": "Nyamuk Aedes aegypti berkembang biak di air bersih yang tergenang.",
+   "a": true,
+   "e": "Jentiknya hidup di bak mandi, vas bunga, dan barang bekas yang berisi air bersih."
+  },
+  {
+   "s": "Nyamuk penyebab DBD hanya menggigit pada malam hari.",
+   "a": false,
+   "e": "Aedes aegypti justru aktif menggigit pada pagi dan sore hari."
+  },
+  {
+   "s": "Setelah demam turun, pasien DBD pasti sudah sembuh.",
+   "a": false,
+   "e": "Demam turun pada hari ke-3 sampai ke-7 bisa menjadi awal fase kritis, pasien tetap harus diawasi."
+  },
+  {
+   "s": "Menguras bak mandi seminggu sekali membantu mencegah DBD.",
+   "a": true,
+   "e": "Menguras memutus siklus jentik menjadi nyamuk dewasa."
+  },
+  {
+   "s": "Aspirin aman diminum untuk menurunkan demam pada DBD.",
+   "a": false,
+   "e": "Aspirin dan ibuprofen dapat meningkatkan risiko perdarahan. Ikuti arahan dokter."
+  },
+  {
+   "s": "Bintik merah, mimisan, atau gusi berdarah adalah tanda bahaya DBD.",
+   "a": true,
+   "e": "Perdarahan adalah tanda bahaya, segera ke IGD atau fasilitas kesehatan."
+  }
+ ],
+ "contact": {
+  "maps": "Poliklinik ITERA, Lampung Selatan"
+ },
+ "facts": [
+  {
+   "id": 1,
+   "big": "2-7 hari",
+   "text": "lama demam tinggi pada DBD"
+  },
+  {
+   "id": 2,
+   "big": "Hari 3-7",
+   "text": "fase kritis, saat demam turun"
+  },
+  {
+   "id": 3,
+   "big": "Pagi & sore",
+   "text": "waktu nyamuk Aedes menggigit"
+  }
+ ]
+}

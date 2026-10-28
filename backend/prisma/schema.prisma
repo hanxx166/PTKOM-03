@@ -1,0 +1,142 @@
+// Satu provider untuk lokal dan produksi: PostgreSQL Supabase.
+// Session pooler (port 5432, host *.pooler.supabase.com), bukan transaction
+// pooler, karena `migrate deploy` menjalankan DDL yang butuh sesi panjang.
+// RLS dinyalakan lewat migrasi enable_rls; backend connects sebagai owner,
+// jadi tetap bisa membaca dan menulis melewati RLS.
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         String   @default("user")
+  createdAt    DateTime @default(now())
+  feverEntries FeverEntry[]
+  feverLogs    FeverLog[]
+  platelets    PlateletLog[]
+  checks       SymptomCheck[]
+  progress     ChecklistProgress[]
+}
+
+model PasswordReset {
+  id        Int      @id @default(autoincrement())
+  email     String
+  codeHash  String
+  expiresAt DateTime
+  attempts  Int      @default(0)
+  createdAt DateTime @default(now())
+  @@index([email])
+}
+
+model Article {
+  id       Int      @id @default(autoincrement())
+  title    String
+  tag      String
+  body     String
+  mins     Int      @default(1)
+  date     String   @default("")
+  authorId Int?
+}
+
+model Symptom {
+  id       String  @id
+  label    String
+  weight   Int     @default(1)
+  isDanger Boolean @default(false)
+}
+
+model Task {
+  id        Int    @id @default(autoincrement())
+  text      String
+  sortOrder Int    @default(0)
+}
+
+model QuizItem {
+  id          Int     @id @default(autoincrement())
+  statement   String
+  isFact      Boolean @default(true)
+  explanation String  @default("")
+}
+
+model Fact {
+  id   Int    @id @default(autoincrement())
+  big  String
+  text String
+}
+
+// FAQ: pertanyaan umum beserta jawabannya, terpisah dari Fact yang berisi
+// angka statistik. Jawaban boleh memakai markdown **tebal**.
+model Faq {
+  id        Int    @id @default(autoincrement())
+  question  String
+  answer    String
+  sortOrder Int    @default(0)
+}
+
+model SiteSetting {
+  key   String @id
+  value String
+}
+
+model FeverEntry {
+  id     Int    @id @default(autoincrement())
+  userId Int
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date   String
+  temp   Float
+  note   String @default("")
+  @@unique([userId, date])
+  @@index([userId, date])
+}
+
+model SymptomCheck {
+  id         Int      @id @default(autoincrement())
+  userId     Int?
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  level      String
+  score      Int      @default(0)
+  symptomIds String   @default("[]")
+  createdAt  DateTime @default(now())
+  @@index([level])
+}
+
+model ChecklistProgress {
+  userId Int
+  taskId Int
+  doneAt DateTime @default(now())
+  user   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@id([userId, taskId])
+}
+
+// Pantau kondisi modern: suhu multi-catatan per hari (Pagi/Siang/Sore/Malam).
+// Tabel terpisah dari FeverEntry lama (1 entri/hari) yang sudah terlanjur ada
+// dan mungkin berisi data di produksi.
+model FeverLog {
+  id     Int    @id @default(autoincrement())
+  userId Int
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  day    Int
+  time   String
+  temp   Float
+  @@unique([userId, day, time])
+  @@index([userId])
+}
+
+// Log trombosit per user, satu nilai lab per hari.
+model PlateletLog {
+  id     Int @id @default(autoincrement())
+  userId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  day    Int
+  value  Int
+  @@unique([userId, day])
+  @@index([userId])
+}

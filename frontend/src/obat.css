@@ -1,0 +1,147 @@
+/* Bagian "Obat Saat DBD" (ObatDBD.tsx). Memakai token warna dbd.css,
+   jadi otomatis ikut mode terang dan gelap. */
+
+.dbd-obat { margin-top: 48px; }
+
+/* ---------- Banner ---------- */
+.dbd-obat-banner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 20px;
+  align-items: center;
+  overflow: hidden;
+  padding: clamp(20px, 4vw, 32px);
+  border: 1px solid var(--dbd-border);
+  border-radius: 18px;
+  background: linear-gradient(135deg, var(--dbd-accent-soft), var(--dbd-surface) 72%);
+  box-shadow: var(--dbd-shadow);
+}
+.dbd-obat-banner h3 { margin: 4px 0 8px; font-size: clamp(1.2rem, 3vw, 1.6rem); }
+.dbd-obat-banner p { max-width: 58ch; margin: 0; color: var(--dbd-muted); line-height: 1.6; }
+
+.dbd-obat-stats { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.dbd-obat-stat {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 5px 11px; border-radius: 20px;
+  font-size: 0.74rem; font-weight: 800;
+}
+.dbd-obat-stat i { width: 9px; height: 9px; border-radius: 50%; background: currentColor; }
+.dbd-obat-stat.is-ok { background: var(--dbd-green-soft); color: var(--dbd-green); }
+.dbd-obat-stat.is-care { background: var(--dbd-orange-soft); color: var(--dbd-orange); }
+.dbd-obat-stat.is-avoid { background: var(--dbd-red-soft); color: var(--dbd-red); }
+
+/* Ilustrasi kapsul murni CSS */
+.dbd-obat-art { position: relative; width: 150px; height: 120px; }
+.dbd-obat-capsule {
+  position: absolute; display: block; border-radius: 999px;
+  border: 2px solid var(--dbd-accent);
+  background: linear-gradient(90deg, var(--dbd-accent) 50%, var(--dbd-surface) 50%);
+  box-shadow: var(--dbd-shadow);
+}
+.dbd-obat-capsule.is-big { top: 26px; left: 6px; width: 118px; height: 46px; transform: rotate(-28deg); }
+.dbd-obat-capsule.is-small {
+  right: 0; bottom: 8px; width: 74px; height: 30px; transform: rotate(18deg);
+  border-color: var(--dbd-green);
+  background: linear-gradient(90deg, var(--dbd-green) 50%, var(--dbd-surface) 50%);
+}
+.dbd-obat-dot {
+  position: absolute; top: 6px; right: 22px; width: 22px; height: 22px; border-radius: 50%;
+  border: 2px solid var(--dbd-orange); background: var(--dbd-orange-soft);
+}
+
+/* ---------- Cek nama obat ---------- */
+.dbd-obat-check { max-width: 780px; margin: 16px auto 0; }
+.dbd-obat-check label { display: block; margin-bottom: 8px; font-weight: 800; }
+.dbd-obat-check input {
+  width: 100%; box-sizing: border-box; padding: 12px 14px;
+  border: 1px solid var(--dbd-border); border-radius: 10px;
+  background: var(--dbd-surface); color: var(--dbd-text);
+  font: 600 0.92rem "Plus Jakarta Sans", sans-serif;
+}
+.dbd-obat-check input::placeholder { color: var(--dbd-muted-light); }
+.dbd-obat-check input:focus-visible { outline: 3px solid var(--dbd-accent-soft); border-color: var(--dbd-accent); }
+.dbd-obat-check small { display: block; margin-top: 10px; color: var(--dbd-muted); font-size: 0.74rem; }
+.dbd-obat-result-wrap:not(:empty) { margin-top: 12px; }
+
+.dbd-obat-result { padding: 12px 14px; border-left: 4px solid; border-radius: 10px; }
+.dbd-obat-result strong { display: block; font-size: 0.92rem; }
+.dbd-obat-result p { margin: 4px 0 0; color: var(--dbd-text); font-size: 0.84rem; line-height: 1.55; }
+.dbd-obat-result.is-ok { border-color: var(--dbd-green); background: var(--dbd-green-soft); }
+.dbd-obat-result.is-care { border-color: var(--dbd-orange); background: var(--dbd-orange-soft); }
+.dbd-obat-result.is-avoid { border-color: var(--dbd-red); background: var(--dbd-red-soft); }
+
+/* ---------- Filter ---------- */
+.dbd-obat-filters { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 26px 0 16px; }
+.dbd-obat-filter {
+  padding: 8px 16px; border: 1px solid var(--dbd-border); border-radius: 20px;
+  background: var(--dbd-surface); color: var(--dbd-text);
+  font: 700 0.82rem "Plus Jakarta Sans", sans-serif; cursor: pointer;
+  transition: background 0.18s, color 0.18s, border-color 0.18s;
+}
+.dbd-obat-filter:hover { background: var(--dbd-soft); }
+.dbd-obat-filter.is-active { border-color: var(--dbd-accent); background: var(--dbd-accent); color: var(--dbd-on-fill); }
+.dbd-obat-filter:focus-visible { outline: 3px solid var(--dbd-accent-soft); outline-offset: 2px; }
+
+/* ---------- Kartu obat ---------- */
+.dbd-obat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; }
+.dbd-obat-card { padding: 18px; border-top: 4px solid var(--dbd-border); }
+.dbd-obat-card.is-ok { border-top-color: var(--dbd-green); }
+.dbd-obat-card.is-care { border-top-color: var(--dbd-orange); }
+.dbd-obat-card.is-avoid { border-top-color: var(--dbd-red); }
+
+.dbd-obat-card-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.dbd-obat-card-head h4 { flex: 1; margin: 0; font-size: 0.98rem; }
+.dbd-obat-icon {
+  display: grid; flex: 0 0 auto; place-items: center;
+  width: 40px; height: 40px; border-radius: 12px;
+  background: var(--dbd-soft); font-size: 1.2rem;
+}
+.dbd-obat-badge { flex: 0 0 auto; padding: 3px 9px; border-radius: 20px; font-size: 0.66rem; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; }
+.dbd-obat-badge.is-ok { background: var(--dbd-green-soft); color: var(--dbd-green); }
+.dbd-obat-badge.is-care { background: var(--dbd-orange-soft); color: var(--dbd-orange); }
+.dbd-obat-badge.is-avoid { background: var(--dbd-red-soft); color: var(--dbd-red); }
+
+.dbd-obat-use { margin: 0 0 6px; font-size: 0.86rem; font-weight: 700; line-height: 1.5; }
+.dbd-obat-note { margin: 0; color: var(--dbd-muted); font-size: 0.82rem; line-height: 1.6; }
+
+/* ---------- Aturan ---------- */
+.dbd-obat-rules {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px;
+  margin: 0; padding: 0; list-style: none;
+}
+.dbd-obat-rules .dbd-card { padding: 18px; }
+.dbd-obat-rules p { margin: 6px 0 0; color: var(--dbd-muted); font-size: 0.82rem; line-height: 1.55; }
+.dbd-obat-num {
+  display: grid; place-items: center; width: 30px; height: 30px; margin-bottom: 10px;
+  border-radius: 50%; background: var(--dbd-accent); color: var(--dbd-on-fill);
+  font: 800 0.85rem Outfit, sans-serif;
+}
+
+/* ---------- Peringatan & disclaimer ---------- */
+.dbd-obat-alert {
+  max-width: 780px; margin: 26px auto 0; padding: 16px 18px;
+  border: 1px solid var(--dbd-red); border-radius: 14px; background: var(--dbd-red-soft);
+}
+.dbd-obat-alert strong { display: block; font-size: 0.92rem; }
+.dbd-obat-alert ul { display: flex; flex-wrap: wrap; gap: 6px 8px; margin: 10px 0 0; padding: 0; list-style: none; }
+.dbd-obat-alert li {
+  padding: 4px 10px; border-radius: 20px; background: var(--dbd-surface);
+  color: var(--dbd-red); font-size: 0.78rem; font-weight: 700;
+}
+.dbd-obat-disclaimer { max-width: 780px; margin: 12px auto 0; color: var(--dbd-muted); font-size: 0.76rem; text-align: center; }
+
+/* ---------- Responsif ---------- */
+@media (max-width: 900px) {
+  .dbd-obat-rules { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 760px) {
+  .dbd-obat-banner { grid-template-columns: 1fr; }
+  .dbd-obat-art { display: none; }
+}
+@media (max-width: 480px) {
+  .dbd-obat-rules { grid-template-columns: 1fr; }
+  .dbd-obat-filter { flex: 1 1 calc(50% - 8px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dbd-obat-filter { transition: none; }
+}

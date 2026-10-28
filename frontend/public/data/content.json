@@ -1,0 +1,330 @@
+{
+ "articles": [
+  {
+   "id": 1,
+   "tag": "Dasar",
+   "mins": 2,
+   "title": "Apa itu Demam Berdarah Dengue (DBD)?",
+   "body": [
+    "DBD adalah penyakit akibat virus dengue yang ditularkan lewat gigitan nyamuk Aedes aegypti.",
+    "Nyamuk ini aktif menggigit pada pagi dan sore hari, dan berkembang biak di genangan air bersih seperti bak mandi, vas bunga, dan ban bekas.",
+    "DBD masih menjadi masalah kesehatan di Indonesia, terutama saat musim hujan."
+   ],
+   "date": "2026-10-01"
+  },
+  {
+   "id": 2,
+   "tag": "Gejala",
+   "mins": 3,
+   "title": "Gejala dan Fase DBD",
+   "body": [
+    "Gejala umum: demam tinggi mendadak selama 2-7 hari, sakit kepala, nyeri di belakang mata, nyeri otot dan sendi, mual, serta ruam.",
+    "Fase kritis biasanya terjadi pada hari ke-3 sampai ke-7, yaitu saat demam mulai turun. Pada fase ini pasien justru perlu diawasi ketat.",
+    "Tanda bahaya: nyeri perut hebat, muntah terus-menerus, perdarahan (mimisan, gusi berdarah, bintik merah), sangat lemas, gelisah, serta tangan dan kaki dingin."
+   ],
+   "date": "2026-10-01"
+  },
+  {
+   "id": 3,
+   "tag": "Pencegahan",
+   "mins": 2,
+   "title": "Pencegahan dengan 3M Plus",
+   "body": [
+    "Menguras dan menyikat tempat penampungan air seminggu sekali.",
+    "Menutup rapat tempat penampungan air.",
+    "Memanfaatkan atau mendaur ulang barang bekas yang dapat menampung air.",
+    "Plus: menaburkan bubuk larvasida, memakai kelambu atau lotion antinyamuk, dan memelihara ikan pemakan jentik."
+   ],
+   "date": "2026-10-01"
+  },
+  {
+   "id": 4,
+   "tag": "Penanganan",
+   "mins": 2,
+   "title": "Kapan Harus ke Dokter?",
+   "body": [
+    "Segera periksa ke fasilitas kesehatan bila demam tinggi berlangsung lebih dari 2 hari.",
+    "Bila muncul tanda bahaya seperti nyeri perut hebat, muntah terus, atau perdarahan, segera ke IGD.",
+    "Perbanyak minum air putih atau oralit selama sakit. Jangan minum aspirin atau ibuprofen tanpa arahan dokter."
+   ],
+   "date": "2026-10-01"
+  },
+  {
+   "id": 5,
+   "tag": "Dasar",
+   "mins": 3,
+   "title": "Diagnosis DBD: Tes Apa yang Dilakukan Dokter?",
+   "body": [
+    "Mendiagnosis DBD bisa sulit karena gejalanya mirip penyakit lain seperti chikungunya, virus Zika, malaria, dan demam tifoid.",
+    "Dokter biasanya menanyakan riwayat kesehatan dan perjalanan, lalu mengambil sampel darah untuk diperiksa di laboratorium.",
+    "**Tes Darah Lengkap (CBC):** mengecek jumlah **trombosit** yang sering menurun pada DBD dan hematokrit sebagai tanda kebocoran plasma.",
+    "**Tes NS1:** mendeteksi antigen virus dengue pada hari pertama sampai hari ke-9 sejak gejala muncul, cocok untuk deteksi dini.",
+    "**Serologi IgM dan IgG:** mendeteksi antibodi yang diproduksi tubuh sebagai respons infeksi virus dengue.",
+    "Pemeriksaan trombosit berkala penting pada fase kritis (hari ke-3 sampai ke-7) untuk memantau perburukan kondisi."
+   ],
+   "date": "2026-10-25"
+  },
+  {
+   "id": 6,
+   "tag": "Dasar",
+   "mins": 2,
+   "title": "Penyebab, Penularan, dan Faktor Risiko DBD",
+   "body": [
+    "DBD disebabkan oleh **empat jenis virus dengue** (DEN-1, DEN-2, DEN-3, DEN-4) yang ditularkan lewat gigitan nyamuk Aedes aegypti dan Aedes albopictus.",
+    "Menurut Organisasi Kesehatan Dunia (WHO), virus dengue **tidak ditularkan langsung dari orang ke orang** melalui bersin, batuk, atau kontak fisik - hanya lewat gigitan nyamuk yang terinfeksi.",
+    "Setelah sembuh, kekebalan yang terbentuk bersifat spesifik terhadap satu serotipe. Artinya, kamu **bisa kena DBD lagi** dari serotipe lain - hingga empat kali seumur hidup.",
+    "Risiko komplikasi lebih tinggi pada infeksi kedua dan seterusnya.",
+    "Faktor risiko: tinggal atau bepergian di daerah tropis dan subtropis (Asia Tenggara, Pasifik Barat, Amerika Latin, Afrika), serta pernah mengidap DBD sebelumnya."
+   ],
+   "date": "2026-10-25"
+  },
+  {
+   "id": 7,
+   "tag": "Penanganan",
+   "mins": 3,
+   "title": "Pengelolaan Diri dan Pengobatan DBD",
+   "body": [
+    "Belum ada obat khusus untuk virus dengue. Penanganan berfokus pada **pemantauan dan pemenuhan cairan** sampai tubuh pulih.",
+    "**Paracetamol** boleh digunakan untuk demam dan nyeri. **Hindari aspirin, ibuprofen, dan naproxen** karena meningkatkan risiko perdarahan.",
+    "Perbanyak minum air putih, jus, atau oralit. Hubungi dokter bila ada tanda dehidrasi: buang air kecil berkurang, mulut kering, atau kelelahan.",
+    "DBD berat memerlukan perawatan rumah sakit: cairan intravena, pemantauan tekanan darah, atau transfusi darah sesuai indikasi dokter.",
+    "**Makanan yang dianjurkan:** bubur, buah-buahan (jeruk), ikan, daging cincang yang diolah menjadi sup hangat, serta agar-agar. **Hindari** makanan pedas, berminyak, dan sulit dicerna.",
+    "**Komplikasi yang perlu diwaspadai:** perdarahan internal, syok akibat dengue (DSS), kerusakan organ, serta risiko pada ibu hamil seperti kelahiran prematur dan berat badan lahir rendah."
+   ],
+   "date": "2026-10-25"
+  },
+  {
+   "id": 8,
+   "tag": "Pencegahan",
+   "mins": 2,
+   "title": "Vaksinasi Dengue sebagai Pencegahan",
+   "body": [
+    "Selain 3M Plus, **vaksinasi dengue** kini tersedia sebagai upaya pencegahan tambahan.",
+    "Dua vaksin yang umum digunakan: **Dengvaxia** (CYD-TDV) untuk usia 9-45 tahun yang pernah terinfeksi sebelumnya, dan **Qdenga** yang dapat digunakan pada yang belum pernah terinfeksi.",
+    "Vaksin bukan pengganti pencegahan gigitan nyamuk. Terapkan 3M Plus secara rutin meski sudah divaksin.",
+    "Konsultasikan dulu ke dokter untuk mengetahui kecocokan dan jadwal vaksinasi sesuai kondisi kesehatan."
+   ],
+   "date": "2026-10-25"
+  }
+ ],
+ "symptoms": [
+  {
+   "id": "demam",
+   "label": "Demam tinggi mendadak (38°C atau lebih)",
+   "w": 3,
+   "danger": false
+  },
+  {
+   "id": "kepala",
+   "label": "Sakit kepala hebat atau nyeri di belakang mata",
+   "w": 2,
+   "danger": false
+  },
+  {
+   "id": "otot",
+   "label": "Nyeri otot dan sendi",
+   "w": 1,
+   "danger": false
+  },
+  {
+   "id": "mual",
+   "label": "Mual atau muntah",
+   "w": 1,
+   "danger": false
+  },
+  {
+   "id": "ruam",
+   "label": "Ruam merah di kulit",
+   "w": 2,
+   "danger": false
+  },
+  {
+   "id": "bintik",
+   "label": "Bintik merah, mimisan, atau gusi berdarah",
+   "w": 3,
+   "danger": true
+  },
+  {
+   "id": "perut",
+   "label": "Nyeri perut hebat",
+   "w": 3,
+   "danger": true
+  },
+  {
+   "id": "lemas",
+   "label": "Sangat lemas, gelisah, tangan dan kaki dingin",
+   "w": 3,
+   "danger": true
+  }
+ ],
+ "tasks": [
+  {
+   "id": 1,
+   "text": "Kuras dan sikat bak mandi"
+  },
+  {
+   "id": 2,
+   "text": "Tutup rapat tempat penampungan air"
+  },
+  {
+   "id": 3,
+   "text": "Daur ulang atau kubur barang bekas"
+  },
+  {
+   "id": 4,
+   "text": "Taburkan larvasida di penampungan air"
+  },
+  {
+   "id": 5,
+   "text": "Pasang kasa atau kelambu"
+  },
+  {
+   "id": 6,
+   "text": "Cek jentik di vas dan tatakan pot"
+  }
+ ],
+ "quiz": [
+  {
+   "s": "Nyamuk Aedes aegypti berkembang biak di air bersih yang tergenang.",
+   "a": true,
+   "e": "Jentiknya hidup di bak mandi, vas bunga, dan barang bekas yang berisi air bersih."
+  },
+  {
+   "s": "Nyamuk penyebab DBD hanya menggigit pada malam hari.",
+   "a": false,
+   "e": "Aedes aegypti justru aktif menggigit pada pagi dan sore hari."
+  },
+  {
+   "s": "Setelah demam turun, pasien DBD pasti sudah sembuh.",
+   "a": false,
+   "e": "Demam turun pada hari ke-3 sampai ke-7 bisa menjadi awal fase kritis, pasien tetap harus diawasi."
+  },
+  {
+   "s": "Menguras bak mandi seminggu sekali membantu mencegah DBD.",
+   "a": true,
+   "e": "Menguras memutus siklus jentik menjadi nyamuk dewasa."
+  },
+  {
+   "s": "Aspirin aman diminum untuk menurunkan demam pada DBD.",
+   "a": false,
+   "e": "Aspirin dan ibuprofen dapat meningkatkan risiko perdarahan. Ikuti arahan dokter."
+  },
+   {
+    "s": "Bintik merah, mimisan, atau gusi berdarah adalah tanda bahaya DBD.",
+    "a": true,
+    "e": "Perdarahan adalah tanda bahaya, segera ke IGD atau fasilitas kesehatan."
+   },
+   {
+    "s": "Virus dengue bisa ditularkan melalui bersin atau kontak langsung.",
+    "a": false,
+    "e": "Menurut WHO, virus dengue hanya ditularkan lewat gigitan nyamuk Aedes yang terinfeksi."
+   },
+   {
+    "s": "Seseorang bisa mengalami DBD lebih dari sekali seumur hidup.",
+    "a": true,
+    "e": "Ada 4 serotipe virus dengue (DEN-1 hingga DEN-4). Setelah sembuh dari satu serotipe, masih bisa tertular serotipe lain."
+   },
+   {
+    "s": "Jus jambu merah bisa langsung menaikkan trombosit secara cepat.",
+    "a": false,
+    "e": "Anggapan ini salah kaprah. Vitamin C dalam jambu mendukung daya tahan tubuh; trombosit naik secara perlahan saat tubuh memulihkan diri."
+   }
+  ],
+ "contact": {
+  "maps": "Poliklinik ITERA, Lampung Selatan"
+ },
+ "facts": [
+  {
+   "id": 1,
+   "big": "2-7 hari",
+   "text": "lama demam tinggi pada DBD"
+  },
+  {
+   "id": 2,
+   "big": "Hari 3-7",
+   "text": "fase kritis, saat demam turun"
+  },
+   {
+    "id": 3,
+    "big": "Pagi & sore",
+    "text": "waktu nyamuk Aedes menggigit"
+   },
+   {
+    "id": 4,
+    "big": "4 serotipe",
+    "text": "jenis virus dengue (DEN-1 hingga DEN-4)"
+   },
+   {
+    "id": 5,
+    "big": "7-10 hari",
+    "text": "waktu umum kesembuhan DBD"
+   }
+  ],
+ "faq": [
+  {
+   "id": 1,
+   "question": "Jambu biji menaikkan trombosit?",
+   "answer": "Belum ada bukti klinis kuat bahwa jambu biji secara langsung menaikkan trombosit. Buah dapat menjadi bagian dari pola makan, tetapi tidak menggantikan cairan dan penanganan medis."
+  },
+  {
+   "id": 2,
+   "question": "Fogging saja cukup mencegah DBD?",
+   "answer": "**Tidak.** Fogging menyasar nyamuk dewasa dan tidak menghilangkan jentik. Pencegahan perlu dilengkapi penghapusan sarang nyamuk dan 3M Plus."
+  },
+  {
+   "id": 3,
+   "question": "Apakah demam turun berarti pasien sudah sehat?",
+   "answer": "**Belum tentu.** Pada DBD, kondisi dapat memburuk ketika demam turun. Tetap waspadai tanda bahaya dan ikuti pemantauan tenaga kesehatan."
+  },
+  {
+   "id": 4,
+   "question": "Apakah antibiotik menyembuhkan DBD?",
+   "answer": "DBD disebabkan virus dengue, sehingga antibiotik tidak bekerja untuk virus. Penanganan ditentukan dokter berdasarkan kondisi pasien."
+  },
+  {
+   "id": 5,
+   "question": "Sudah pernah DBD, tidak bisa kena lagi?",
+   "answer": "**Salah.** Terdapat beberapa serotipe virus dengue. Seseorang bisa kena lagi, jadi pencegahan tetap penting."
+  },
+  {
+   "id": 6,
+   "question": "Apakah Aedes aktif di malam hari?",
+   "answer": "Aedes aegypti umumnya lebih aktif pada pagi dan sore hari. Gunakan perlindungan dari gigitan nyamuk sepanjang hari sesuai kebutuhan."
+  },
+  {
+   "id": 7,
+   "question": "Kapan fase kritis DBD dimulai?",
+   "answer": "Fase kritis biasanya terjadi pada **hari ke-3 hingga ke-7** saat demam mulai turun. Pada fase ini risiko kebocoran plasma dan komplikasi meningkat, sehingga perlu pemantauan ketat."
+  },
+  {
+   "id": 8,
+   "question": "Berapa lama DBD bisa sembuh?",
+   "answer": "Umumnya DBD sembuh dalam **7-10 hari**, tergantung kondisi tubuh dan penanganan. Pemantauan tetap diperlukan sampai kondisi benar-benar pulih."
+  },
+  {
+   "id": 9,
+   "question": "DBD bisa menular lewat bersin atau kontak langsung?",
+   "answer": "**Tidak.** Menurut WHO, virus dengue hanya ditularkan melalui gigitan nyamuk Aedes yang terinfeksi, bukan melalui bersin, batuk, atau kontak langsung."
+  },
+  {
+   "id": 10,
+   "question": "Apakah jus jambu merah menaikkan trombosit?",
+   "answer": "Jus jambu biji **tidak terbukti menaikkan trombosit secara langsung**. Vitamin C pada jambu mendukung daya tahan tubuh; trombosit naik secara perlahan saat tubuh memulihkan diri. Fokus pemulihan tetap pada hidrasi dan penanganan medis."
+  },
+  {
+   "id": 11,
+   "question": "Makanan apa yang aman saat DBD?",
+   "answer": "Makanan lembut dan mudah dicerna seperti **bubur, jeruk, ikan, sup daging sapi cincang, dan agar-agar**. Hindari makanan pedas, berminyak, dan sulit dicerna."
+  },
+  {
+   "id": 12,
+   "question": "Kapan perlu cek darah untuk DBD?",
+   "answer": "Segera cek darah bila **demam tinggi lebih dari 2 hari** atau ada tanda bahaya. Pada fase kritis, trombosit perlu diperiksa secara berkala untuk memantau kondisi."
+  },
+  {
+   "id": 13,
+   "question": "Obat apa yang boleh diminum saat DBD?",
+   "answer": "Belum ada obat khusus untuk virus dengue. Untuk menurunkan demam dan meredakan nyeri, **paracetamol** umumnya menjadi pilihan, dengan dosis sesuai petunjuk kemasan atau arahan tenaga kesehatan. **Hindari aspirin, ibuprofen, dan naproxen** karena dapat meningkatkan risiko perdarahan. Antibiotik tidak diperlukan kecuali dokter menemukan infeksi bakteri lain. Yang terpenting tetap **cukupkan cairan** dan segera ke fasilitas kesehatan bila muncul tanda bahaya."
+  }
+ ]
+}
