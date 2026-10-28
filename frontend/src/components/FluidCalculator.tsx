@@ -57,7 +57,7 @@ export default function FluidCalculator() {
               <span>≈ {Math.round(fluidEstimate / 240)} gelas 240 ml. Kebutuhan dapat berbeda; minta saran tenaga kesehatan.</span>
             </div>
           )}
-          <p className="dbd-disclaimer">Pasien yang muntah hebat atau tidak bisa minum perlu penilaian tenaga medis. Catatan trombosit kini ada di halaman <a href="#/pelacak-suhu">Pelacak Suhu</a>.</p>
+          <p className="dbd-disclaimer">Pasien yang muntah hebat atau tidak bisa minum perlu penilaian tenaga medis.</p>
         </div>
       </div>
     </section>

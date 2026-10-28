@@ -146,7 +146,12 @@ export default function TemperatureTracker() {
             <p className="dbd-empty-state">Belum ada catatan suhu. Tambahkan catatan pertama di atas.</p>
           )}
         </div>
-        <p className="dbd-chart-caption"><span>● Suhu di bawah 38°C</span><span className="is-hot">● Suhu 38°C atau lebih</span></p>
+        <ul className="dbd-chart-legend" aria-label="Keterangan grafik suhu">
+          <li><span className="dbd-legend-swatch is-line" aria-hidden="true" />Garis biru: perubahan suhu dari satu catatan ke catatan berikutnya</li>
+          <li><span className="dbd-legend-swatch is-dash" aria-hidden="true" />Garis merah putus-putus: batas demam 38°C</li>
+          <li><span className="dbd-legend-swatch is-dot" aria-hidden="true" />Titik biru: suhu di bawah 38°C</li>
+          <li><span className="dbd-legend-swatch is-dot-hot" aria-hidden="true" />Titik merah: suhu 38°C atau lebih</li>
+        </ul>
         <div className="dbd-log-list">
           {[...fever.entries].reverse().map((entry) => (
             <div className="dbd-log-row" key={entry.id}>
@@ -155,7 +160,6 @@ export default function TemperatureTracker() {
             </div>
           ))}
         </div>
-        <p className="dbd-disclaimer">🟠 Hari 1-2 demam &nbsp;|&nbsp; 🔴 Hari 3-5 berisiko kritis &nbsp;|&nbsp; 🟢 Hari 6-7 pemulihan. Fase tiap orang dapat berbeda; selalu ikuti arahan tenaga kesehatan.</p>
       </div>
 
       <div className="dbd-card dbd-platelet-card">

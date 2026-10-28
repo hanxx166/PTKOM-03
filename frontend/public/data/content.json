@@ -320,6 +320,11 @@
    "id": 12,
    "question": "Kapan perlu cek darah untuk DBD?",
    "answer": "Segera cek darah bila **demam tinggi lebih dari 2 hari** atau ada tanda bahaya. Pada fase kritis, trombosit perlu diperiksa secara berkala untuk memantau kondisi."
+  },
+  {
+   "id": 13,
+   "question": "Obat apa yang boleh diminum saat DBD?",
+   "answer": "Belum ada obat khusus untuk virus dengue. Untuk menurunkan demam dan meredakan nyeri, **paracetamol** umumnya menjadi pilihan, dengan dosis sesuai petunjuk kemasan atau arahan tenaga kesehatan. **Hindari aspirin, ibuprofen, dan naproxen** karena dapat meningkatkan risiko perdarahan. Antibiotik tidak diperlukan kecuali dokter menemukan infeksi bakteri lain. Yang terpenting tetap **cukupkan cairan** dan segera ke fasilitas kesehatan bila muncul tanda bahaya."
   }
  ]
 }

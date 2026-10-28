@@ -1,3 +1,4 @@
+import ObatDBD from "./ObatDBD";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Checklist3M from "./Checklist3M";
@@ -113,6 +114,8 @@ export default function Education() {
       </motion.div>
 
       <Checklist3M />
+
+      <ObatDBD />
 
       <h3 className="dbd-faq-heading">Pertanyaan Umum</h3>
       <div className="dbd-faq-list">
