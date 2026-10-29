@@ -18,37 +18,78 @@ const TOPICS = [
     tag: "Pencegahan",
     className: "is-prevention",
     title: "3M Plus di Kos & Asrama",
-    text: <> <b>Menguras</b> bak mandi, <b>Menutup</b> wadah air, <b>Mendaur ulang</b> barang bekas. Plus: gunakan repellent, pasang kasa, dan periksa tempat penampungan air.</>,
+    text: (
+      <>
+        {" "}
+        <b>Menguras</b> bak mandi, <b>Menutup</b> wadah air,{" "}
+        <b>Mendaur ulang</b> barang bekas. Plus: gunakan repellent, pasang kasa,
+        dan periksa tempat penampungan air.
+      </>
+    ),
   },
   {
     tag: "P3K",
     className: "is-first-aid",
     title: "Pertolongan Pertama Demam Tinggi",
-    text: <>Kompres hangat, cukupkan minum, dan gunakan obat hanya sesuai petunjuk tenaga kesehatan. <b>Hindari ibuprofen dan aspirin bila dicurigai DBD</b> kecuali diarahkan dokter.</>,
+    text: (
+      <>
+        Kompres hangat, cukupkan minum, dan gunakan obat hanya sesuai petunjuk
+        tenaga kesehatan.{" "}
+        <b>Hindari ibuprofen dan aspirin bila dicurigai DBD</b> kecuali
+        diarahkan dokter.
+      </>
+    ),
   },
   {
     tag: "Pencegahan",
     className: "is-prevention",
     title: "Jam Rawan Nyamuk Aedes",
-    text: <>Aedes aegypti lebih aktif pada <b>pagi (06-09)</b> dan <b>sore (15-18)</b>. Gunakan lotion antinyamuk dan periksa tatakan dispenser atau vas bunga.</>,
+    text: (
+      <>
+        Aedes aegypti lebih aktif pada <b>pagi (06-09)</b> dan{" "}
+        <b>sore (15-18)</b>. Gunakan lotion antinyamuk dan periksa tatakan
+        dispenser atau vas bunga.
+      </>
+    ),
   },
   {
     tag: "Dasar",
     className: "is-basic",
     title: "Faktor Risiko DBD",
-    text: <>Risiko lebih besar jika <b>tinggal atau bepergian di daerah tropis</b> (Asia Tenggara, Pasifik Barat, Amerika Latin, Afrika) atau <b>pernah mengidap DBD sebelumnya</b>. Infeksi kedua dari serotipe lain berisiko lebih parah.</>,
+    text: (
+      <>
+        Risiko lebih besar jika <b>tinggal atau bepergian di daerah tropis</b>{" "}
+        (Asia Tenggara, Pasifik Barat, Amerika Latin, Afrika) atau{" "}
+        <b>pernah mengidap DBD sebelumnya</b>. Infeksi kedua dari serotipe lain
+        berisiko lebih parah.
+      </>
+    ),
   },
   {
     tag: "Penanganan",
     className: "is-handling",
     title: "Komplikasi yang Harus Diwaspadai",
-    text: <>DBD berat dapat menyebabkan <b>perdarahan internal, syok dengue (DSS), dan kerusakan organ</b>. Pada ibu hamil, berisiko kelahiran prematur dan berat badan lahir rendah. Segera ke IGD bila muncul tanda bahaya.</>,
+    text: (
+      <>
+        DBD berat dapat menyebabkan{" "}
+        <b>perdarahan internal, syok dengue (DSS), dan kerusakan organ</b>. Pada
+        ibu hamil, berisiko kelahiran prematur dan berat badan lahir rendah.
+        Segera ke IGD bila muncul tanda bahaya.
+      </>
+    ),
   },
   {
     tag: "Tips",
     className: "is-tip",
     title: "Makanan Saat DBD",
-    text: <>Utamakan <b>makanan lembut dan mudah dicerna</b>: bubur, jeruk, ikan, sup daging sapi cincang, dan agar-agar. <b>Hindari makanan pedas, berminyak, dan sulit dicerna</b> yang bisa memperburuk kondisi perut.</>,
+    text: (
+      <>
+        Utamakan <b>makanan lembut dan mudah dicerna</b>: bubur, jeruk, ikan,
+        sup daging sapi cincang, dan agar-agar.{" "}
+        <b>Hindari makanan pedas, berminyak, dan sulit dicerna</b> yang bisa
+        memperburuk kondisi perut.
+      </>
+    ),
   },
 ];
 
@@ -57,29 +98,13 @@ const bold = (t: string) =>
   t
     .split(/(\*\*[^*]+\*\*)/g)
     .filter(Boolean)
-    .map((part, i) => (part.startsWith("**") ? <b key={i}>{part.slice(2, -2)}</b> : part));
-
-/** Warna badge tag artikel. Tag di luar daftar ini tetap tampil tanpa warna. */
-const TAG_CLASS: Record<string, string> = {
-  Dasar: "is-basic",
-  Gejala: "is-symptom",
-  Pencegahan: "is-prevention",
-  Penanganan: "is-handling",
-  Tips: "is-tip",
-};
-
-const BULAN = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-
-/** Ubah "2026-10-01" jadi "1 Oktober 2026". Tanggal lain ditampilkan apa adanya. */
-const tanggal = (iso: string) => {
-  const [y, bulan, hari] = iso.split("-").map(Number);
-  return BULAN[bulan - 1] && hari ? `${hari} ${BULAN[bulan - 1]} ${y}` : iso;
-};
+    .map((part, i) =>
+      part.startsWith("**") ? <b key={i}>{part.slice(2, -2)}</b> : part,
+    );
 
 export default function Education() {
   const { content } = useContent();
   const faq = content?.faq ?? [];
-  const articles = content?.articles ?? [];
   const [openFaq, setOpenFaq] = useState<number | string | null>(null);
   const reduced = useReducedMotion();
 
@@ -87,8 +112,11 @@ export default function Education() {
     <section className="dbd-section" id="edukasi">
       <Reveal className="dbd-section-heading">
         <span className="dbd-kicker">Kenali dan cegah</span>
-        <h2>📚 Edukasi &amp; 3M Plus</h2>
-        <p>Panduan pencegahan, pertolongan pertama, dan pertanyaan yang sering muncul seputar DBD.</p>
+        <h2>Edukasi &amp; 3M Plus</h2>
+        <p>
+          Panduan pencegahan, pertolongan pertama, dan pertanyaan yang sering
+          muncul seputar DBD.
+        </p>
       </Reveal>
 
       <motion.div
@@ -135,7 +163,10 @@ export default function Education() {
                   aria-controls={answerId}
                   onClick={() => setOpenFaq(isOpen ? null : m.id)}
                 >
-                  <span>{m.question}</span><span className="dbd-faq-arrow" aria-hidden="true">▼</span>
+                  <span>{m.question}</span>
+                  <span className="dbd-faq-arrow" aria-hidden="true">
+                    ▼
+                  </span>
                 </button>
               </h4>
               <AnimatePresence initial={false}>
@@ -145,10 +176,16 @@ export default function Education() {
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: "auto", opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
-                    transition={reduced ? instantTransition : { duration: 0.28, ease: "easeInOut" }}
+                    transition={
+                      reduced
+                        ? instantTransition
+                        : { duration: 0.28, ease: "easeInOut" }
+                    }
                     style={{ overflow: "hidden" }}
                   >
-                    <div className="dbd-faq-answer" id={answerId}>{bold(m.answer)}</div>
+                    <div className="dbd-faq-answer" id={answerId}>
+                      {bold(m.answer)}
+                    </div>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -156,26 +193,6 @@ export default function Education() {
           );
         })}
       </div>
-
-      {articles.length > 0 && (
-        <>
-          <h3 className="dbd-subheading">Bacaan</h3>
-          <div className="dbd-article-list">
-            {articles.map((a) => (
-              <article className="dbd-card dbd-article-card" key={String(a.id)}>
-                <span className={`dbd-tag ${TAG_CLASS[a.tag || ""] ?? ""}`}>{a.tag}</span>
-                <h3>{a.title}</h3>
-                <p className="dbd-article-meta">
-                  {a.mins} menit baca{a.date ? ` · ${tanggal(a.date)}` : ""}
-                </p>
-                {(a.body || []).map((paragraf, i) => (
-                  <p key={i}>{bold(paragraf)}</p>
-                ))}
-              </article>
-            ))}
-          </div>
-        </>
-      )}
     </section>
   );
 }
