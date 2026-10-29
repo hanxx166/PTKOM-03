@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { motion, useAnimation } from "framer-motion";
+import { Link } from "react-router-dom";
 import MosquitoIcon from "./MosquitoIcon";
 import {
   cardHoverBox,
@@ -84,7 +85,8 @@ function Mosquito({
         // Mangkal: rest at a random spot for a while before taking off again.
         if (Math.random() < PERCH_CHANCE) {
           setPerched(true);
-          const rest = PERCH_MIN_S + Math.random() * (PERCH_MAX_S - PERCH_MIN_S);
+          const rest =
+            PERCH_MIN_S + Math.random() * (PERCH_MAX_S - PERCH_MIN_S);
           await wait(rest * 1000);
           if (!alive) break;
           setPerched(false);
@@ -111,7 +113,10 @@ function Mosquito({
       animate={controls}
       onClick={(event) => {
         const rect = arena?.getBoundingClientRect();
-        onHit(event.clientX - (rect?.left ?? 0), event.clientY - (rect?.top ?? 0));
+        onHit(
+          event.clientX - (rect?.left ?? 0),
+          event.clientY - (rect?.top ?? 0),
+        );
         setHit(true);
         window.setTimeout(() => setHit(false), 1200);
       }}
@@ -163,7 +168,11 @@ function WaterRipples({ reduced }: { reduced: boolean }) {
           strokeWidth="2"
           initial={reduced ? false : { pathLength: 0, opacity: 0 }}
           animate={{ pathLength: 1, opacity: 0.22 }}
-          transition={{ duration: ring.duration, ease: "easeOut", delay: ring.delay }}
+          transition={{
+            duration: ring.duration,
+            ease: "easeOut",
+            delay: ring.delay,
+          }}
         />
       ))}
     </svg>
@@ -176,10 +185,18 @@ interface FxParticle {
   ty: number;
 }
 
-function MosquitoSplat({ x, y, particles }: { x: number; y: number; particles: FxParticle[] }) {
+function MosquitoSplat({
+  x,
+  y,
+  particles,
+}: {
+  x: number;
+  y: number;
+  particles: FxParticle[];
+}) {
   return (
     <span className="dbd-fx" style={{ left: x, top: y }} aria-hidden="true">
-      <span className="dbd-splat">💥</span>
+      <span className="dbd-splat" />
       {particles.map((particle, index) => (
         <span
           key={index}
@@ -193,7 +210,7 @@ function MosquitoSplat({ x, y, particles }: { x: number; y: number; particles: F
           }
         />
       ))}
-      <span className="dbd-score-float">+1 🦟</span>
+      <span className="dbd-score-float">+1</span>
     </span>
   );
 }
@@ -201,7 +218,12 @@ function MosquitoSplat({ x, y, particles }: { x: number; y: number; particles: F
 export default function Hero({ totalChecks }: { totalChecks: number }) {
   const [hits, setHits] = useState(0);
   const [arena, setArena] = useState<HTMLDivElement | null>(null);
-  const [fx, setFx] = useState<{ x: number; y: number; id: number; particles: FxParticle[] } | null>(null);
+  const [fx, setFx] = useState<{
+    x: number;
+    y: number;
+    id: number;
+    particles: FxParticle[];
+  } | null>(null);
   const fxId = useRef(0);
   const reduced = useReducedMotion();
   const handleHit = (x: number, y: number) => {
@@ -221,12 +243,6 @@ export default function Hero({ totalChecks }: { totalChecks: number }) {
       setFx((current) => (current?.id === id ? null : current));
     }, 850);
   };
-  const scrollToSection = (event: React.MouseEvent<HTMLAnchorElement>) => {
-    event.preventDefault();
-    const id = event.currentTarget.getAttribute("href")?.slice(1);
-    if (id) document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
-
   return (
     <section className="dbd-hero" id="beranda">
       <WaterRipples reduced={reduced} />
@@ -236,7 +252,14 @@ export default function Hero({ totalChecks }: { totalChecks: number }) {
         <Mosquito arena={arena} startDelay={3.2} onHit={handleHit} />
         <Mosquito arena={arena} startDelay={4.7} onHit={handleHit} />
         <Mosquito arena={arena} startDelay={6.2} onHit={handleHit} />
-        {fx && <MosquitoSplat key={fx.id} x={fx.x} y={fx.y} particles={fx.particles} />}
+        {fx && (
+          <MosquitoSplat
+            key={fx.id}
+            x={fx.x}
+            y={fx.y}
+            particles={fx.particles}
+          />
+        )}
       </div>
 
       <motion.div
@@ -245,15 +268,22 @@ export default function Hero({ totalChecks }: { totalChecks: number }) {
         initial={reduced ? false : "hidden"}
         animate={reduced ? undefined : "show"}
       >
-        <motion.h1 variants={staggerChild}>Kenali DBD Sebelum Terlambat.</motion.h1>
+        <motion.h1 variants={staggerChild}>
+          Kenali DBD Sebelum Terlambat.
+        </motion.h1>
         <motion.p className="dbd-hero-lead" variants={staggerChild}>
-          Skrining gejala mandiri, pantau suhu harian, dan hitung kebutuhan cairan -
-          langsung dari kamar kos atau asrama. <strong>Bukan pengganti dokter,</strong> tapi
-          teman pertamamu saat demam menyerang.
+          Skrining gejala mandiri, pantau suhu harian, dan hitung kebutuhan
+          cairan - langsung dari kamar kos atau asrama.{" "}
+          <strong>Bukan pengganti dokter,</strong> tapi teman pertamamu saat
+          demam menyerang.
         </motion.p>
         <motion.div className="dbd-actions" variants={staggerChild}>
-          <a href="#cek-gejala" onClick={scrollToSection} className="dbd-button dbd-button-primary">🩺 Cek Gejala Sekarang</a>
-          <a href="#pelacak-suhu" onClick={scrollToSection} className="dbd-button dbd-button-outline">🌡️ Lacak Suhu Harian</a>
+          <Link to="/cek-kesehatan" className="dbd-button dbd-button-primary">
+            Cek Gejala Sekarang
+          </Link>
+          <Link to="/pemantauan" className="dbd-button dbd-button-outline">
+            Catat Suhu Harian
+          </Link>
         </motion.div>
         <motion.p className="dbd-muted dbd-hit-count" variants={staggerChild}>
           Klik nyamuk yang beterbangan! Nyamuk ditepuk:{" "}
@@ -268,7 +298,9 @@ export default function Hero({ totalChecks }: { totalChecks: number }) {
           </motion.b>
         </motion.p>
         {totalChecks > 0 && (
-          <motion.p className="dbd-muted" variants={staggerChild}>{totalChecks} pengecekan gejala telah dilakukan di website ini.</motion.p>
+          <motion.p className="dbd-muted" variants={staggerChild}>
+            {totalChecks} pengecekan gejala telah dilakukan di website ini.
+          </motion.p>
         )}
       </motion.div>
 
@@ -284,7 +316,7 @@ export default function Hero({ totalChecks }: { totalChecks: number }) {
           whileHover={{ y: -4, boxShadow: cardHoverBox }}
           transition={cardHoverTransition}
         >
-          <h2>🚨 Segera ke IGD jika ada:</h2>
+          <h2>Segera ke IGD jika ada:</h2>
           <ul>
             <li>Nyeri perut hebat dan konstan</li>
             <li>Muntah terus-menerus (&gt;3×)</li>
@@ -298,10 +330,12 @@ export default function Hero({ totalChecks }: { totalChecks: number }) {
           whileHover={{ y: -4, boxShadow: cardHoverBox }}
           transition={cardHoverTransition}
         >
-          <p>🕐 <b>Jam aktif Aedes aegypti:</b> pagi 06-09 dan sore 15-18. Gunakan lotion anti-nyamuk di jam ini!</p>
+          <p>
+            <b>Jam aktif Aedes aegypti:</b> pagi 06-09 dan sore 15-18. Gunakan
+            lotion anti-nyamuk di jam ini.
+          </p>
         </motion.div>
       </motion.aside>
-
     </section>
   );
 }

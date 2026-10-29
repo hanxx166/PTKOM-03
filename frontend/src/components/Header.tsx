@@ -5,14 +5,16 @@ import BlindPullToggle from "./BlindPullToggle";
 
 const LINKS = [
   { to: "/", label: "Beranda" },
-  { to: "/cek-gejala", label: "Cek Gejala" },
-  { to: "/cek-lab", label: "Cek Lab" },
-  { to: "/pelacak-suhu", label: "Pelacak Suhu" },
-  { to: "/kalkulator", label: "Kalkulator" },
+  { to: "/cek-kesehatan", label: "Cek Gejala & Lab" },
+  { to: "/pemantauan", label: "Suhu & Kalkulator" },
   { to: "/edukasi", label: "Edukasi" },
 ];
 
-export default function Header({ onAuth }: { onAuth: (mode: "in" | "up") => void }) {
+export default function Header({
+  onAuth,
+}: {
+  onAuth: (mode: "in" | "up") => void;
+}) {
   const { user, logout } = useAuth();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -26,7 +28,9 @@ export default function Header({ onAuth }: { onAuth: (mode: "in" | "up") => void
   });
   useEffect(() => {
     let raf = 0;
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
     const update = () => {
       raf = 0;
       const y = window.scrollY;
@@ -38,7 +42,10 @@ export default function Header({ onAuth }: { onAuth: (mode: "in" | "up") => void
           header.style.setProperty("--hdr-blur", y > 8 ? "16px" : "0px");
           header.style.setProperty("--hdr-alpha", y > 8 ? "1" : "0");
         } else {
-          header.style.setProperty("--hdr-blur", `${Math.round(2 + progress * 14)}px`);
+          header.style.setProperty(
+            "--hdr-blur",
+            `${Math.round(2 + progress * 14)}px`,
+          );
           header.style.setProperty("--hdr-alpha", progress.toFixed(3));
         }
       }
@@ -68,14 +75,19 @@ export default function Header({ onAuth }: { onAuth: (mode: "in" | "up") => void
   }, [dark]);
 
   return (
-    <header ref={headerRef} className={`dbd-header${scrolled ? " is-scrolled" : ""}`}>
+    <header
+      ref={headerRef}
+      className={`dbd-header${scrolled ? " is-scrolled" : ""}`}
+    >
       <div className="dbd-header-inner">
         <Link to="/" onClick={() => setOpen(false)} className="dbd-logo">
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M12 21c-4.4-3.2-8-6.4-8-10a8 8 0 0 1 16 0c0 3.6-3.6 6.8-8 10Z" />
             <path d="M12 7v4l2.5 1.5" />
           </svg>
-          <span>Cek<span className="dbd-logo-light">DBD</span></span>
+          <span>
+            Cek<span className="dbd-logo-light">DBD</span>
+          </span>
         </Link>
 
         <button
@@ -85,43 +97,74 @@ export default function Header({ onAuth }: { onAuth: (mode: "in" | "up") => void
           aria-expanded={open}
           onClick={() => setOpen((value) => !value)}
         >
-          {open ? "×" : "☰"}
+          <span
+            className={`dbd-menu-icon${open ? " is-open" : ""}`}
+            aria-hidden="true"
+          >
+            <i />
+            <i />
+            <i />
+          </span>
         </button>
 
-        <nav className={`dbd-nav${open ? " is-open" : ""}`} aria-label="Navigasi utama">
+        <nav
+          className={`dbd-nav${open ? " is-open" : ""}`}
+          aria-label="Navigasi utama"
+        >
           {LINKS.map((link) => (
             <NavLink
               key={link.to}
               to={link.to}
               end={link.to === "/"}
               onClick={() => setOpen(false)}
-              className={({ isActive }) => `dbd-nav-link${isActive ? " is-active" : ""}`}
+              className={({ isActive }) =>
+                `dbd-nav-link${isActive ? " is-active" : ""}`
+              }
             >
               {link.label}
             </NavLink>
           ))}
           {isAdmin && (
-            <NavLink to="/admin" onClick={() => setOpen(false)} className="dbd-admin-link">
+            <NavLink
+              to="/admin"
+              onClick={() => setOpen(false)}
+              className="dbd-admin-link"
+            >
               Admin
             </NavLink>
           )}
         </nav>
 
         <div className="dbd-header-actions">
-          <BlindPullToggle dark={dark} onToggle={() => setDark((value) => !value)} />
+          <BlindPullToggle
+            dark={dark}
+            onToggle={() => setDark((value) => !value)}
+          />
           {!user ? (
             <>
-              <button className="dbd-button dbd-button-outline dbd-button-small" onClick={() => onAuth("in")}>
+              <button
+                className="dbd-button dbd-button-outline dbd-button-small"
+                onClick={() => onAuth("in")}
+              >
                 Masuk
               </button>
-              <button className="dbd-button dbd-button-primary dbd-button-small" onClick={() => onAuth("up")}>
+              <button
+                className="dbd-button dbd-button-primary dbd-button-small"
+                onClick={() => onAuth("up")}
+              >
                 Daftar
               </button>
             </>
           ) : (
             <span className="dbd-user">
-              <span>{user.name}{isAdmin ? " · Admin" : ""}</span>
-              <button className="dbd-button dbd-button-outline dbd-button-small" onClick={logout}>
+              <span>
+                {user.name}
+                {isAdmin ? " · Admin" : ""}
+              </span>
+              <button
+                className="dbd-button dbd-button-outline dbd-button-small"
+                onClick={logout}
+              >
                 Keluar
               </button>
             </span>
