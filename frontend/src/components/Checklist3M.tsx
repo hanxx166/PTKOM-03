@@ -61,12 +61,17 @@ export default function Checklist3M() {
 
   const toggle = useCallback(
     async (id: string) => {
-      const next = done.includes(id) ? done.filter((value) => value !== id) : [...done, id];
+      const next = done.includes(id)
+        ? done.filter((value) => value !== id)
+        : [...done, id];
       setDone(next);
       setError("");
       if (online) {
         try {
-          await apiPut("/api/user/checklist", { taskId: id, done: !done.includes(id) });
+          await apiPut("/api/user/checklist", {
+            taskId: id,
+            done: !done.includes(id),
+          });
         } catch {
           setError("Gagal menyimpan checklist ke akun.");
         }
@@ -80,22 +85,42 @@ export default function Checklist3M() {
   const tasks = content?.tasks ?? [];
   if (!tasks.length) return null;
   const total = tasks.length;
-  const finished = tasks.filter((task) => done.includes(String(task.id))).length;
+  const finished = tasks.filter((task) =>
+    done.includes(String(task.id)),
+  ).length;
   const percent = total ? Math.round((finished / total) * 100) : 0;
 
   return (
-    <section className="dbd-section dbd-checklist-section" aria-labelledby="checklist-title">
+    <section
+      className="dbd-section dbd-checklist-section"
+      aria-labelledby="checklist-title"
+    >
       <Reveal className="dbd-section-heading">
         <span className="dbd-kicker">Aksi nyata di rumah</span>
-        <h2 id="checklist-title">✅ Checklist 3M Plus Mingguan</h2>
-        <p>Centang langkah yang sudah kamu lakukan. {online ? "Tersimpan di akunmu." : "Tersimpan di browser ini."}</p>
+        <h2 id="checklist-title">Checklist 3M Plus Mingguan</h2>
+        <p>
+          Centang langkah yang sudah kamu lakukan.{" "}
+          {online ? "Tersimpan di akunmu." : "Tersimpan di browser ini."}
+        </p>
       </Reveal>
 
       <div className="dbd-card dbd-checklist-card">
-        <div className="dbd-checklist-progress" role="progressbar" aria-valuenow={finished} aria-valuemin={0} aria-valuemax={total} aria-label="Progres checklist 3M Plus">
-          <div className="dbd-checklist-progress-fill" style={{ width: `${percent}%` }} />
+        <div
+          className="dbd-checklist-progress"
+          role="progressbar"
+          aria-valuenow={finished}
+          aria-valuemin={0}
+          aria-valuemax={total}
+          aria-label="Progres checklist 3M Plus"
+        >
+          <div
+            className="dbd-checklist-progress-fill"
+            style={{ width: `${percent}%` }}
+          />
         </div>
-        <p className="dbd-checklist-count">{finished}/{total} langkah selesai ({percent}%)</p>
+        <p className="dbd-checklist-count">
+          {finished}/{total} langkah selesai ({percent}%)
+        </p>
 
         {loading ? (
           <p className="dbd-loading">Memuat checklist...</p>
@@ -105,8 +130,15 @@ export default function Checklist3M() {
               const id = String(task.id);
               const checked = done.includes(id);
               return (
-                <label className={`dbd-check-item${checked ? " is-checked" : ""}`} key={id}>
-                  <input type="checkbox" checked={checked} onChange={() => toggle(id)} />
+                <label
+                  className={`dbd-check-item${checked ? " is-checked" : ""}`}
+                  key={id}
+                >
+                  <input
+                    type="checkbox"
+                    checked={checked}
+                    onChange={() => toggle(id)}
+                  />
                   <span>{task.text}</span>
                 </label>
               );
@@ -115,12 +147,21 @@ export default function Checklist3M() {
         )}
 
         {finished === total && (
-          <p className="dbd-checklist-done">🎉 Semua langkah selesai! Ulangi rutin tiap minggu untuk memutus siklus jentik.</p>
+          <p className="dbd-checklist-done">
+            Semua langkah selesai. Ulangi rutin tiap minggu untuk memutus siklus
+            jentik.
+          </p>
         )}
         {!online && (
-          <p className="dbd-login-note">Masuk akun agar checklist tersimpan lintas perangkat.</p>
+          <p className="dbd-login-note">
+            Masuk akun agar checklist tersimpan lintas perangkat.
+          </p>
         )}
-        {error && <p className="dbd-error" role="alert">{error}</p>}
+        {error && (
+          <p className="dbd-error" role="alert">
+            {error}
+          </p>
+        )}
       </div>
     </section>
   );
