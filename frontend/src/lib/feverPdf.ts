@@ -1,7 +1,6 @@
 import type { TrackerRow } from "./tracker";
 
 const PAGE_WIDTH = 595;
-const PAGE_HEIGHT = 842;
 
 function pdfText(value: string): string {
   return value
@@ -11,8 +10,8 @@ function pdfText(value: string): string {
     .replace(/[\\()]/g, "\\$&");
 }
 
-function createContent(entries: TrackerRow[]): string {
-  const commands = ["1 0 0 -1 0 842 cm"];
+function createContent(entries: TrackerRow[], pageHeight: number): string {
+  const commands = [`1 0 0 -1 0 ${pageHeight} cm`];
   const text = (x: number, y: number, size: number, value: string, font = "F1") => {
     commands.push(`BT /${font} ${size} Tf 1 0 0 -1 ${x} ${y} Tm (${pdfText(value)}) Tj ET`);
   };
@@ -80,16 +79,17 @@ function createContent(entries: TrackerRow[]): string {
   });
 
   commands.push("0.34 0.42 0.5 rg");
-  text(44, Math.min(815, y + 18), 7, "Catatan ini untuk pemantauan edukatif dan bukan diagnosis medis.");
+  text(44, y + 18, 7, "Catatan ini untuk pemantauan edukatif dan bukan diagnosis medis.");
   return commands.join("\n");
 }
 
 export function downloadFeverPdf(entries: TrackerRow[]): void {
-  const stream = createContent(entries);
+  const pageHeight = Math.max(400, 368 + entries.length * 8);
+  const stream = createContent(entries, pageHeight);
   const objects = [
     "<< /Type /Catalog /Pages 2 0 R >>",
     "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
-    `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${PAGE_WIDTH} ${PAGE_HEIGHT}] /Resources << /Font << /F1 4 0 R /F2 5 0 R >> >> /Contents 6 0 R >>`,
+    `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${PAGE_WIDTH} ${pageHeight}] /Resources << /Font << /F1 4 0 R /F2 5 0 R >> >> /Contents 6 0 R >>`,
     "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
     "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>",
     `<< /Length ${stream.length} >>\nstream\n${stream}\nendstream`,

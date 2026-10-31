@@ -48,11 +48,7 @@ const EMERGENCY = [
   {
     className: "is-red",
     title: "IGD Terdekat",
-    text: (
-      <>
-        Segera menuju IGD. <a href="https://maps.app.goo.gl/8bYLizYsvQsZoQta7" target="_blank" rel="noreferrer">Lihat rute ke RS Airan Raya</a>
-      </>
-    ),
+    text: <>Darurat medis: <a href="tel:119">Hubungi 119</a></>,
   },
   {
     className: "is-orange",
@@ -205,25 +201,46 @@ export default function Dashboard() {
                   className="dbd-card dbd-article-card"
                   key={String(article.id)}
                 >
-                  <span
-                    className={`dbd-tag ${tagClass[article.tag || ""] ?? ""}`}
-                  >
-                    {article.tag}
-                  </span>
-                  <h3>{article.title}</h3>
-                  <p className="dbd-article-meta">
-                    {article.mins} menit baca
-                    {article.date ? ` · ${formatDate(article.date)}` : ""}
-                  </p>
-                  {article.body?.length > 0 && (
+                  {article.body?.length > 0 ? (
                     <details className="dbd-article-details">
-                      <summary>Baca isi artikel</summary>
+                      <summary className="dbd-article-toggle">
+                        <span
+                          className={`dbd-tag ${tagClass[article.tag || ""] ?? ""}`}
+                        >
+                          {article.tag}
+                        </span>
+                        <h3>{article.title}</h3>
+                        <p className="dbd-article-meta">
+                          {article.mins} menit baca
+                          {article.date
+                            ? ` · ${formatDate(article.date)}`
+                            : ""}
+                        </p>
+                        <span className="dbd-article-hint">
+                          Baca isi artikel
+                        </span>
+                      </summary>
                       <div className="dbd-article-content">
                         {article.body.map((paragraph, index) => (
                           <p key={index}>{renderBold(paragraph)}</p>
                         ))}
                       </div>
                     </details>
+                  ) : (
+                    <>
+                      <span
+                        className={`dbd-tag ${tagClass[article.tag || ""] ?? ""}`}
+                      >
+                        {article.tag}
+                      </span>
+                      <h3>{article.title}</h3>
+                      <p className="dbd-article-meta">
+                        {article.mins} menit baca
+                        {article.date
+                          ? ` · ${formatDate(article.date)}`
+                          : ""}
+                      </p>
+                    </>
                   )}
                 </article>
               ))}

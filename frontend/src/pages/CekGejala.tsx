@@ -239,7 +239,7 @@ export default function CekGejala() {
                         checked={checked.includes(id)}
                         onChange={() => toggle(id)}
                       />
-                      <span>{symptom.label}</span>
+                      <span className="dbd-check-label"><span className="dbd-check-bullet" aria-hidden="true">•</span>{symptom.label}</span>
                     </label>
                   );
                 })}

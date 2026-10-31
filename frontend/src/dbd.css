@@ -68,13 +68,14 @@ body {
   background-image:
     linear-gradient(to right, rgba(255, 255, 255, 0.7) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.7) 1px, transparent 1px),
-    linear-gradient(135deg, #f4f9ff 0%, #cce0ff 100%);
+    linear-gradient(135deg, #edf4fd 0%, #d5e4f7 42%, #d3ebe4 72%, #e9effb 100%);
   background-size:
-    100px 60px,
-    100px 60px,
-    100% 100%;
+    80px 48px,
+    80px 48px,
+    300% 300%;
   background-attachment: fixed;
   background-position: center top;
+  animation: dbd-gradient-drift 24s ease-in-out infinite alternate;
   color: var(--dbd-text);
   transition:
     background-color 0.25s,
@@ -85,7 +86,22 @@ html[data-theme="dark"] body {
   background-image:
     linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-    linear-gradient(135deg, #0d1520 0%, #16283f 100%);
+    linear-gradient(135deg, #0f1929 0%, #17283d 42%, #173631 72%, #111b30 100%);
+}
+
+@keyframes dbd-gradient-drift {
+  from {
+    background-position: center top, center top, 0% 50%;
+  }
+  to {
+    background-position: center top, center top, 100% 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body {
+    animation: none;
+  }
 }
 
 .dbd-main {
@@ -650,6 +666,12 @@ html[data-theme="dark"] .dbd-header::before {
   scroll-margin-top: 92px;
 }
 
+.dbd-main > #cek-gejala,
+.dbd-main > #pelacak-suhu,
+.dbd-main > #edukasi {
+  padding-top: 12px;
+}
+
 .dbd-section-heading {
   max-width: 760px;
   margin: 0 auto 22px;
@@ -837,6 +859,16 @@ html[data-theme="dark"] .dbd-header::before {
   flex: 1 1 auto;
   min-width: 0;
   overflow-wrap: break-word;
+}
+.dbd-check-item .dbd-check-label {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+}
+.dbd-check-bullet {
+  color: var(--dbd-accent);
+  font-weight: 800;
+  flex: 0 0 auto;
 }
 .dbd-check-danger {
   border-color: var(--dbd-red);
@@ -1160,7 +1192,7 @@ html[data-theme="dark"] .dbd-header::before {
 
 .dbd-article-card {
   margin-bottom: 12px;
-  padding: 21px;
+  padding: 0;
 }
 .dbd-article-card h3 {
   margin: 0 0 6px;
@@ -1186,25 +1218,51 @@ html[data-theme="dark"] .dbd-header::before {
 }
 
 .dbd-article-details {
-  margin-top: 12px;
+  display: block;
 }
 
 .dbd-article-details summary {
-  width: fit-content;
-  color: var(--dbd-accent);
-  font-size: 0.85rem;
-  font-weight: 700;
+  display: block;
+  padding: 21px;
+  list-style: none;
   cursor: pointer;
 }
 
-.dbd-article-details summary:focus-visible {
+.dbd-article-details summary::-webkit-details-marker {
+  display: none;
+}
+
+.dbd-article-toggle:focus-visible {
   outline: 3px solid var(--dbd-accent-soft);
   outline-offset: 3px;
   border-radius: 4px;
 }
 
+.dbd-article-hint {
+  display: block;
+  margin-top: 12px;
+  color: var(--dbd-accent);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.dbd-article-hint::after,
+.dbd-obat-hint::after {
+  content: "▶";
+  display: inline-block;
+  margin-left: 6px;
+  font-size: 0.72em;
+  transition: transform 0.18s ease;
+}
+
+.dbd-article-details[open] .dbd-article-hint::after,
+.dbd-obat-details[open] .dbd-obat-hint::after {
+  transform: rotate(90deg);
+}
+
 .dbd-article-content {
-  margin-top: 10px;
+  padding: 0 21px 21px;
+  font-size: 0.8rem;
 }
 
 .dbd-faq-heading,
@@ -1459,6 +1517,23 @@ html[data-theme="dark"] .dbd-footer {
   margin: 0;
 }
 
+#kalkulator .dbd-calc-single > .dbd-card > h3 {
+  margin: 0 0 16px;
+}
+
+.dbd-calc-single .dbd-info-box-compact {
+  margin-bottom: 22px;
+}
+
+.dbd-calc-form {
+  display: grid;
+  gap: 14px;
+}
+
+.dbd-calc-form > .dbd-form-group + .dbd-form-group {
+  margin-top: 0;
+}
+
 /* Heading kartu di Pelacak Suhu & Trombosit */
 .dbd-subheading-top {
   margin: 0 0 14px;
@@ -1518,8 +1593,21 @@ html[data-theme="dark"] .dbd-footer {
 }
 
 .dbd-lab-content {
-  max-width: 760px;
+  max-width: none;
   margin: 0 auto;
+}
+
+#cek-gejala .dbd-info-box,
+#cek-lab .dbd-info-box {
+  max-width: none;
+  margin-right: 0;
+  margin-left: 0;
+}
+
+#cek-gejala .dbd-triage-card {
+  max-width: none;
+  margin-right: 0;
+  margin-left: 0;
 }
 
 .dbd-lab-card {
@@ -1556,8 +1644,14 @@ html[data-theme="dark"] .dbd-footer {
 
 .dbd-lab-when-list {
   margin: 10px 0 0;
-  padding-left: 18px;
+  padding-left: 0;
   display: grid;
+  gap: 8px;
+  list-style: none;
+}
+.dbd-lab-when-list li {
+  display: flex;
+  align-items: baseline;
   gap: 8px;
 }
 
