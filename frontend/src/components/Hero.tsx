@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { motion, useAnimation } from "framer-motion";
 import { Link } from "react-router-dom";
+import { useAuth } from "../lib/auth";
 import MosquitoIcon from "./MosquitoIcon";
 import {
   cardHoverBox,
@@ -226,6 +227,7 @@ export default function Hero({ totalChecks }: { totalChecks: number }) {
   } | null>(null);
   const fxId = useRef(0);
   const reduced = useReducedMotion();
+  const { user, ready } = useAuth();
   const handleHit = (x: number, y: number) => {
     setHits((value) => value + 1);
     const id = ++fxId.current;
@@ -246,22 +248,6 @@ export default function Hero({ totalChecks }: { totalChecks: number }) {
   return (
     <section className="dbd-hero" id="beranda">
       <WaterRipples reduced={reduced} />
-      <div ref={setArena} className="dbd-fly-arena">
-        <Mosquito arena={arena} startDelay={0.2} onHit={handleHit} />
-        <Mosquito arena={arena} startDelay={1.7} onHit={handleHit} />
-        <Mosquito arena={arena} startDelay={3.2} onHit={handleHit} />
-        <Mosquito arena={arena} startDelay={4.7} onHit={handleHit} />
-        <Mosquito arena={arena} startDelay={6.2} onHit={handleHit} />
-        {fx && (
-          <MosquitoSplat
-            key={fx.id}
-            x={fx.x}
-            y={fx.y}
-            particles={fx.particles}
-          />
-        )}
-      </div>
-
       <motion.div
         className="dbd-hero-copy"
         variants={staggerParent}
@@ -282,7 +268,7 @@ export default function Hero({ totalChecks }: { totalChecks: number }) {
             Cek Gejala Sekarang
           </Link>
           <Link to="/pemantauan" className="dbd-button dbd-button-outline">
-            Catat Suhu Harian
+            {ready && !user ? "Masuk untuk Catat Suhu" : "Catat Suhu Harian"}
           </Link>
         </motion.div>
         <motion.p className="dbd-muted dbd-hit-count" variants={staggerChild}>
@@ -336,6 +322,22 @@ export default function Hero({ totalChecks }: { totalChecks: number }) {
           </p>
         </motion.div>
       </motion.aside>
+
+      <div ref={setArena} className="dbd-fly-arena">
+        <Mosquito arena={arena} startDelay={0.2} onHit={handleHit} />
+        <Mosquito arena={arena} startDelay={1.7} onHit={handleHit} />
+        <Mosquito arena={arena} startDelay={3.2} onHit={handleHit} />
+        <Mosquito arena={arena} startDelay={4.7} onHit={handleHit} />
+        <Mosquito arena={arena} startDelay={6.2} onHit={handleHit} />
+        {fx && (
+          <MosquitoSplat
+            key={fx.id}
+            x={fx.x}
+            y={fx.y}
+            particles={fx.particles}
+          />
+        )}
+      </div>
     </section>
   );
 }
