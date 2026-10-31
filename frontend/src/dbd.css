@@ -375,7 +375,6 @@ html[data-theme="dark"] .dbd-header::before {
   pointer-events: none;
 }
 
-.dbd-eyebrow,
 .dbd-kicker {
   margin: 0 0 8px;
   color: var(--dbd-accent);
@@ -430,14 +429,7 @@ html[data-theme="dark"] .dbd-header::before {
   box-shadow: var(--dbd-shadow);
 }
 
-.dbd-card-narrow {
-  max-width: 760px;
-  margin: 0 auto;
-}
-
-.dbd-triage-card,
-.dbd-card-narrow,
-.dbd-calc-grid > .dbd-card {
+.dbd-triage-card {
   transition:
     transform 0.22s ease,
     box-shadow 0.22s ease,
@@ -445,18 +437,14 @@ html[data-theme="dark"] .dbd-header::before {
 }
 
 @media (hover: hover) {
-  .dbd-triage-card:hover,
-  .dbd-card-narrow:hover,
-  .dbd-calc-grid > .dbd-card:hover {
+  .dbd-triage-card:hover {
     transform: translateY(-4px);
     border-color: color-mix(in srgb, var(--dbd-accent) 35%, var(--dbd-border));
     box-shadow: 0 12px 32px rgba(20, 38, 61, 0.14);
   }
 }
 
-.dbd-triage-card:focus-within,
-.dbd-card-narrow:focus-within,
-.dbd-calc-grid > .dbd-card:focus-within {
+.dbd-triage-card:focus-within {
   transform: translateY(-2px);
   border-color: color-mix(in srgb, var(--dbd-accent) 35%, var(--dbd-border));
   box-shadow: 0 12px 32px rgba(20, 38, 61, 0.14);
@@ -715,13 +703,6 @@ html[data-theme="dark"] .dbd-header::before {
 .dbd-phase-card p {
   margin: 0;
 }
-.dbd-phase-card ul {
-  margin: 8px 0 0;
-  padding-left: 18px;
-}
-.dbd-phase-card li + li {
-  margin-top: 3px;
-}
 
 .dbd-steps {
   display: flex;
@@ -978,18 +959,6 @@ html[data-theme="dark"] .dbd-header::before {
   font-size: 0.87rem;
 }
 
-.dbd-chart-caption {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 18px;
-  color: var(--dbd-muted);
-  font-size: 0.76rem;
-}
-
-.dbd-chart-caption .is-hot {
-  color: var(--dbd-red);
-}
 .dbd-log-list {
   margin-top: 12px;
 }
@@ -1064,25 +1033,6 @@ html[data-theme="dark"] .dbd-header::before {
   margin: 0 0 14px;
 }
 
-.dbd-calc-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
-}
-
-.dbd-calc-grid > .dbd-card {
-  padding: 21px;
-}
-.dbd-calc-grid h3 {
-  margin: 0 0 15px;
-  font-size: 1rem;
-}
-.dbd-calc-grid .dbd-form-group + .dbd-form-group {
-  margin-top: 13px;
-}
-.dbd-calc-grid form > .dbd-button {
-  margin-top: 16px;
-}
 .dbd-tracker-compact {
   margin-bottom: 10px;
 }
@@ -1378,8 +1328,7 @@ html[data-theme="dark"] .dbd-footer {
     margin: 14px 0 0;
   }
   .dbd-phase-grid,
-  .dbd-education-grid,
-  .dbd-calc-grid {
+  .dbd-education-grid {
     grid-template-columns: 1fr;
   }
   .dbd-phase-bar {
@@ -1523,12 +1472,6 @@ html[data-theme="dark"] .dbd-footer {
     border-color 0.22s ease;
 }
 
-.dbd-lab-icon {
-  display: block;
-  font-size: 1.6rem;
-  margin-bottom: 8px;
-}
-
 .dbd-lab-card h3 {
   margin: 0 0 8px;
   font-size: 1.02rem;
@@ -1580,9 +1523,7 @@ html[data-theme="dark"] .dbd-footer {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
-  .dbd-triage-card,
-  .dbd-card-narrow,
-  .dbd-calc-grid > .dbd-card {
+  .dbd-triage-card {
     transform: none !important;
   }
 }
@@ -1632,49 +1573,6 @@ html[data-theme="dark"] .dbd-footer {
   height: 7px;
   border-radius: 50%;
   background: var(--phase);
-}
-
-/* Keterangan grafik suhu (tempel di PALING BAWAH dbd.css) */
-.dbd-chart-legend {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px 20px;
-  margin: 10px 0 0;
-  padding: 0;
-  list-style: none;
-  color: var(--dbd-muted);
-  font-size: 0.78rem;
-}
-.dbd-chart-legend li {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-.dbd-legend-swatch {
-  flex: 0 0 auto;
-  display: inline-block;
-}
-.dbd-legend-swatch.is-line {
-  width: 24px;
-  border-top: 3px solid var(--dbd-accent);
-  border-radius: 2px;
-}
-.dbd-legend-swatch.is-dash {
-  width: 24px;
-  border-top: 2px dashed var(--dbd-red);
-}
-.dbd-legend-swatch.is-dot,
-.dbd-legend-swatch.is-dot-hot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-}
-.dbd-legend-swatch.is-dot {
-  background: var(--dbd-accent);
-}
-.dbd-legend-swatch.is-dot-hot {
-  background: var(--dbd-red);
 }
 
 /* ============================================================

@@ -1,4 +1,4 @@
-# cekDBD - Portal Siaga DBD Poliklinik ITERA
+﻿# cekDBD - Portal Siaga DBD Poliklinik ITERA
 
 Portal edukasi dan pemantauan mandiri DBD untuk sivitas akademika ITERA. Aplikasi menyediakan skrining gejala, pelacak suhu, kalkulator estimasi cairan, pencatatan hasil trombosit, dan materi edukasi.
 
@@ -20,7 +20,7 @@ Pastikan Node.js dan npm sudah terpasang. Buka terminal dari folder proyek.
 
 Buat file `backend/.env` berdasarkan `backend/.env.example`, lalu isi:
 
-- `DATABASE_URL` dengan pooler URL Supabase. Lokal dan produksi memakai database yang sama, jadi cukup satu URL. Ambil dari dashboard Supabase → **Connect** → **Connection String** → **Session pooler** (host `*.pooler.supabase.com`, port `5432`). Jangan pakai transaction pooler atau direct connection, karena migrasi menjalankan DDL yang butuh sesi panjang.
+- `DATABASE_URL` dengan pooler URL Supabase. Lokal dan produksi memakai database yang sama, jadi cukup satu URL. Ambil dari dashboard Supabase â†’ **Connect** â†’ **Connection String** â†’ **Session pooler** (host `*.pooler.supabase.com`, port `5432`). Jangan pakai transaction pooler atau direct connection, karena migrasi menjalankan DDL yang butuh sesi panjang.
 - `JWT_SECRET` dengan secret acak yang panjang dan unik.
 - `FRONTEND_URL` dengan alamat frontend lokal, biasanya `http://localhost:5173`.
 
@@ -43,7 +43,7 @@ Jangan commit file `.env` atau membagikan nilainya.
 Jalankan perintah berikut di PowerShell:
 
 ```powershell
-cd C:\PTKOM\waspada-dbd\backend
+cd C:\PTKOM\PTKOM-03\backend
 npm install
 npx prisma migrate deploy
 npm run seed
@@ -57,14 +57,14 @@ Untuk menambah konten baru tanpa menyentuh data yang sudah ada di produksi (arti
 npm run seed:update
 ```
 
-`seed:update` (`prisma/seed-update.ts`) hanya **menambah item yang belum ada** — dicocokkan lewat judul artikel, pertanyaan FAQ, pernyataan kuis, dan teks tugas/fakta. Tidak ada `deleteMany`, tidak menimpa konten yang sudah ada.
+`seed:update` (`prisma/seed-update.ts`) hanya **menambah item yang belum ada** â€” dicocokkan lewat judul artikel, pertanyaan FAQ, pernyataan kuis, dan teks tugas/fakta. Tidak ada `deleteMany`, tidak menimpa konten yang sudah ada.
 
 Untuk database kosong sekali saja, jalankan `npx prisma migrate deploy` lalu `npm run seed`. Setelah itu tidak perlu diulang.
 
 Pasang dependensi frontend satu kali:
 
 ```powershell
-cd C:\PTKOM\waspada-dbd\frontend
+cd C:\PTKOM\PTKOM-03\frontend
 npm install
 ```
 
@@ -75,7 +75,7 @@ Frontend dan backend berjalan di terminal terpisah. Setelah konfigurasi dan setu
 **Terminal 1 - backend:**
 
 ```powershell
-cd C:\PTKOM\waspada-dbd\backend
+cd C:\PTKOM\PTKOM-03\backend
 npm run dev
 ```
 
@@ -84,13 +84,13 @@ Backend berjalan di `http://localhost:3000`.
 **Terminal 2 - frontend:**
 
 ```powershell
-cd C:\PTKOM\waspada-dbd\frontend
+cd C:\PTKOM\PTKOM-03\frontend
 npm run dev
 ```
 
 Frontend selalu di `http://localhost:5173`. Port itu dikunci dengan `strictPort`, jadi Vite akan gagal start dengan pesan jelas alih-alih diam-diam pindah ke 5174 yang tidak lagi cocok dengan `FRONTEND_URL` backend. Jangan buka lewat `127.0.0.1:5173` atau alamat IP LAN: Vite hanya mendengarkan di `localhost`.
 
-Jalankan `npx prisma migrate deploy` lagi hanya ketika ada migrasi/skema database baru. Jalankan `npm run seed` hanya bila memang ingin memuat ulang konten awal — perlu diingat `seed` menimpa isi produksi, karena `DATABASE_URL` lokal dan produksi menunjuk database yang sama.
+Jalankan `npx prisma migrate deploy` lagi hanya ketika ada migrasi/skema database baru. Jalankan `npm run seed` hanya bila memang ingin memuat ulang konten awal â€” perlu diingat `seed` menimpa isi produksi, karena `DATABASE_URL` lokal dan produksi menunjuk database yang sama.
 
 ### Bagaimana frontend menjangkau backend
 
@@ -118,7 +118,7 @@ Aturannya ada di satu file, `frontend/src/lib/backend.ts`.
 Frontend:
 
 ```powershell
-cd C:\PTKOM\waspada-dbd\frontend
+cd C:\PTKOM\PTKOM-03\frontend
 npm run lint
 npm run build
 ```
@@ -126,7 +126,7 @@ npm run build
 Backend:
 
 ```powershell
-cd C:\PTKOM\waspada-dbd\backend
+cd C:\PTKOM\PTKOM-03\backend
 npm run build
 node smoke.cjs
 npm run guard:env
@@ -141,7 +141,7 @@ Lokal dan produksi memakai satu database PostgreSQL Supabase yang sama. Tidak ad
 Cek manual guard kapan pun:
 
 ```powershell
-cd C:\PTKOM\waspada-dbd\backend
+cd C:\PTKOM\PTKOM-03\backend
 npm run guard:prod
 ```
 
@@ -158,8 +158,8 @@ Langkah deploy:
 
 Karena `DATABASE_URL` lokal dan produksi menunjuk database yang sama, dua perintah berikut menghapus isi produksi dan tidak boleh dijalankan tanpa sengaja:
 
-- `npx prisma migrate reset` — menghapus seluruh tabel dan data
-- `npm run seed` — `prisma/seed.ts` memakai `deleteMany()` tanpa kondisi pada `Article`, `Symptom`, `Task`, `QuizItem`, dan `Fact`
+- `npx prisma migrate reset` â€” menghapus seluruh tabel dan data
+- `npm run seed` â€” `prisma/seed.ts` memakai `deleteMany()` tanpa kondisi pada `Article`, `Symptom`, `Task`, `QuizItem`, dan `Fact`
 
 `npm run seed:update` **tidak termasuk** dalam daftar ini: ia insert-only dan aman dijalankan kapan pun.
 
