@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import Feedback from "../components/Feedback";
 import Hero from "../components/Hero";
 import Reveal from "../components/Reveal";
 import { useContent } from "../lib/content";
@@ -213,6 +214,7 @@ export default function Dashboard() {
               </article>
             ))}
           </div>
+          <Feedback />
         </section>
       )}
     </>

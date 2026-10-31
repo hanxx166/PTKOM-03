@@ -4,6 +4,8 @@ import { API_BASE, forgetAccessToken, HAS_BACKEND, refreshSession, setAccessToke
 
 interface AuthCtx {
   user: User | null;
+  /** true setelah sesi lama dipulihkan; dipakai guard rute agar tidak salah redirect. */
+  ready: boolean;
   mode: string;
   login: (email: string, password: string) => Promise<void>;
   signup: (name: string, email: string, password: string) => Promise<void>;
@@ -22,6 +24,7 @@ async function sha(s: string): Promise<string> {
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [ready, setReady] = useState(false);
   const [mode] = useState(() => (HAS_BACKEND ? "server" : "local"));
 
   useEffect(() => {
@@ -44,14 +47,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     (async () => {
       if (HAS_BACKEND) {
         setUser(await refreshSession());
-        return;
+      } else {
+        try {
+          const u = JSON.parse(localStorage.getItem("user") || "null");
+          if (u) setUser(u);
+        } catch {
+          /* abaikan */
+        }
       }
-      try {
-        const u = JSON.parse(localStorage.getItem("user") || "null");
-        if (u) setUser(u);
-      } catch {
-        /* abaikan */
-      }
+      // Sudah pulih, guard rute boleh memutuskan login atau tidak.
+      setReady(true);
     })();
   }, []);
 
@@ -124,7 +129,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setAccessToken("");
   }, []);
 
-  return <Ctx.Provider value={{ user, mode, login, signup, logout }}>{children}</Ctx.Provider>;
+  return <Ctx.Provider value={{ user, ready, mode, login, signup, logout }}>{children}</Ctx.Provider>;
 }
 
 export function useAuth(): AuthCtx {

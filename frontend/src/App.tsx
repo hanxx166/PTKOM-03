@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import type { ReactNode } from "react";
 import {
   HashRouter,
   Navigate,
   Route,
   Routes,
+  useNavigate,
   useLocation,
 } from "react-router-dom";
 import Admin from "./pages/Admin";
@@ -16,7 +18,7 @@ import FluidCalculator from "./components/FluidCalculator";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 import TemperatureTracker from "./components/TemperatureTracker";
-import { AuthProvider } from "./lib/auth";
+import { AuthProvider, useAuth } from "./lib/auth";
 import { ContentProvider } from "./lib/content";
 
 /**
@@ -33,22 +35,62 @@ function ScrollToTop() {
   return null;
 }
 
+/**
+ * Rute khusus pengguna login. Selama sesi lama belum dipulihkan (ready false)
+ * tidak ada keputusan apa pun, supaya pengguna yang sudah login tidak dilempar
+ * ke beranda ketika refresh token masih diproses.
+ */
+function RequireAuth({
+  children,
+  onNeedAuth,
+}: {
+  children: ReactNode;
+  onNeedAuth: () => void;
+}) {
+  const { user, ready } = useAuth();
+
+  useEffect(() => {
+    if (ready && !user) onNeedAuth();
+  }, [ready, user, onNeedAuth]);
+
+  if (!ready) return null;
+  if (!user) return <Navigate to="/" replace />;
+  return <>{children}</>;
+}
+
 function Shell() {
   const [authOpen, setAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState<"in" | "up">("in");
+  // Halaman yang diminta sebelum pengguna diminta login, dibuka lagi setelah
+  // berhasil masuk supaya alurnya tidak putus di beranda. Disimpan di ref,
+  // bukan state, supaya tidak memicu render tambahan.
+  const pendingPath = useRef<string | null>(null);
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
-  const needAuth = () => {
+  useEffect(() => {
+    // AuthModal sudah menutup dirinya sendiri setelah login berhasil, jadi di
+    // sini cukup membuka halaman yang tadi diminta.
+    if (!user || !pendingPath.current) return;
+    const to = pendingPath.current;
+    pendingPath.current = null;
+    navigate(to);
+  }, [user, navigate]);
+
+  const needAuth = useCallback((to?: string) => {
     setAuthMode("in");
     setAuthOpen(true);
-  };
+    pendingPath.current = to ?? null;
+  }, []);
 
   return (
     <div className="min-h-screen">
       <ScrollToTop />
       <Header
-        onAuth={(mode) => {
+        onAuth={(mode, to) => {
           setAuthMode(mode);
           setAuthOpen(true);
+          pendingPath.current = to ?? null;
         }}
       />
       <main className="dbd-main">
@@ -66,10 +108,12 @@ function Shell() {
           <Route
             path="/pemantauan"
             element={
-              <>
-                <TemperatureTracker />
-                <FluidCalculator />
-              </>
+              <RequireAuth onNeedAuth={needAuth}>
+                <>
+                  <TemperatureTracker />
+                  <FluidCalculator />
+                </>
+              </RequireAuth>
             }
           />
           <Route
