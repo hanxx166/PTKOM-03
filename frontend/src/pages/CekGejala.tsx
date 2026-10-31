@@ -48,7 +48,7 @@ function ScoreCount({ value }: { value: number }) {
   return <motion.span>{rounded}</motion.span>;
 }
 
-export default function CekGejala({ onNeedAuth }: { onNeedAuth: () => void }) {
+export default function CekGejala() {
   const { content, loading, error } = useContent();
   const { user } = useAuth();
   const [step, setStep] = useState(1);
@@ -128,10 +128,6 @@ export default function CekGejala({ onNeedAuth }: { onNeedAuth: () => void }) {
   };
 
   const continueToResult = () => {
-    if (!user) {
-      onNeedAuth();
-      return;
-    }
     nextStep(4);
   };
 
@@ -365,8 +361,8 @@ export default function CekGejala({ onNeedAuth }: { onNeedAuth: () => void }) {
                   : ADVICE[result.level]}
               </p>
               {result.emergency && (
-                <a className="dbd-button dbd-button-red" href="tel:119">
-                  Hubungi 119 / Ke IGD
+                <a className="dbd-button dbd-button-red" href="https://maps.app.goo.gl/8bYLizYsvQsZoQta7" target="_blank" rel="noreferrer">
+                  Lihat rute ke IGD RS Airan Raya
                 </a>
               )}
               <p className="dbd-result-score">
