@@ -44,7 +44,21 @@ export default function DangerPopup() {
             transition={{ type: "spring", stiffness: 320, damping: 26 }}
           >
             <span className="dbd-popup-icon" aria-hidden="true">
-              ⚠️
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                focusable="false"
+              >
+                <path d="M10.3 4.8 2.9 18a1.8 1.8 0 0 0 1.6 2.7h15a1.8 1.8 0 0 0 1.6-2.7L13.7 4.8a2 2 0 0 0-3.4 0Z" />
+                <path d="M12 9v4.5" />
+                <path d="M12 17h.01" />
+              </svg>
             </span>
 
             <div className="dbd-popup-body">

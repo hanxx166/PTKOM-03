@@ -44,6 +44,39 @@ const LEVELS: Record<Level, { label: string; title: string }> = {
   avoid: { label: "Hindari", title: "Hindari" },
 };
 
+function StatusIcon({ level }: { level: Level }) {
+  return (
+    <svg
+      className="dbd-obat-result-icon"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      focusable="false"
+    >
+      {level === "ok" ? (
+        <path d="m5 12.5 4.5 4.5L19 7.5" />
+      ) : level === "care" ? (
+        <>
+          <path d="M10.3 4.8 2.9 18a1.8 1.8 0 0 0 1.6 2.7h15a1.8 1.8 0 0 0 1.6-2.7L13.7 4.8a2 2 0 0 0-3.4 0Z" />
+          <path d="M12 9v4.5" />
+          <path d="M12 17h.01" />
+        </>
+      ) : (
+        <>
+          <circle cx="12" cy="12" r="9" />
+          <path d="m9 9 6 6m0-6-6 6" />
+        </>
+      )}
+    </svg>
+  );
+}
+
 /** Urutan keparahan: bila satu kata cocok ke beberapa obat, yang paling berisiko ditampilkan. */
 const SEVERITY: Record<Level, number> = { ok: 0, care: 1, avoid: 2 };
 
@@ -362,16 +395,25 @@ export default function ObatDBD() {
           </div>
           <div className="dbd-obat-result-wrap" aria-live="polite">
             {result && (
-              <div className={`dbd-obat-result is-${result.level}`}>
-                <strong>
-                  {result.name}: {LEVELS[result.level].title}
-                </strong>
+              <div
+                className={`dbd-obat-result is-${result.level}`}
+              >
+                <div className="dbd-obat-result-heading">
+                  <StatusIcon level={result.level} />
+                  <strong>
+                    {result.name}: {LEVELS[result.level].title}
+                  </strong>
+                </div>
                 <p>{result.note}</p>
               </div>
             )}
             {searched && !result && (
               <div className="dbd-obat-result is-care">
-                <strong>Belum ada di daftar</strong>
+                <div className="dbd-obat-result-heading">
+                  <StatusIcon level="care" />
+                  <strong>Belum ada di daftar</strong>
+                  <span>{LEVELS.care.label}</span>
+                </div>
                 <p>
                   Jangan diminum dulu. Tanyakan ke apoteker atau dokter, dan
                   sebutkan bahwa Anda dicurigai DBD.

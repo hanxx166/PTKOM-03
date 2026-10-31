@@ -106,10 +106,10 @@ export default function Admin() {
           <li key={String(a.id)} className="flex items-center justify-between gap-2 p-3 text-sm">
             <span><b>{a.title}</b> <span className="text-muted">· {a.tag}</span></span>
             <span className="flex shrink-0 gap-1.5">
-              <button onClick={() => setForm({ id: String(a.id), title: a.title || "", tag: a.tag || "Tips", body: (a.body || []).join("\n") })} className="rounded-lg border border-line px-2.5 py-0.5 text-xs font-semibold hover:border-acc hover:text-acc">
+              <button onClick={() => setForm({ id: String(a.id), title: a.title || "", tag: a.tag || "Tips", body: (a.body || []).join("\n") })} className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg border border-line px-3 py-1 text-xs font-semibold hover:border-acc hover:text-acc focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-acc">
                 Edit
               </button>
-              <button onClick={() => del(a.id)} className="rounded-lg border border-line px-2.5 py-0.5 text-xs font-semibold text-danger hover:border-danger">
+              <button onClick={() => del(a.id)} className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg border border-line px-3 py-1 text-xs font-semibold text-danger hover:border-danger focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-danger">
                 Hapus
               </button>
             </span>

@@ -21,6 +21,22 @@ export default function TemperatureTracker() {
   const [message, setMessage] = useState("");
   const [pltDay, setPltDay] = useState("");
   const [pltValue, setPltValue] = useState("");
+  const latestTemperatureEntry =
+    fever.entries.length > 0
+      ? fever.entries[fever.entries.length - 1]
+      : null;
+  const highestTemperature =
+    fever.entries.length > 0
+      ? Math.max(...fever.entries.map((entry) => entry.temp))
+      : null;
+  const storageNotice =
+    fever.status === "local"
+      ? "Catatan suhu tersimpan di browser ini dan tidak disinkronkan antarperangkat."
+      : fever.status === "server"
+        ? fever.message
+          ? "Mode akun aktif, tetapi catatan suhu gagal dimuat dari akun."
+          : "Catatan suhu tersimpan di akun Anda."
+        : "Memeriksa mode penyimpanan catatan suhu.";
 
   const addEntry = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -148,6 +164,7 @@ export default function TemperatureTracker() {
             Unduh PDF
           </button>
         </div>
+        <p className="dbd-tracker-storage-note">{storageNotice}</p>
         <form className="dbd-tracker-form" onSubmit={addEntry}>
           <div className="dbd-form-group">
             <label htmlFor="track-day">Hari ke-</label>
@@ -193,6 +210,29 @@ export default function TemperatureTracker() {
           </button>
         </form>
 
+        <dl className="dbd-temperature-summary" aria-label="Ringkasan catatan suhu">
+          <div>
+            <dt>Suhu tertinggi</dt>
+            <dd>
+              {highestTemperature === null
+                ? "—"
+                : `${highestTemperature.toFixed(1)} °C`}
+            </dd>
+          </div>
+          <div>
+            <dt>Suhu terbaru</dt>
+            <dd>
+              {latestTemperatureEntry
+                ? `${latestTemperatureEntry.temp.toFixed(1)} °C`
+                : "—"}
+            </dd>
+          </div>
+          <div>
+            <dt>Jumlah entri</dt>
+            <dd>{fever.entries.length}</dd>
+          </div>
+        </dl>
+
         <div className="dbd-chart-wrap">
           {feverPoints.length ? (
             <svg
@@ -231,17 +271,24 @@ export default function TemperatureTracker() {
                 />
               )}
               {feverPoints.map((point) => (
-                <g key={point.id}>
-                  <circle
-                    cx={point.x}
-                    cy={point.y}
-                    r="6"
-                    className={
-                      point.temp >= 38
-                        ? "dbd-chart-hot-point"
-                        : "dbd-chart-point"
-                    }
-                  />
+                <g
+                  key={point.id}
+                  role="img"
+                  aria-label={`Hari ${point.day} ${point.time}: ${point.temp.toFixed(1)}°C${point.temp >= 38 ? ", penanda suhu tinggi" : ""}`}
+                >
+                  {point.temp >= 38 ? (
+                    <polygon
+                      points={`${point.x},${point.y - 8} ${point.x + 8},${point.y} ${point.x},${point.y + 8} ${point.x - 8},${point.y}`}
+                      className="dbd-chart-hot-point"
+                    />
+                  ) : (
+                    <circle
+                      cx={point.x}
+                      cy={point.y}
+                      r="6"
+                      className="dbd-chart-point"
+                    />
+                  )}
                 </g>
               ))}
             </svg>

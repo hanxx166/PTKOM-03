@@ -150,13 +150,13 @@ export default function AdminCrud({ title, endpoint, fields }: { title: string; 
             <span className="flex shrink-0 gap-1.5">
               <button
                 onClick={() => startEdit(row)}
-                className="rounded-lg border border-line px-2.5 py-0.5 text-xs font-semibold hover:border-acc hover:text-acc"
+                className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg border border-line px-3 py-1 text-xs font-semibold hover:border-acc hover:text-acc focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-acc"
               >
                 Edit
               </button>
               <button
                 onClick={() => del(row)}
-                className="rounded-lg border border-line px-2.5 py-0.5 text-xs font-semibold text-danger hover:border-danger"
+                className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg border border-line px-3 py-1 text-xs font-semibold text-danger hover:border-danger focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-danger"
               >
                 Hapus
               </button>
