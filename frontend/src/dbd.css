@@ -183,13 +183,11 @@ html[data-theme="dark"] .dbd-header::before {
   white-space: nowrap;
 }
 
-.dbd-logo svg {
+.dbd-logo img {
+  display: block;
   width: 28px;
   height: 28px;
-  fill: none;
-  stroke: var(--dbd-accent);
-  stroke-width: 2.2;
-  stroke-linecap: round;
+  object-fit: contain;
 }
 
 .dbd-logo-light {
