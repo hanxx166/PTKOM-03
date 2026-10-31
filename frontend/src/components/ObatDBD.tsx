@@ -226,13 +226,7 @@ const RULES = [
   },
 ];
 
-const DANGER = [
-  "Nyeri perut hebat",
-  "Muntah terus-menerus",
-  "Perdarahan (gusi, hidung, BAB hitam)",
-  "Tangan dan kaki dingin, lemas",
-  "Sulit bernapas",
-];
+/** Tanda bahaya DBD sudah dipindah ke popup peringatan (DangerPopup.tsx). */
 
 const FILTERS: { id: Filter; label: string }[] = [
   { id: "all", label: "Semua" },
@@ -308,15 +302,32 @@ export default function ObatDBD() {
       <Reveal>
         <div className="dbd-card dbd-obat-check">
           <label htmlFor="dbd-obat-input">Cek nama obat</label>
-          <input
-            id="dbd-obat-input"
-            type="search"
-            inputMode="search"
-            autoComplete="off"
-            placeholder="Contoh: ibuprofen, Sanmol, antibiotik"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
+          <div className="dbd-obat-search-row">
+            <input
+              id="dbd-obat-input"
+              type="search"
+              inputMode="search"
+              autoComplete="off"
+              placeholder="Contoh: ibuprofen, Sanmol, antibiotik"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+            <select
+              id="dbd-obat-filter"
+              aria-label="Filter golongan obat"
+              value={filter}
+              onChange={(e) => setFilter(e.target.value as Filter)}
+            >
+              {FILTERS.map((f) => (
+                <option key={f.id} value={f.id}>
+                  {f.label}
+                  {f.id === "all"
+                    ? ` (${DRUGS.length})`
+                    : ` (${count(f.id as Level)})`}
+                </option>
+              ))}
+            </select>
+          </div>
           <div className="dbd-obat-result-wrap" aria-live="polite">
             {result && (
               <div className={`dbd-obat-result is-${result.level}`}>
@@ -336,30 +347,15 @@ export default function ObatDBD() {
               </div>
             )}
           </div>
+          <p className="dbd-obat-count">
+            {visible.length} obat ditampilkan
+          </p>
           <small>
             Pencarian berdasarkan nama bahan dan merek umum. Selalu baca
             komposisi di kemasan.
           </small>
         </div>
       </Reveal>
-
-      <div
-        className="dbd-obat-filters"
-        role="group"
-        aria-label="Filter golongan obat"
-      >
-        {FILTERS.map((f) => (
-          <button
-            type="button"
-            key={f.id}
-            className={`dbd-obat-filter${filter === f.id ? " is-active" : ""}`}
-            aria-pressed={filter === f.id}
-            onClick={() => setFilter(f.id)}
-          >
-            {f.label}
-          </button>
-        ))}
-      </div>
 
       <AnimatePresence mode="wait" initial={false}>
         <motion.div
@@ -423,17 +419,6 @@ export default function ObatDBD() {
       </motion.ol>
 
       <Reveal>
-        <div className="dbd-obat-alert" role="note">
-          <strong>
-            Jangan menunggu obat bekerja. Segera ke IGD atau hubungi 119 bila
-            muncul:
-          </strong>
-          <ul>
-            {DANGER.map((t) => (
-              <li key={t}>{t}</li>
-            ))}
-          </ul>
-        </div>
         <p className="dbd-obat-disclaimer">
           Informasi ini untuk edukasi, bukan pengganti konsultasi tenaga
           kesehatan. Dosis dan jenis obat selalu mengikuti petunjuk dokter atau
