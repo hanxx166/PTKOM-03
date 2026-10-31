@@ -5,10 +5,11 @@ import BlindPullToggle from "./BlindPullToggle";
 
 const LINKS = [
   { to: "/", label: "Beranda" },
+  { to: "/edukasi", label: "Edukasi" },
   { to: "/cek-kesehatan", label: "Cek Gejala & Lab" },
   // Halaman ini menyimpan data pribadi, jadi hanya untuk pengguna login.
   { to: "/pemantauan", label: "Suhu & Kalkulator", needsAuth: true },
-  { to: "/edukasi", label: "Edukasi" },
+  { to: "/faq-lokasi", label: "FAQ & Lokasi" },
 ];
 
 export default function Header({

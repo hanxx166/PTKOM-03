@@ -226,6 +226,38 @@ const RULES = [
   },
 ];
 
+export function MedicationRules() {
+  const reduced = useReducedMotion();
+
+  return (
+    <section
+      className="dbd-obat-rules-section"
+      aria-labelledby="dbd-obat-rules-title"
+    >
+      <h3 className="dbd-subheading" id="dbd-obat-rules-title">
+        4 Aturan Pakai Obat saat DBD
+      </h3>
+      <motion.ol
+        className="dbd-obat-rules"
+        variants={staggerParent}
+        initial={reduced ? false : "hidden"}
+        whileInView={reduced ? undefined : "show"}
+        viewport={{ once: true }}
+      >
+        {RULES.map((r, i) => (
+          <motion.li className="dbd-card" key={r.title} variants={staggerChild}>
+            <span className="dbd-obat-num" aria-hidden="true">
+              {i + 1}
+            </span>
+            <b>{r.title}</b>
+            <p>{r.text}</p>
+          </motion.li>
+        ))}
+      </motion.ol>
+    </section>
+  );
+}
+
 /** Tanda bahaya DBD sudah dipindah ke popup peringatan (DangerPopup.tsx). */
 
 const FILTERS: { id: Filter; label: string }[] = [
@@ -402,25 +434,6 @@ export default function ObatDBD() {
           ))}
         </motion.div>
       </AnimatePresence>
-
-      <h3 className="dbd-subheading">4 Aturan Pakai Obat saat DBD</h3>
-      <motion.ol
-        className="dbd-obat-rules"
-        variants={staggerParent}
-        initial={reduced ? false : "hidden"}
-        whileInView={reduced ? undefined : "show"}
-        viewport={{ once: true }}
-      >
-        {RULES.map((r, i) => (
-          <motion.li className="dbd-card" key={r.title} variants={staggerChild}>
-            <span className="dbd-obat-num" aria-hidden="true">
-              {i + 1}
-            </span>
-            <b>{r.title}</b>
-            <p>{r.text}</p>
-          </motion.li>
-        ))}
-      </motion.ol>
 
       <Reveal>
         <p className="dbd-obat-disclaimer">

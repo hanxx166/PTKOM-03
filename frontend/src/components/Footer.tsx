@@ -31,6 +31,9 @@ export default function Footer() {
             <li>
               <Link to="/edukasi">Edukasi</Link>
             </li>
+            <li>
+              <Link to="/faq-lokasi">FAQ &amp; Lokasi</Link>
+            </li>
           </ul>
         </div>
         <div>
