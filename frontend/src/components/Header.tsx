@@ -6,14 +6,15 @@ import BlindPullToggle from "./BlindPullToggle";
 const LINKS = [
   { to: "/", label: "Beranda" },
   { to: "/cek-kesehatan", label: "Cek Gejala & Lab" },
-  { to: "/pemantauan", label: "Suhu & Kalkulator" },
+  // Halaman ini menyimpan data pribadi, jadi hanya untuk pengguna login.
+  { to: "/pemantauan", label: "Suhu & Kalkulator", needsAuth: true },
   { to: "/edukasi", label: "Edukasi" },
 ];
 
 export default function Header({
   onAuth,
 }: {
-  onAuth: (mode: "in" | "up") => void;
+  onAuth: (mode: "in" | "up", redirectTo?: string) => void;
 }) {
   const { user, logout } = useAuth();
   const [open, setOpen] = useState(false);
@@ -111,19 +112,35 @@ export default function Header({
           className={`dbd-nav${open ? " is-open" : ""}`}
           aria-label="Navigasi utama"
         >
-          {LINKS.map((link) => (
-            <NavLink
-              key={link.to}
-              to={link.to}
-              end={link.to === "/"}
-              onClick={() => setOpen(false)}
-              className={({ isActive }) =>
-                `dbd-nav-link${isActive ? " is-active" : ""}`
-              }
-            >
-              {link.label}
-            </NavLink>
-          ))}
+          {LINKS.map((link) =>
+            link.needsAuth && !user ? (
+              <button
+                key={link.to}
+                type="button"
+                className="dbd-nav-link is-locked"
+                aria-haspopup="dialog"
+                title="Login untuk membuka halaman ini"
+                onClick={() => {
+                  setOpen(false);
+                  onAuth("in", link.to);
+                }}
+              >
+                🔒 {link.label}
+              </button>
+            ) : (
+              <NavLink
+                key={link.to}
+                to={link.to}
+                end={link.to === "/"}
+                onClick={() => setOpen(false)}
+                className={({ isActive }) =>
+                  `dbd-nav-link${isActive ? " is-active" : ""}`
+                }
+              >
+                {link.label}
+              </NavLink>
+            ),
+          )}
           {isAdmin && (
             <NavLink
               to="/admin"
