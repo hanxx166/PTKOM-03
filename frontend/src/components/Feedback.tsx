@@ -116,102 +116,143 @@ export default function Feedback() {
   };
 
   return (
-    <form
-      className={`dbd-card dbd-feedback-card ${info ? info.tone : ""}`}
-      onSubmit={submit}
-      aria-labelledby="feedback-title"
+    <motion.div
+      className={`dbd-feedback-shell ${info ? info.tone : ""}`}
+      initial={reduced ? false : { opacity: 0, y: 24 }}
+      whileInView={reduced ? undefined : { opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.8, ease: [0.32, 0.72, 0, 1] }}
     >
-      <span className="dbd-kicker">Masukan pembaca</span>
-      <h3 id="feedback-title">Bagaimana bacaan di atas?</h3>
-      <p className="dbd-feedback-hint">
-        Pilih bintang dari 1 sampai 5 — tiap penilaian punya wajahnya sendiri.
-      </p>
-
-      <div className="dbd-feedback-stars" role="radiogroup" aria-label="Penilaian bacaan">
-        {([1, 2, 3, 4, 5] as Rating[]).map((r) => {
-          const filled = r <= active;
-          return (
-            <button
-              key={r}
-              type="button"
-              role="radio"
-              aria-checked={picked === r}
-              aria-label={`Beri ${r} bintang`}
-              title={RATINGS[r].label}
-              className={`dbd-feedback-star${filled ? " is-active" : ""}`}
-              onMouseEnter={() => setHover(r)}
-              onMouseLeave={() => setHover(0)}
-              onFocus={() => setHover(r)}
-              onBlur={() => setHover(0)}
-              onClick={() => choose(r)}
-              disabled={sent}
-            >
-              {filled ? "⭐" : "☆"}
-            </button>
-          );
-        })}
-      </div>
-
-      <div className="dbd-feedback-face" aria-live="polite">
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.span
-            key={info ? info.emoji : "idle"}
-            className="dbd-feedback-emoji"
-            initial={reduced ? false : { scale: 0.4, opacity: 0, rotate: -12 }}
-            animate={{ scale: 1, opacity: 1, rotate: 0 }}
-            exit={reduced ? undefined : { scale: 0.4, opacity: 0 }}
-            transition={{ type: "spring", stiffness: 420, damping: 22 }}
-          >
-            {info ? info.emoji : "✍️"}
-          </motion.span>
-        </AnimatePresence>
-        <p className="dbd-feedback-message">
-          {info ? (
-            <>
-              <strong>{info.label}</strong> — {info.message}
-            </>
-          ) : (
-            <>Sentuh bintangnya dulu, nanti wajahnya berubah sesuai penilaianmu.</>
-          )}
-        </p>
-      </div>
-
-      {!sent && picked > 0 && (
-        <div className="dbd-feedback-form">
-          <label className="dbd-feedback-label" htmlFor="dbd-feedback-note">
-            Tulis masukan (opsional)
-          </label>
-          <textarea
-            id="dbd-feedback-note"
-            className="dbd-feedback-note"
-            rows={3}
-            maxLength={400}
-            value={note}
-            placeholder="Ceritakan singkat apa yang kurang atau sudah bagus..."
-            onChange={(e) => setNote(e.target.value)}
-          />
-          <div className="dbd-feedback-actions">
-            <button className="dbd-button dbd-button-primary" type="submit">
-              Kirim masukan
-            </button>
-            <button className="dbd-button dbd-button-muted" type="button" onClick={reset}>
-              Ganti penilaian
-            </button>
-          </div>
-        </div>
-      )}
-
-      {sent && picked > 0 && (
-        <div className="dbd-feedback-sent">
-          <p>
-            Terima kasih! Penilaianmu <strong>{picked} bintang</strong> sudah kami terima{" "}
-            {sentEmoji}
+      <form
+        className="dbd-feedback-card"
+        onSubmit={submit}
+        aria-labelledby="feedback-title"
+      >
+        <div className="dbd-feedback-intro">
+          <span className="dbd-feedback-eyebrow">Masukan pembaca</span>
+          <h3 id="feedback-title">Bagaimana bacaan di atas?</h3>
+          <p className="dbd-feedback-hint">
+            Ceritakan pengalamanmu. Masukan kecil membantu kami menyajikan
+            informasi yang lebih baik.
           </p>
-          <button className="dbd-button dbd-button-muted dbd-button-small" type="button" onClick={reset}>
-            Beri penilaian lain
-          </button>
         </div>
-      )}
-    </form>
+
+        <div className="dbd-feedback-interaction">
+          <p className="dbd-feedback-prompt">Pilih penilaianmu</p>
+          <div
+            className="dbd-feedback-stars"
+            role="radiogroup"
+            aria-label="Penilaian bacaan"
+          >
+            {([1, 2, 3, 4, 5] as Rating[]).map((r) => {
+              const filled = r <= active;
+              return (
+                <button
+                  key={r}
+                  type="button"
+                  role="radio"
+                  aria-checked={picked === r}
+                  aria-label={`Beri ${r} bintang`}
+                  title={RATINGS[r].label}
+                  className={`dbd-feedback-star${filled ? " is-active" : ""}`}
+                  onMouseEnter={() => setHover(r)}
+                  onMouseLeave={() => setHover(0)}
+                  onFocus={() => setHover(r)}
+                  onBlur={() => setHover(0)}
+                  onClick={() => choose(r)}
+                  disabled={sent}
+                >
+                  {filled ? "★" : "☆"}
+                </button>
+              );
+            })}
+          </div>
+          <div className="dbd-feedback-scale-hints" aria-hidden="true">
+            <span>Kurang membantu</span>
+            <span>Sangat membantu</span>
+          </div>
+
+          <div className="dbd-feedback-face" aria-live="polite">
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.span
+                key={info ? info.emoji : "idle"}
+                className="dbd-feedback-emoji"
+                initial={reduced ? false : { scale: 0.4, opacity: 0, rotate: -12 }}
+                animate={{ scale: 1, opacity: 1, rotate: 0 }}
+                exit={reduced ? undefined : { scale: 0.4, opacity: 0 }}
+                transition={{ type: "spring", stiffness: 420, damping: 22 }}
+              >
+                {info ? info.emoji : "✍️"}
+              </motion.span>
+            </AnimatePresence>
+            <p className="dbd-feedback-message">
+              {info ? (
+                <>
+                  <strong>{info.label}</strong> · {info.message}
+                </>
+              ) : (
+                <>Pilih bintang untuk memberi tahu kami pendapatmu.</>
+              )}
+            </p>
+          </div>
+
+          <AnimatePresence mode="wait" initial={false}>
+            {!sent && picked > 0 && (
+              <motion.div
+                key="feedback-form"
+                className="dbd-feedback-form"
+                initial={reduced ? false : { opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={reduced ? undefined : { opacity: 0, y: -8 }}
+                transition={{ duration: 0.35, ease: [0.32, 0.72, 0, 1] }}
+              >
+                <label className="dbd-feedback-label" htmlFor="dbd-feedback-note">
+                  Tulis masukan <span>(opsional)</span>
+                </label>
+                <div className="dbd-feedback-note-shell">
+                  <textarea
+                    id="dbd-feedback-note"
+                    className="dbd-feedback-note"
+                    rows={3}
+                    maxLength={400}
+                    value={note}
+                    placeholder="Ceritakan singkat apa yang kurang atau sudah bagus..."
+                    onChange={(e) => setNote(e.target.value)}
+                  />
+                </div>
+                <div className="dbd-feedback-actions">
+                  <button className="dbd-button dbd-button-primary dbd-feedback-submit" type="submit">
+                    <span>Kirim masukan</span>
+                    <span className="dbd-feedback-cta-icon" aria-hidden="true">↗</span>
+                  </button>
+                  <button className="dbd-button dbd-button-muted" type="button" onClick={reset}>
+                    Ganti penilaian
+                  </button>
+                </div>
+              </motion.div>
+            )}
+
+            {sent && picked > 0 && (
+              <motion.div
+                key="feedback-sent"
+                className="dbd-feedback-sent"
+                initial={reduced ? false : { opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.35, ease: [0.32, 0.72, 0, 1] }}
+                role="status"
+              >
+                <p>
+                  Terima kasih! Penilaianmu <strong>{picked} bintang</strong>{" "}
+                  sudah kami terima {sentEmoji}
+                </p>
+                <button className="dbd-button dbd-button-muted dbd-button-small" type="button" onClick={reset}>
+                  Beri penilaian lain
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </form>
+    </motion.div>
   );
 }

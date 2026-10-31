@@ -47,7 +47,7 @@ const EMERGENCY = [
     title: "Ambulans / IGD",
     text: (
       <>
-        Hubungi <b>119</b> atau ke IGD terdekat
+        Hubungi <a href="tel:119">119</a> atau ke IGD terdekat
       </>
     ),
   },
@@ -56,7 +56,7 @@ const EMERGENCY = [
     title: "Poliklinik ITERA",
     text: (
       <>
-        Labtek O Lt.1 · <b>(0721) 8030188</b>
+        Labtek O Lt.1 · <a href="tel:+627218030188">(0721) 8030188</a>
       </>
     ),
   },
@@ -68,7 +68,7 @@ const EMERGENCY = [
 ];
 
 export default function Dashboard() {
-  const { totalChecks, content } = useContent();
+  const { totalChecks, content, error, loading } = useContent();
   const reduced = useReducedMotion();
   const articles = content?.articles ?? [];
   const months = [
@@ -107,7 +107,7 @@ export default function Dashboard() {
   };
 
   return (
-    <>
+    <div className="dbd-home">
       <Hero totalChecks={totalChecks} />
 
       <motion.section
@@ -181,42 +181,63 @@ export default function Dashboard() {
         </motion.div>
       </section>
 
-      {articles.length > 0 && (
-        <section
-          className="dbd-section"
-          id="bacaan"
-          aria-labelledby="bacaan-title"
-        >
-          <Reveal className="dbd-section-heading">
-            <span className="dbd-kicker">Informasi kesehatan</span>
-            <h2 id="bacaan-title">Bacaan</h2>
-            <p>Artikel ringkas untuk memahami pencegahan dan penanganan DBD.</p>
-          </Reveal>
-          <div className="dbd-article-list">
-            {articles.map((article) => (
-              <article
-                className="dbd-card dbd-article-card"
-                key={String(article.id)}
-              >
-                <span
-                  className={`dbd-tag ${tagClass[article.tag || ""] ?? ""}`}
+      <section
+        className="dbd-section"
+        id="bacaan"
+        aria-labelledby="bacaan-title"
+      >
+        <Reveal className="dbd-section-heading">
+          <span className="dbd-kicker">Informasi kesehatan</span>
+          <h2 id="bacaan-title">Bacaan</h2>
+          <p>Artikel ringkas untuk memahami pencegahan dan penanganan DBD.</p>
+        </Reveal>
+        {loading ? (
+          <p className="dbd-card dbd-article-state" role="status">
+            Memuat bacaan…
+          </p>
+        ) : error ? (
+          <p className="dbd-card dbd-article-state" role="alert">
+            Bacaan belum dapat dimuat. Silakan muat ulang halaman.
+          </p>
+        ) : articles.length === 0 ? (
+          <p className="dbd-card dbd-article-state" role="status">
+            Belum ada artikel yang tersedia saat ini.
+          </p>
+        ) : (
+          <>
+            <div className="dbd-article-list">
+              {articles.map((article) => (
+                <article
+                  className="dbd-card dbd-article-card"
+                  key={String(article.id)}
                 >
-                  {article.tag}
-                </span>
-                <h3>{article.title}</h3>
-                <p className="dbd-article-meta">
-                  {article.mins} menit baca
-                  {article.date ? ` · ${formatDate(article.date)}` : ""}
-                </p>
-                {(article.body || []).map((paragraph, index) => (
-                  <p key={index}>{renderBold(paragraph)}</p>
-                ))}
-              </article>
-            ))}
-          </div>
-          <Feedback />
-        </section>
-      )}
-    </>
+                  <span
+                    className={`dbd-tag ${tagClass[article.tag || ""] ?? ""}`}
+                  >
+                    {article.tag}
+                  </span>
+                  <h3>{article.title}</h3>
+                  <p className="dbd-article-meta">
+                    {article.mins} menit baca
+                    {article.date ? ` · ${formatDate(article.date)}` : ""}
+                  </p>
+                  {article.body?.length > 0 && (
+                    <details className="dbd-article-details">
+                      <summary>Baca isi artikel</summary>
+                      <div className="dbd-article-content">
+                        {article.body.map((paragraph, index) => (
+                          <p key={index}>{renderBold(paragraph)}</p>
+                        ))}
+                      </div>
+                    </details>
+                  )}
+                </article>
+              ))}
+            </div>
+            <Feedback />
+          </>
+        )}
+      </section>
+    </div>
   );
 }

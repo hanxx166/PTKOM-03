@@ -1,0 +1,169 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-31T08:33:30Z",
+  "title": "Design System: CekDBD",
+  "extensions": {
+    "colorMeta": {
+      "primary": {
+        "role": "primary",
+        "displayName": "Trusted Blue",
+        "tonalRamp": ["#0b2144", "#0b316b", "#0d4fae", "#1366d6", "#4788e2", "#7caaec", "#b7d1f4", "#edf4fd"]
+      },
+      "primary-hover": {
+        "role": "primary",
+        "displayName": "Deep Action Blue",
+        "tonalRamp": ["#05172f", "#092a57", "#0d3b7f", "#0d4fae", "#376eb2", "#7093c4", "#b0c4dc", "#eff5fb"]
+      },
+      "primary-soft": {
+        "role": "primary",
+        "displayName": "Blue Wash",
+        "tonalRamp": ["#112442", "#1e3555", "#2a466e", "#395d8c", "#5577a5", "#7895bb", "#a8bdd7", "#dbeafe"]
+      },
+      "background": {
+        "role": "neutral",
+        "displayName": "Cool Mist",
+        "tonalRamp": ["#18232d", "#384754", "#667583", "#94a2af", "#bac5cf", "#d5dee7", "#e6edf4", "#f3f7fb"]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Clean White",
+        "tonalRamp": ["#20272d", "#515961", "#818990", "#aeb5bb", "#c9ced2", "#dce0e3", "#eff1f3", "#ffffff"]
+      },
+      "surface-soft": {
+        "role": "neutral",
+        "displayName": "Soft Blue Gray",
+        "tonalRamp": ["#1b2b3b", "#31475e", "#49607a", "#647d99", "#8098b2", "#a3b7cc", "#c5d2df", "#e8eff7"]
+      },
+      "text": {
+        "role": "neutral",
+        "displayName": "Navy Ink",
+        "tonalRamp": ["#08111c", "#102236", "#14263d", "#36485e", "#667688", "#929fac", "#c2cbd4", "#f4f6f8"]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Slate Blue",
+        "tonalRamp": ["#172538", "#2d4056", "#415871", "#566a80", "#73869a", "#94a3b2", "#bbc5cf", "#e8edf1"]
+      },
+      "border": {
+        "role": "neutral",
+        "displayName": "Pale Blue Line",
+        "tonalRamp": ["#162432", "#334454", "#516476", "#718396", "#93a2b0", "#b4c0cb", "#d0dbe5", "#d5e1ee"]
+      },
+      "danger": {
+        "role": "tertiary",
+        "displayName": "Alert Red",
+        "tonalRamp": ["#4f1016", "#821e25", "#b32830", "#d93a3a", "#e36461", "#ed918b", "#f6c1bb", "#fde8e8"]
+      },
+      "warning": {
+        "role": "secondary",
+        "displayName": "Caution Amber",
+        "tonalRamp": ["#4d2f00", "#785000", "#a77600", "#d99800", "#e7ad30", "#f0c566", "#f7df9e", "#fff3cd"]
+      },
+      "success": {
+        "role": "secondary",
+        "displayName": "Positive Green",
+        "tonalRamp": ["#0b311e", "#0e5730", "#167743", "#1f9d55", "#44b574", "#7acb9c", "#b4e2c7", "#e3f5ea"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Outfit Display", "purpose": "Hero and section headings." },
+      "body": { "displayName": "Plus Jakarta Sans", "purpose": "Body copy, navigation, labels, and controls." },
+      "label": { "displayName": "Plus Jakarta Sans Label", "purpose": "Compact navigation and field labels." }
+    },
+    "shadows": [
+      { "name": "resting-surface", "value": "0 2px 12px rgba(20, 38, 61, 0.07)", "purpose": "Separates resting cards from the patterned canvas in light theme." },
+      { "name": "scrolled-header", "value": "0 8px 32px rgba(20, 38, 61, 0.12)", "purpose": "Makes the sticky header read as a distinct layer after scroll." },
+      { "name": "interactive-card", "value": "0 12px 32px rgba(20, 38, 61, 0.14)", "purpose": "Signals hover or focus-within on interactive triage cards." },
+      { "name": "dark-surface", "value": "0 2px 14px rgba(0, 0, 0, 0.3)", "purpose": "Subtle separation in dark theme." }
+    ],
+    "motion": [
+      { "name": "control-state", "value": "0.18s", "purpose": "Button hover and press transitions." },
+      { "name": "theme-shutter", "value": "stagger 0.04s; 0.1s close; 0.13s open", "purpose": "Segmented light/dark toggle animation; disabled when reduced motion is preferred." },
+      { "name": "header-scroll", "value": "0.5s ease", "purpose": "Fades the sticky header surface and border as scrolling progresses." }
+    ],
+    "breakpoints": [
+      { "name": "wide-navigation", "value": "1050px" },
+      { "name": "mobile-layout", "value": "760px" },
+      { "name": "compact-layout", "value": "480px" },
+      { "name": "content-grid-medium", "value": "900px" },
+      { "name": "content-grid-small", "value": "620px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Main action with a filled blue treatment.",
+      "html": "<button class=\"ds-button-primary\">Check symptoms</button>",
+      "css": ".ds-button-primary { display: inline-flex; min-height: 42px; align-items: center; justify-content: center; padding: 9px 17px; border: 0; border-radius: 10px; background: var(--dbd-accent); color: var(--dbd-on-fill); font: 700 0.9rem 'Plus Jakarta Sans', system-ui, sans-serif; text-align: center; cursor: pointer; transition: transform 0.18s, background-color 0.18s, box-shadow 0.18s; } .ds-button-primary:hover { transform: translateY(-1px); background: var(--dbd-accent-hover); box-shadow: 0 5px 15px rgba(19, 102, 214, 0.2); } .ds-button-primary:focus-visible { outline: 3px solid var(--dbd-accent-soft); outline-offset: 2px; } .ds-button-primary:active { transform: scale(0.97); }"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Secondary action that stays distinct from the main action.",
+      "html": "<button class=\"ds-button-outline\">View education</button>",
+      "css": ".ds-button-outline { display: inline-flex; min-height: 42px; align-items: center; justify-content: center; padding: 7px 15px; border: 2px solid var(--dbd-accent); border-radius: 10px; background: transparent; color: var(--dbd-accent); font: 700 0.9rem 'Plus Jakarta Sans', system-ui, sans-serif; text-align: center; cursor: pointer; transition: transform 0.18s, background-color 0.18s, color 0.18s; } .ds-button-outline:hover { transform: translateY(-1px); background: var(--dbd-accent); color: var(--dbd-on-fill); } .ds-button-outline:focus-visible { outline: 3px solid var(--dbd-accent-soft); outline-offset: 2px; } .ds-button-outline:active { transform: scale(0.97); }"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Clear, bordered field with an explicit label and visible focus.",
+      "html": "<label class=\"ds-field-label\" for=\"ds-search\">Search medicine</label><input class=\"ds-input\" id=\"ds-search\" placeholder=\"Type a medicine name\" />",
+      "css": ".ds-field-label { display: block; margin-bottom: 8px; color: var(--dbd-text); font: 700 0.9rem 'Plus Jakarta Sans', system-ui, sans-serif; } .ds-input { width: 100%; padding: 12px 14px; border: 1px solid var(--dbd-border); border-radius: 10px; background: var(--dbd-surface); color: var(--dbd-text); font: 600 0.92rem 'Plus Jakarta Sans', system-ui, sans-serif; } .ds-input::placeholder { color: var(--dbd-muted-light); } .ds-input:focus-visible { outline: 3px solid var(--dbd-accent-soft); border-color: var(--dbd-accent); }"
+    },
+    {
+      "name": "Information Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Resting information surface with quiet structural elevation.",
+      "html": "<article class=\"ds-card\"><h3>Keep monitoring</h3><p>Record changes and seek medical advice when symptoms worsen.</p></article>",
+      "css": ".ds-card { padding: 20px; border: 1px solid var(--dbd-border); border-radius: 14px; background: var(--dbd-surface); color: var(--dbd-text); box-shadow: var(--dbd-shadow); } .ds-card h3 { margin: 0 0 8px; color: var(--dbd-text); font: 700 1rem/1.25 Outfit, system-ui, sans-serif; } .ds-card p { margin: 0; color: var(--dbd-muted); font: 400 0.9rem/1.6 'Plus Jakarta Sans', system-ui, sans-serif; } .ds-card:focus-within { border-color: color-mix(in srgb, var(--dbd-accent) 35%, var(--dbd-border)); box-shadow: 0 12px 32px rgba(20, 38, 61, 0.14); }"
+    },
+    {
+      "name": "Active Navigation Link",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "Compact pill navigation with a clear active state.",
+      "html": "<a class=\"ds-nav-link is-active\" href=\"#education\">Education</a>",
+      "css": ".ds-nav-link { display: inline-flex; align-items: center; padding: 8px 16px; border-radius: 999px; background: transparent; color: var(--dbd-text); font: 700 0.85rem 'Plus Jakarta Sans', system-ui, sans-serif; text-decoration: none; white-space: nowrap; transition: background-color 0.18s, color 0.18s; } .ds-nav-link:hover, .ds-nav-link.is-active { background: var(--dbd-accent-soft); color: var(--dbd-accent); } .ds-nav-link:focus-visible { outline: 3px solid var(--dbd-accent); outline-offset: 2px; }"
+    },
+    {
+      "name": "Status Chip",
+      "kind": "chip",
+      "description": "Semantic status badge with a pale fill and matching text.",
+      "html": "<span class=\"ds-status-chip\">Monitoring</span>",
+      "css": ".ds-status-chip { display: inline-flex; align-items: center; padding: 5px 11px; border-radius: 999px; background: var(--dbd-orange-soft); color: var(--dbd-orange); font: 800 0.74rem 'Plus Jakarta Sans', system-ui, sans-serif; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Klinik digital yang tenang dan tepercaya",
+    "overview": "CekDBD pairs a calm, trustworthy clinical tone with the directness of a practical campus guide. Clear headings, readable Indonesian copy, and a cool blue palette help people scan educational and self-monitoring information without making the interface feel severe. The visual language is documented from the existing implementation and the product owner's chosen direction.\n\nThe interface uses quiet grid texture, pale blue surfaces, compact rounded controls, and carefully layered cards. A light/dark toggle carries the same roles across both themes. The home hero has its own dengue-related illustration and interactive mosquito detail; treat that art as a current page expression rather than a required motif for every surface. No visual anti-reference was confirmed.",
+    "keyCharacteristics": [
+      "Calm clinical clarity with a welcoming campus tone.",
+      "Blue-led surfaces with distinct danger, caution, and positive states.",
+      "Friendly, scannable controls and structurally meaningful elevation.",
+      "Responsive layouts and a user-selectable dark theme."
+    ],
+    "rules": [
+      { "name": "The Status-By-Meaning Rule", "body": "Keep red, amber, and green attached to the meaning of a status. Do not use them as arbitrary decoration.", "section": "colors" },
+      { "name": "The Two-Font Rule", "body": "Use Outfit for headings and Plus Jakarta Sans for body text and controls; keep the fallback stack intact.", "section": "typography" },
+      { "name": "The Hierarchy-Through-Elevation Rule", "body": "Reserve stronger shadows for interaction or a meaningful layer change; keep resting cards quiet.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do keep headings in Outfit and body/control text in Plus Jakarta Sans.",
+      "Do use the shared theme variables for colors so light and dark mode remain aligned.",
+      "Do use blue for interaction and semantic colors for status.",
+      "Do preserve the fluid, centered content width and the observed responsive grid changes.",
+      "Do make keyboard focus visible and respect reduced-motion preferences."
+    ],
+    "donts": [
+      "Don't use red, amber, or green as decoration detached from a status meaning.",
+      "Don't remove the contrast between primary and outline actions.",
+      "Don't apply the home hero's illustration or interactive mosquito motif to every screen by default.",
+      "Don't use shadows stronger than the interactive-card treatment for resting content."
+    ]
+  }
+}
