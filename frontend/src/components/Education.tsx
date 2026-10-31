@@ -2,6 +2,7 @@ import ObatDBD from "./ObatDBD";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Checklist3M from "./Checklist3M";
+import DangerPopup from "./DangerPopup";
 import Reveal from "./Reveal";
 import { useContent } from "../lib/content";
 import {
@@ -110,6 +111,8 @@ export default function Education() {
 
   return (
     <section className="dbd-section" id="edukasi">
+      {/* Popup posisi fixed, jadi aman ditaruh di awal section. */}
+      <DangerPopup />
       <Reveal className="dbd-section-heading">
         <span className="dbd-kicker">Kenali dan cegah</span>
         <h2>Edukasi &amp; 3M Plus</h2>
