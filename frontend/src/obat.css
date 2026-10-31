@@ -56,15 +56,15 @@
 }
 .dbd-obat-stat.is-ok {
   background: var(--dbd-green-soft);
-  color: var(--dbd-green);
+  color: var(--dbd-green-text);
 }
 .dbd-obat-stat.is-care {
   background: var(--dbd-orange-soft);
-  color: var(--dbd-orange);
+  color: var(--dbd-orange-text);
 }
 .dbd-obat-stat.is-avoid {
   background: var(--dbd-red-soft);
-  color: var(--dbd-red);
+  color: var(--dbd-red-text);
 }
 
 /* Ilustrasi kapsul murni CSS */
@@ -158,12 +158,27 @@
 
 .dbd-obat-result {
   padding: 12px 14px;
-  border-left: 4px solid;
   border-radius: 10px;
 }
-.dbd-obat-result strong {
+.dbd-obat-result-heading {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.dbd-obat-result-icon {
+  flex: 0 0 24px;
+}
+.dbd-obat-result-heading strong {
   display: block;
   font-size: 0.92rem;
+}
+.dbd-obat-result-heading span {
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--dbd-surface);
+  color: currentColor;
+  font-weight: 800;
 }
 .dbd-obat-result p {
   margin: 4px 0 0;
@@ -172,16 +187,16 @@
   line-height: 1.55;
 }
 .dbd-obat-result.is-ok {
-  border-color: var(--dbd-green);
   background: var(--dbd-green-soft);
+  color: var(--dbd-green-text);
 }
 .dbd-obat-result.is-care {
-  border-color: var(--dbd-orange);
   background: var(--dbd-orange-soft);
+  color: var(--dbd-orange-text);
 }
 .dbd-obat-result.is-avoid {
-  border-color: var(--dbd-red);
   background: var(--dbd-red-soft);
+  color: var(--dbd-red-text);
 }
 
 /* ---------- Filter (dropdown di ujung kanan kolom pencarian) ---------- */
@@ -291,15 +306,15 @@
 }
 .dbd-obat-badge.is-ok {
   background: var(--dbd-green-soft);
-  color: var(--dbd-green);
+  color: var(--dbd-green-text);
 }
 .dbd-obat-badge.is-care {
   background: var(--dbd-orange-soft);
-  color: var(--dbd-orange);
+  color: var(--dbd-orange-text);
 }
 .dbd-obat-badge.is-avoid {
   background: var(--dbd-red-soft);
-  color: var(--dbd-red);
+  color: var(--dbd-red-text);
 }
 
 .dbd-obat-use {
