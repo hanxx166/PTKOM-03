@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Suspense, lazy, useCallback, useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import {
   HashRouter,
@@ -20,6 +20,8 @@ import Header from "./components/Header";
 import TemperatureTracker from "./components/TemperatureTracker";
 import { AuthProvider, useAuth } from "./lib/auth";
 import { ContentProvider } from "./lib/content";
+
+const BantuanLokasi = lazy(() => import("./pages/BantuanLokasi"));
 
 /**
  * Each section is its own route now, so a route change has to reset the
@@ -133,6 +135,20 @@ function Shell() {
             element={<Navigate to="/pemantauan" replace />}
           />
           <Route path="/edukasi" element={<Education />} />
+          <Route
+            path="/faq-lokasi"
+            element={
+              <Suspense
+                fallback={
+                  <p className="dbd-card dbd-help-state" role="status">
+                    Memuat FAQ dan lokasi layanan...
+                  </p>
+                }
+              >
+                <BantuanLokasi />
+              </Suspense>
+            }
+          />
           <Route path="/admin" element={<Admin />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

@@ -1,14 +1,11 @@
-import ObatDBD from "./ObatDBD";
-import { useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import ObatDBD, { MedicationRules } from "./ObatDBD";
+import { motion } from "framer-motion";
 import Checklist3M from "./Checklist3M";
 import DangerPopup from "./DangerPopup";
 import Reveal from "./Reveal";
-import { useContent } from "../lib/content";
 import {
   cardHoverBox,
   cardHoverTransition,
-  instantTransition,
   staggerChild,
   staggerParent,
   useReducedMotion,
@@ -94,19 +91,7 @@ const TOPICS = [
   },
 ];
 
-/** Jawaban FAQ disimpan polos di database, bold ditulis **seperti ini**. */
-const bold = (t: string) =>
-  t
-    .split(/(\*\*[^*]+\*\*)/g)
-    .filter(Boolean)
-    .map((part, i) =>
-      part.startsWith("**") ? <b key={i}>{part.slice(2, -2)}</b> : part,
-    );
-
 export default function Education() {
-  const { content } = useContent();
-  const faq = content?.faq ?? [];
-  const [openFaq, setOpenFaq] = useState<number | string | null>(null);
   const reduced = useReducedMotion();
 
   return (
@@ -146,56 +131,9 @@ export default function Education() {
 
       <Checklist3M />
 
-      <ObatDBD />
+      <MedicationRules />
 
-      <h3 className="dbd-faq-heading">Pertanyaan Umum</h3>
-      <div className="dbd-faq-list">
-        {faq.map((m) => {
-          const isOpen = openFaq === m.id;
-          const answerId = `dbd-faq-answer-${m.id}`;
-          return (
-            <article
-              className={`dbd-faq-item${isOpen ? " is-open" : ""}`}
-              key={m.id}
-            >
-              <h4>
-                <button
-                  type="button"
-                  className="dbd-faq-question"
-                  aria-expanded={isOpen}
-                  aria-controls={answerId}
-                  onClick={() => setOpenFaq(isOpen ? null : m.id)}
-                >
-                  <span>{m.question}</span>
-                  <span className="dbd-faq-arrow" aria-hidden="true">
-                    ▼
-                  </span>
-                </button>
-              </h4>
-              <AnimatePresence initial={false}>
-                {isOpen && (
-                  <motion.div
-                    key="answer"
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={
-                      reduced
-                        ? instantTransition
-                        : { duration: 0.28, ease: "easeInOut" }
-                    }
-                    style={{ overflow: "hidden" }}
-                  >
-                    <div className="dbd-faq-answer" id={answerId}>
-                      {bold(m.answer)}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </article>
-          );
-        })}
-      </div>
+      <ObatDBD />
     </section>
   );
 }

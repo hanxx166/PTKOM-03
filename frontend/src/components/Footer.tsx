@@ -31,6 +31,9 @@ export default function Footer() {
             <li>
               <Link to="/edukasi">Edukasi</Link>
             </li>
+            <li>
+              <Link to="/faq-lokasi">FAQ &amp; Lokasi</Link>
+            </li>
           </ul>
         </div>
         <div>
@@ -60,6 +63,16 @@ export default function Footer() {
       </div>
       <p className="dbd-copyright">
         © 2026 CekDBD - Informasi ini bukan pengganti nasihat dokter.
+        {" · "}
+        Ikon:{" "}
+        <a
+          href="https://www.flaticon.com/free-icons/dengue"
+          title="dengue icons"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Dengue icons created by kliwir art - Flaticon
+        </a>
       </p>
     </footer>
   );

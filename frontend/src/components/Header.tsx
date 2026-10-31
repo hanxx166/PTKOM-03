@@ -5,10 +5,11 @@ import BlindPullToggle from "./BlindPullToggle";
 
 const LINKS = [
   { to: "/", label: "Beranda" },
+  { to: "/edukasi", label: "Edukasi" },
   { to: "/cek-kesehatan", label: "Cek Gejala & Lab" },
   // Halaman ini menyimpan data pribadi, jadi hanya untuk pengguna login.
   { to: "/pemantauan", label: "Suhu & Kalkulator", needsAuth: true },
-  { to: "/edukasi", label: "Edukasi" },
+  { to: "/faq-lokasi", label: "FAQ & Lokasi" },
 ];
 
 export default function Header({
@@ -92,10 +93,7 @@ export default function Header({
     >
       <div className="dbd-header-inner">
         <Link to="/" onClick={() => setOpen(false)} className="dbd-logo">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M12 21c-4.4-3.2-8-6.4-8-10a8 8 0 0 1 16 0c0 3.6-3.6 6.8-8 10Z" />
-            <path d="M12 7v4l2.5 1.5" />
-          </svg>
+          <img src="/img/logo.png" alt="" />
           <span>
             Cek<span className="dbd-logo-light">DBD</span>
           </span>
