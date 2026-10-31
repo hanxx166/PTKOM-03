@@ -117,9 +117,10 @@
 }
 
 /* ---------- Cek nama obat ---------- */
+/* Lebar ikut kontainer .dbd-main supaya sejajar dengan banner di atasnya. */
 .dbd-obat-check {
-  max-width: 780px;
-  margin: 16px auto 0;
+  max-width: none;
+  margin: 16px 0 0;
 }
 .dbd-obat-check label {
   display: block;
@@ -183,50 +184,60 @@
   background: var(--dbd-red-soft);
 }
 
-/* ---------- Filter ---------- */
-.dbd-obat-filters {
+/* ---------- Filter (dropdown di ujung kanan kolom pencarian) ---------- */
+.dbd-obat-search-row {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px;
-  margin: 26px 0 16px;
+  align-items: stretch;
+  gap: 10px;
 }
-.dbd-obat-filter {
-  padding: 8px 16px;
+.dbd-obat-search-row input {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.dbd-obat-search-row select {
+  flex: 0 1 auto;
+  max-width: 210px;
+  padding: 0 34px 0 12px;
   border: 1px solid var(--dbd-border);
-  border-radius: 20px;
+  border-radius: 10px;
   background: var(--dbd-surface);
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
+    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: right 16px center, right 11px center;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
   color: var(--dbd-text);
   font:
-    700 0.82rem "Plus Jakarta Sans",
+    700 0.88rem "Plus Jakarta Sans",
     sans-serif;
   cursor: pointer;
-  transition:
-    background 0.18s,
-    color 0.18s,
-    border-color 0.18s;
+  transition: border-color 0.18s;
 }
-.dbd-obat-filter:hover {
-  background: var(--dbd-soft);
-}
-.dbd-obat-filter.is-active {
+.dbd-obat-search-row select:hover {
   border-color: var(--dbd-accent);
-  background: var(--dbd-accent);
-  color: var(--dbd-on-fill);
 }
-.dbd-obat-filter:focus-visible {
+.dbd-obat-search-row select:focus-visible {
   outline: 3px solid var(--dbd-accent-soft);
-  outline-offset: 2px;
+  border-color: var(--dbd-accent);
+}
+.dbd-obat-count {
+  margin: 9px 0 0;
+  color: var(--dbd-muted);
+  font-size: 0.76rem;
+  font-weight: 600;
 }
 
 /* ---------- Kartu obat ---------- */
+/* 3 kolom selebar kontainer supaya sejajar dengan kotak cek di atasnya
+   dan tiap kartu lebih lega dibanding layout 4 kolom sebelumnya. */
 .dbd-obat-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 20px;
 }
 .dbd-obat-card {
-  padding: 18px;
+  padding: clamp(18px, 2vw, 22px);
   border-top: 4px solid var(--dbd-border);
 }
 .dbd-obat-card.is-ok {
@@ -242,7 +253,7 @@
 .dbd-obat-photo {
   display: block;
   width: 100%;
-  height: 142px;
+  height: 168px;
   margin-bottom: 12px;
   border-radius: 8px;
   object-fit: cover;
@@ -340,35 +351,7 @@
     sans-serif;
 }
 
-/* ---------- Peringatan & disclaimer ---------- */
-.dbd-obat-alert {
-  max-width: 780px;
-  margin: 26px auto 0;
-  padding: 16px 18px;
-  border: 1px solid var(--dbd-red);
-  border-radius: 14px;
-  background: var(--dbd-red-soft);
-}
-.dbd-obat-alert strong {
-  display: block;
-  font-size: 0.92rem;
-}
-.dbd-obat-alert ul {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px 8px;
-  margin: 10px 0 0;
-  padding: 0;
-  list-style: none;
-}
-.dbd-obat-alert li {
-  padding: 4px 10px;
-  border-radius: 20px;
-  background: var(--dbd-surface);
-  color: var(--dbd-red);
-  font-size: 0.78rem;
-  font-weight: 700;
-}
+/* ---------- Disclaimer ---------- */
 .dbd-obat-disclaimer {
   max-width: 780px;
   margin: 12px auto 0;
@@ -379,8 +362,19 @@
 
 /* ---------- Responsif ---------- */
 @media (max-width: 900px) {
+  .dbd-obat-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
   .dbd-obat-rules {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 620px) {
+  .dbd-obat-grid {
+    grid-template-columns: 1fr;
+  }
+  .dbd-obat-photo {
+    height: 150px;
   }
 }
 @media (max-width: 760px) {
@@ -395,12 +389,12 @@
   .dbd-obat-rules {
     grid-template-columns: 1fr;
   }
-  .dbd-obat-filter {
-    flex: 1 1 calc(50% - 8px);
+  .dbd-obat-search-row {
+    flex-wrap: wrap;
   }
-}
-@media (prefers-reduced-motion: reduce) {
-  .dbd-obat-filter {
-    transition: none;
+  .dbd-obat-search-row select {
+    max-width: none;
+    width: 100%;
+    padding: 9px 34px 9px 12px;
   }
 }
