@@ -92,7 +92,7 @@ export default function CekLab() {
             <h3>Kapan Perlu Cek Darah?</h3>
             <ul className="dbd-lab-when-list">
               {WHEN_TO_CHECK.map((item) => (
-                <li key={item}>{item}</li>
+                <li key={item}><span className="dbd-check-bullet" aria-hidden="true">•</span>{item}</li>
               ))}
             </ul>
           </article>
@@ -106,8 +106,6 @@ export default function CekLab() {
               <b>Poliklinik ITERA</b>
               <br />
               Labtek O Lt.1, Jati Agung
-              <br />
-              <a href="tel:+627218030188">(0721) 8030188</a>
               <br />
               Senin–Jumat: 08.00–16.30 WIB
             </p>

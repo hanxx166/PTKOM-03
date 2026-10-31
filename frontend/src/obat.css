@@ -197,6 +197,8 @@
 .dbd-obat-search-row select {
   flex: 0 1 auto;
   max-width: 210px;
+  appearance: none;
+  -webkit-appearance: none;
   padding: 0 34px 0 12px;
   border: 1px solid var(--dbd-border);
   border-radius: 10px;
@@ -237,7 +239,7 @@
   margin-top: 20px;
 }
 .dbd-obat-card {
-  padding: clamp(18px, 2vw, 22px);
+  padding: 0;
   border-top: 4px solid var(--dbd-border);
 }
 .dbd-obat-card.is-ok {
@@ -269,6 +271,14 @@
   flex: 1;
   margin: 0;
   font-size: 0.98rem;
+}
+.dbd-obat-card-title {
+  flex: 1;
+  color: var(--dbd-text);
+  font-family: Outfit, system-ui, sans-serif;
+  font-size: 0.98rem;
+  font-weight: 700;
+  line-height: 1.25;
 }
 .dbd-obat-badge {
   flex: 0 0 auto;
@@ -305,18 +315,33 @@
   line-height: 1.6;
 }
 .dbd-obat-details {
-  margin-top: 8px;
+  margin: 0;
   color: var(--dbd-muted);
   font-size: 0.8rem;
 }
 .dbd-obat-details summary {
-  width: fit-content;
-  color: var(--dbd-accent);
-  font-weight: 700;
+  display: block;
+  padding: clamp(18px, 2vw, 22px);
+  list-style: none;
   cursor: pointer;
 }
+.dbd-obat-details summary::-webkit-details-marker {
+  display: none;
+}
+.dbd-obat-details summary:focus-visible {
+  outline: 3px solid var(--dbd-accent-soft);
+  outline-offset: -3px;
+  border-radius: 12px;
+}
+.dbd-obat-hint {
+  display: block;
+  margin-top: 8px;
+  color: var(--dbd-accent);
+  font-weight: 700;
+}
 .dbd-obat-details .dbd-obat-note {
-  margin-top: 7px;
+  margin: 0;
+  padding: 0 clamp(18px, 2vw, 22px) clamp(18px, 2vw, 22px);
 }
 
 /* ---------- Aturan ---------- */

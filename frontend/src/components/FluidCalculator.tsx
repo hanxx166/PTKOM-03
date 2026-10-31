@@ -55,7 +55,7 @@ export default function FluidCalculator() {
               bisa minum.
             </p>
           </div>
-          <form onSubmit={calculateFluid}>
+          <form className="dbd-calc-form" onSubmit={calculateFluid}>
             <div className="dbd-form-group">
               <label htmlFor="calc-weight">Berat badan (kg)</label>
               <input

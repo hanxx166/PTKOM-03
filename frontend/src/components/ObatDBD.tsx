@@ -375,23 +375,27 @@ export default function ObatDBD() {
               whileHover={{ y: -4, boxShadow: cardHoverBox }}
               transition={cardHoverTransition}
             >
-              {d.image && (
-                <img
-                  className="dbd-obat-photo"
-                  src={d.image}
-                  alt={`Foto ${d.name}`}
-                  loading="lazy"
-                />
-              )}
-              <div className="dbd-obat-card-head">
-                <h4>{d.name}</h4>
-                <span className={`dbd-obat-badge is-${d.level}`}>
-                  {LEVELS[d.level].label}
-                </span>
-              </div>
-              <p className="dbd-obat-use">{d.use}</p>
               <details className="dbd-obat-details">
-                <summary>Catatan penggunaan</summary>
+                <summary>
+                  {d.image && (
+                    <img
+                      className="dbd-obat-photo"
+                      src={d.image}
+                      alt={`Foto ${d.name}`}
+                      loading="lazy"
+                    />
+                  )}
+                  <span className="dbd-obat-card-head">
+                    <span className="dbd-obat-card-title" role="heading" aria-level={4}>
+                      {d.name}
+                    </span>
+                    <span className={`dbd-obat-badge is-${d.level}`}>
+                      {LEVELS[d.level].label}
+                    </span>
+                  </span>
+                  <span className="dbd-obat-use">{d.use}</span>
+                  <span className="dbd-obat-hint">Catatan penggunaan</span>
+                </summary>
                 <p className="dbd-obat-note">{d.note}</p>
               </details>
             </motion.article>

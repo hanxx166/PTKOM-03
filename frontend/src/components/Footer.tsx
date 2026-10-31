@@ -36,15 +36,13 @@ export default function Footer() {
         <div>
           <h3>Kontak &amp; Rujukan</h3>
           <ul className="dbd-footer-list">
-            <li>Poliklinik ITERA, Labtek O Lt.1, Jati Agung</li>
-            <li>Senin-Jumat: 08.00 - 16.30 WIB</li>
             <li>
               <a
                 href="https://maps.app.goo.gl/zeYtJC7PJbj8nbJb7"
                 target="_blank"
                 rel="noreferrer"
               >
-                Lokasi Poliklinik
+                Poliklinik ITERA, Labtek O Lt.1, Jati Agung · Senin-Jumat: 08.00-16.30 WIB · Lokasi
               </a>
             </li>
             <li>
@@ -56,6 +54,7 @@ export default function Footer() {
                 RS Airan Raya - IGD 24 jam
               </a>
             </li>
+            <li><a href="tel:119">Kontak darurat: 119</a></li>
           </ul>
         </div>
       </div>
