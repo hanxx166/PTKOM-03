@@ -6,9 +6,9 @@ import BlindPullToggle from "./BlindPullToggle";
 const LINKS = [
   { to: "/", label: "Beranda" },
   { to: "/edukasi", label: "Edukasi" },
-  { to: "/cek-kesehatan", label: "Cek Gejala & Lab" },
+  { to: "/cek-kesehatan", label: "Cek Gejala" },
   // Halaman ini menyimpan data pribadi, jadi hanya untuk pengguna login.
-  { to: "/pemantauan", label: "Suhu & Kalkulator", needsAuth: true },
+  { to: "/pemantauan", label: "Pantau Suhu", needsAuth: true },
   { to: "/faq-lokasi", label: "FAQ & Lokasi" },
 ];
 
@@ -133,7 +133,23 @@ export default function Header({
                   onAuth("in", link.to);
                 }}
               >
-                🔒 {link.label}
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <rect x="4.5" y="10" width="15" height="11" rx="2" />
+                  <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+                  <path d="M12 14v3" />
+                </svg>
+                <span>{link.label}</span>
               </button>
             ) : (
               <NavLink
