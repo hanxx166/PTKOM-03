@@ -102,6 +102,8 @@ async function main() {
  * (userId NULL, onDelete SetNull) jadi harus dihapus sendiri, dikunci
  * createdAt supaya baris impor legacy tidak ikut terhapus.
  */
+require("dotenv").config();
+
 async function bersihkan(mulai, email) {
   try {
     const { PrismaClient } = require("@prisma/client");
