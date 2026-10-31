@@ -1,4 +1,3 @@
-import { useContent } from "../lib/content";
 import { Link } from "react-router-dom";
 
 /**
@@ -6,11 +5,6 @@ import { Link } from "react-router-dom";
  * reachable no matter which route is active.
  */
 export default function Footer() {
-  const { content } = useContent();
-  const mapsQuery = encodeURIComponent(
-    content?.contact?.maps || "Poliklinik ITERA, Lampung Selatan",
-  );
-
   return (
     <footer className="dbd-footer">
       <div className="dbd-footer-grid">
@@ -43,31 +37,30 @@ export default function Footer() {
           <h3>Kontak &amp; Rujukan</h3>
           <ul className="dbd-footer-list">
             <li>Poliklinik ITERA, Labtek O Lt.1, Jati Agung</li>
-            <li>
-              <a href="tel:+627218030188">(0721) 8030188</a>
-            </li>
-            <li>Senin-Jumat: 08.00-16.30 WIB</li>
-            <li>
-              Darurat:{" "}
-              <a href="tel:119">
-                <b>119</b>
-              </a>
-            </li>
-            <li>RS Airan Raya - IGD 24 jam</li>
+            <li>Senin-Jumat: 08.00 - 16.30 WIB</li>
             <li>
               <a
-                href={`https://www.google.com/maps/search/?api=1&query=${mapsQuery}`}
+                href="https://maps.app.goo.gl/zeYtJC7PJbj8nbJb7"
                 target="_blank"
                 rel="noreferrer"
               >
                 Lokasi Poliklinik
               </a>
             </li>
+            <li>
+              <a
+                href="https://maps.app.goo.gl/8bYLizYsvQsZoQta7"
+                target="_blank"
+                rel="noreferrer"
+              >
+                RS Airan Raya - IGD 24 jam
+              </a>
+            </li>
           </ul>
         </div>
       </div>
       <p className="dbd-copyright">
-        © 2026 CekDBD. Informasi ini bukan pengganti nasihat dokter.
+        © 2026 CekDBD - Informasi ini bukan pengganti nasihat dokter.
       </p>
     </footer>
   );

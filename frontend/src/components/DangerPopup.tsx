@@ -50,7 +50,7 @@ export default function DangerPopup() {
             <div className="dbd-popup-body">
               <strong>Jangan menunggu obat bekerja</strong>
               <p>
-                Segera ke IGD atau hubungi <b>119</b> bila muncul:
+                Segera menuju IGD terdekat bila muncul:
               </p>
               <ul className="dbd-popup-chips">
                 {DANGER.map((t) => (

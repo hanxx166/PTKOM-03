@@ -13,7 +13,8 @@ import {
 
 const PHASES = [
   {
-    title: "Fase Demam (Hari 1-2)",
+    period: "Hari 1–2",
+    title: "Fase demam",
     text: "Demam dapat muncul mendadak disertai nyeri kepala, sendi, atau belakang mata.",
     steps: [
       "Catat suhu dan kondisi",
@@ -22,7 +23,8 @@ const PHASES = [
     ],
   },
   {
-    title: "Fase Kritis (Hari 3-5)",
+    period: "Hari 3–5",
+    title: "Fase kritis",
     text: "Demam yang turun bukan selalu tanda sembuh. Waspadai tanda bahaya dan perubahan kondisi.",
     steps: [
       "Jangan terkecoh suhu turun",
@@ -31,7 +33,8 @@ const PHASES = [
     ],
   },
   {
-    title: "Fase Pemulihan (Hari 6-7)",
+    period: "Hari 6–7",
+    title: "Fase pemulihan",
     text: "Pemulihan dan durasi setiap orang dapat berbeda; tetap ikuti arahan dokter.",
     steps: [
       "Tetap pantau kondisi",
@@ -44,10 +47,10 @@ const PHASES = [
 const EMERGENCY = [
   {
     className: "is-red",
-    title: "Ambulans / IGD",
+    title: "IGD Terdekat",
     text: (
       <>
-        Hubungi <a href="tel:119">119</a> atau ke IGD terdekat
+        Segera menuju IGD. <a href="https://maps.app.goo.gl/8bYLizYsvQsZoQta7" target="_blank" rel="noreferrer">Lihat rute ke RS Airan Raya</a>
       </>
     ),
   },
@@ -56,14 +59,14 @@ const EMERGENCY = [
     title: "Poliklinik ITERA",
     text: (
       <>
-        Labtek O Lt.1 · <a href="tel:+627218030188">(0721) 8030188</a>
+        Labtek O Lt.1 · <a href="https://maps.app.goo.gl/zeYtJC7PJbj8nbJb7" target="_blank" rel="noreferrer">Lihat peta</a>
       </>
     ),
   },
   {
     className: "is-blue",
     title: "RS Airan Raya",
-    text: <>IGD 24 jam, dekat kampus</>,
+    text: <>IGD 24 jam · <a href="https://maps.app.goo.gl/8bYLizYsvQsZoQta7" target="_blank" rel="noreferrer">Lihat peta</a></>,
   },
 ];
 
@@ -146,14 +149,6 @@ export default function Dashboard() {
             tanda bahaya.
           </p>
         </Reveal>
-        <div
-          className="dbd-phase-bar"
-          aria-label="Fase demam, kritis, dan pemulihan"
-        >
-          <span className="is-fever">Hari 1-2 · Fase Demam</span>
-          <span className="is-critical">Hari 3-5 · Fase Kritis</span>
-          <span className="is-recovery">Hari 6-7 · Pemulihan</span>
-        </div>
         <motion.div
           className="dbd-phase-grid"
           variants={staggerParent}
@@ -166,9 +161,8 @@ export default function Dashboard() {
               className="dbd-card dbd-phase-card"
               key={phase.title}
               variants={staggerChild}
-              whileHover={{ y: -4, boxShadow: cardHoverBox }}
-              transition={cardHoverTransition}
             >
+              <p className="dbd-phase-period">{phase.period}</p>
               <h3>{phase.title}</h3>
               <p>{phase.text}</p>
               <ul>

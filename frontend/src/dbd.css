@@ -670,44 +670,49 @@ html[data-theme="dark"] .dbd-header::before {
   padding-top: 24px;
 }
 
-.dbd-phase-bar {
-  display: flex;
-  min-height: 40px;
-  overflow: hidden;
-  border-radius: 10px;
-  color: var(--dbd-on-fill);
-  font-size: 0.73rem;
-  font-weight: 800;
-  text-align: center;
-}
-
-.dbd-phase-bar span {
-  display: grid;
-  flex: 1;
-  place-items: center;
-  padding: 7px 10px;
-}
-
-.dbd-phase-bar .is-fever {
-  background: var(--dbd-orange);
-}
-.dbd-phase-bar .is-critical {
-  background: var(--dbd-red);
-  flex: 1.5;
-}
-.dbd-phase-bar .is-recovery {
-  background: var(--dbd-green);
-}
-
 .dbd-phase-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 15px;
-  margin-top: 16px;
+  grid-auto-rows: 1fr;
+  gap: 16px;
+  margin-top: 18px;
 }
 
 .dbd-phase-card {
-  padding: 19px;
+  --phase-accent: var(--dbd-orange);
+  min-width: 0;
+  height: 100%;
+  padding: clamp(20px, 2.5vw, 30px);
+  border: 0;
+  border-top: 0;
+  border-radius: 18px;
+  background: var(--dbd-surface);
+  box-shadow: 0 6px 24px rgba(20, 38, 61, 0.045);
+  transition:
+    transform 480ms cubic-bezier(0.32, 0.72, 0, 1),
+    box-shadow 480ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.dbd-phase-card:nth-child(2) {
+  --phase-accent: var(--dbd-red);
+}
+
+.dbd-phase-card:nth-child(3) {
+  --phase-accent: var(--dbd-green);
+}
+
+.dbd-phase-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(20, 38, 61, 0.085);
+}
+
+.dbd-phase-period {
+  display: block;
+  margin: 0 0 8px;
+  color: color-mix(in srgb, var(--phase-accent) 70%, var(--dbd-muted));
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
 }
 
 .dbd-phase-card h3,
@@ -1390,11 +1395,8 @@ html[data-theme="dark"] .dbd-footer {
   .dbd-education-grid {
     grid-template-columns: 1fr;
   }
-  .dbd-phase-bar {
-    font-size: 0.62rem;
-  }
-  .dbd-phase-bar span {
-    padding: 7px 5px;
+  .dbd-phase-grid {
+    gap: 12px;
   }
   .dbd-footer {
     padding-right: 4vw;
@@ -1429,11 +1431,8 @@ html[data-theme="dark"] .dbd-footer {
   .dbd-actions .dbd-button {
     width: 100%;
   }
-  .dbd-phase-bar {
-    flex-direction: column;
-  }
-  .dbd-phase-bar span {
-    min-height: 30px;
+  .dbd-phase-card {
+    padding: 20px;
   }
   .dbd-tracker-form > .dbd-button {
     width: 100%;
@@ -1587,51 +1586,29 @@ html[data-theme="dark"] .dbd-footer {
   }
 }
 
-/* Kartu "Pahami 3 Fase DBD": langkah dibuat per poin (tempel di PALING BAWAH dbd.css) */
-.dbd-phase-card {
-  --phase: var(--dbd-orange);
-  --phase-soft: var(--dbd-orange-soft);
-  border-top: 4px solid var(--phase);
-}
-.dbd-phase-grid > :nth-child(2) {
-  --phase: var(--dbd-red);
-  --phase-soft: var(--dbd-red-soft);
-}
-.dbd-phase-grid > :nth-child(3) {
-  --phase: var(--dbd-green);
-  --phase-soft: var(--dbd-green-soft);
-}
-
-.dbd-phase-card p {
-  padding-bottom: 12px;
-  border-bottom: 1px dashed var(--dbd-border);
+/* Panduan fase demam berdarah. */
+.dbd-phase-card > p:not(.dbd-phase-period) {
+  padding-bottom: 16px;
+  border-bottom: 1px solid color-mix(in srgb, var(--dbd-border) 72%, transparent);
+  line-height: 1.7;
 }
 .dbd-phase-card ul {
   display: grid;
-  gap: 9px;
-  margin: 12px 0 0;
-  padding: 0;
-  list-style: none;
+  gap: 10px;
+  margin: 15px 0 0;
+  padding-left: 1.1rem;
+  list-style: disc;
 }
 .dbd-phase-card li {
-  position: relative;
   margin: 0;
-  padding-left: 28px;
   color: var(--dbd-text);
   line-height: 1.5;
 }
-.dbd-phase-card li + li {
-  margin-top: 0;
-}
 .dbd-phase-card li::before {
-  content: "";
-  position: absolute;
-  top: 8px;
-  left: 0;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--phase);
+  content: none;
+}
+.dbd-phase-card li::marker {
+  color: color-mix(in srgb, var(--phase-accent) 56%, var(--dbd-muted-light));
 }
 
 /* ============================================================
@@ -2000,17 +1977,55 @@ html[data-theme="dark"] .dbd-footer {
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  width: min(560px, 100%);
-  padding: 16px 46px 18px 18px;
+  width: min(760px, 100%);
+  padding: 14px 46px 14px 16px;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.24);
-  border-radius: 16px;
+  border-radius: 12px;
   background:
     radial-gradient(circle at 8% -30%, rgba(255, 255, 255, 0.22), transparent 60%),
     linear-gradient(135deg, #e5484d 0%, #b3222a 58%, #8f1a22 100%);
   box-shadow: 0 18px 44px rgba(140, 20, 30, 0.38);
   color: #fff;
   pointer-events: auto;
+}
+.dbd-tracker-heading-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.dbd-tracker-heading-row .dbd-subheading-top {
+  margin: 0;
+}
+.dbd-confirm-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  background: rgba(8, 20, 36, 0.48);
+}
+.dbd-confirm-dialog {
+  width: min(420px, 100%);
+  padding: 24px;
+  border: 1px solid var(--dbd-border);
+  border-radius: 14px;
+  background: var(--dbd-surface);
+  color: var(--dbd-text);
+  box-shadow: 0 12px 36px rgba(20, 38, 61, 0.2);
+}
+.dbd-confirm-dialog h2 {
+  margin: 0 0 20px;
+  font: 700 1.2rem/1.35 Outfit, system-ui, sans-serif;
+}
+.dbd-confirm-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
 }
 .dbd-popup-icon {
   flex: 0 0 auto;
