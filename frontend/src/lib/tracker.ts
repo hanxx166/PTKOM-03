@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { apiDelete, apiGet, apiPost } from "./api";
 import { HAS_BACKEND } from "./backend";
 import { useAuth } from "./auth";
@@ -62,6 +62,8 @@ export function useTrackerLog(kind: TrackerKind) {
   const [entries, setEntries] = useState<TrackerRow[]>([]);
   const [status, setStatus] = useState<TrackerStatus>(() => (online ? "loading" : "local"));
   const [message, setMessage] = useState("");
+  const [saving, setSaving] = useState(false);
+  const adding = useRef(false);
 
   useEffect(() => {
     let alive = true;
@@ -93,21 +95,52 @@ export function useTrackerLog(kind: TrackerKind) {
     };
   }, [online, kind]);
 
-  const persist = async (rows: TrackerRow[], payload: Record<string, unknown>) => {
+  const persist = async (
+    rows: TrackerRow[],
+    payload: Record<string, unknown>,
+    created: TrackerRow,
+  ) => {
     if (online) {
       const j = (await apiPost(PATHS[kind], payload)) as { entry: TrackerRow };
-      setEntries(sortRows(kind, [...rows, j.entry]));
+      // Fever logs are upserted by day/time on the server. Replace the returned
+      // row by id so repeated responses cannot render the same record twice.
+      setEntries((current) =>
+        sortRows(kind, [...current.filter((entry) => entry.id !== j.entry.id), j.entry]),
+      );
       return;
     }
-    writeLocal(kind, rows);
-    setEntries(sortRows(kind, rows));
+    const next = kind === "fever"
+      ? [...rows.filter((entry) => entry.id !== created.id && (entry.day !== created.day || entry.time !== created.time)), created]
+      : rows;
+    writeLocal(kind, next);
+    setEntries(sortRows(kind, next));
   };
 
-  const add = (row: Partial<TrackerRow> & { day: number }) =>
-    persist(
-      [...entries, { ...row, id: `${Date.now()}-${Math.random().toString(36).slice(2)}`, time: row.time ?? "", temp: row.temp ?? 0, value: row.value ?? 0 }],
-      kind === "fever" ? { day: row.day, time: row.time ?? "", temp: row.temp ?? 0 } : { day: row.day, value: row.value ?? 0 },
-    );
+  const add = async (row: Partial<TrackerRow> & { day: number }) => {
+    // A ref closes the gap before React can disable the button after the first click.
+    if (adding.current) return;
+    adding.current = true;
+    setSaving(true);
+    try {
+      const created = {
+        ...row,
+        id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+        time: row.time ?? "",
+        temp: row.temp ?? 0,
+        value: row.value ?? 0,
+      };
+      await persist(
+        [...entries, created],
+        kind === "fever"
+          ? { day: row.day, time: row.time ?? "", temp: row.temp ?? 0 }
+          : { day: row.day, value: row.value ?? 0 },
+        created,
+      );
+    } finally {
+      adding.current = false;
+      setSaving(false);
+    }
+  };
 
   const remove = async (id: number | string) => {
     if (online) await apiDelete(`${PATHS[kind]}/${id}`);
@@ -116,5 +149,5 @@ export function useTrackerLog(kind: TrackerKind) {
     setEntries(rows);
   };
 
-  return { entries, status, message, add, remove };
+  return { entries, status, message, saving, add, remove };
 }
