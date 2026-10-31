@@ -18,6 +18,7 @@ export default function Header({
 }) {
   const { user, logout } = useAuth();
   const [open, setOpen] = useState(false);
+  const [confirmLogout, setConfirmLogout] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const headerRef = useRef<HTMLElement | null>(null);
   const [dark, setDark] = useState(() => {
@@ -65,6 +66,15 @@ export default function Header({
     };
   }, []);
   const isAdmin = user?.role === "admin";
+
+  useEffect(() => {
+    if (!confirmLogout) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setConfirmLogout(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [confirmLogout]);
 
   useEffect(() => {
     document.documentElement.dataset.theme = dark ? "dark" : "light";
@@ -180,7 +190,7 @@ export default function Header({
               </span>
               <button
                 className="dbd-button dbd-button-outline dbd-button-small"
-                onClick={logout}
+                onClick={() => setConfirmLogout(true)}
               >
                 Keluar
               </button>
@@ -188,6 +198,38 @@ export default function Header({
           )}
         </div>
       </div>
+      {confirmLogout && (
+        <div
+          className="dbd-confirm-backdrop"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) setConfirmLogout(false);
+          }}
+        >
+          <section className="dbd-confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="logout-title">
+            <h2 id="logout-title">Apakah Anda yakin ingin keluar?</h2>
+            <div className="dbd-confirm-actions">
+              <button
+                className="dbd-button dbd-button-primary"
+                type="button"
+                onClick={async () => {
+                  setConfirmLogout(false);
+                  await logout();
+                }}
+              >
+                Ya, keluar
+              </button>
+              <button
+                className="dbd-button dbd-button-outline"
+                type="button"
+                autoFocus
+                onClick={() => setConfirmLogout(false)}
+              >
+                Batal
+              </button>
+            </div>
+          </section>
+        </div>
+      )}
     </header>
   );
 }

@@ -100,7 +100,7 @@ function Shell() {
             path="/cek-kesehatan"
             element={
               <>
-                <CekGejala onNeedAuth={needAuth} />
+                <CekGejala />
                 <CekLab />
               </>
             }

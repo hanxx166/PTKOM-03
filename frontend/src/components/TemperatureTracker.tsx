@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Reveal from "./Reveal";
 import { useTrackerLog } from "../lib/tracker";
+import { downloadFeverPdf } from "../lib/feverPdf";
 
 const TIMES = ["Pagi", "Siang", "Sore", "Malam"];
 
@@ -137,7 +138,16 @@ export default function TemperatureTracker() {
       </Reveal>
 
       <div className="dbd-card">
-        <h3 className="dbd-subheading-top">Catatan Suhu Harian</h3>
+        <div className="dbd-tracker-heading-row">
+          <h3 className="dbd-subheading-top">Catatan Suhu Harian</h3>
+          <button
+            className="dbd-button dbd-button-outline dbd-button-small"
+            type="button"
+            onClick={() => downloadFeverPdf(fever.entries)}
+          >
+            Unduh PDF
+          </button>
+        </div>
         <form className="dbd-tracker-form" onSubmit={addEntry}>
           <div className="dbd-form-group">
             <label htmlFor="track-day">Hari ke-</label>
@@ -178,8 +188,8 @@ export default function TemperatureTracker() {
               ))}
             </select>
           </div>
-          <button className="dbd-button dbd-button-primary" type="submit">
-            ＋ Catat
+          <button className="dbd-button dbd-button-primary" type="submit" disabled={fever.saving}>
+            {fever.saving ? "Menyimpan..." : "＋ Catat"}
           </button>
         </form>
 
@@ -307,8 +317,8 @@ export default function TemperatureTracker() {
               placeholder="150000"
             />
           </div>
-          <button className="dbd-button dbd-button-primary" type="submit">
-            ＋ Catat
+          <button className="dbd-button dbd-button-primary" type="submit" disabled={platelet.saving}>
+            {platelet.saving ? "Menyimpan..." : "＋ Catat"}
           </button>
         </form>
 

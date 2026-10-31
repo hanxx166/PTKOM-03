@@ -115,7 +115,14 @@ export default function CekLab() {
               Untuk tes spesifik DBD (NS1, IgM/IgG), tanyakan ketersediaan saat
               konsultasi; dokter akan merujuk bila perlu pemeriksaan lanjutan.
             </p>
-            <a className="dbd-button dbd-button-primary" href="#/cek-kesehatan">
+            <a
+              className="dbd-button dbd-button-primary"
+              href="#cek-gejala"
+              onClick={(event) => {
+                event.preventDefault();
+                document.getElementById("cek-gejala")?.scrollIntoView({ behavior: "smooth" });
+              }}
+            >
               Mulai dari Cek Gejala
             </a>
           </article>
